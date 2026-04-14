@@ -1,0 +1,72 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   VITALIS MEDICAL DESIGN TOKENS — from Stitch project 7479445649926354283
+   Applied to: RRDCH Dental College & Hospital
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Color Tokens ── */
+:root {
+  /* Primary — Institutional Navy */
+  --vs-primary:           #001e40;
+  --vs-primary-container: #003366;
+  --vs-on-primary:        #ffffff;
+  --vs-primary-fixed:     #d5e3ff;
+  --vs-primary-fixed-dim: #a7c8ff;
+  --vs-inverse-primary:   #a7c8ff;
+
+  /* Secondary — Medical Teal */
+  --vs-secondary:           #006a6a;
+  --vs-secondary-container: #8cf3f3;
+  --vs-on-secondary:        #ffffff;
+  --vs-on-secondary-container: #007070;
+  --vs-secondary-fixed:    #8cf3f3;
+  --vs-secondary-fixed-dim: #6fd7d6;
+
+  /* Tertiary — Warm Ochre (alerts, critical) */
+  --vs-tertiary:           #381300;
+  --vs-tertiary-container: #592300;
+  --vs-tertiary-fixed:     #ffdbca;
+
+  /* Surface Hierarchy (Tonal Layering — No-Line Rule) */
+  --vs-surface:                  #f8f9fa;   /* page background */
+  --vs-surface-dim:              #d9dadb;
+  --vs-surface-bright:           #f8f9fa;
+  --vs-surface-container-low:    #f3f4f5;   /* sidebar, secondary panels */
+  --vs-surface-container:        #edeeef;   /* default card containers */
+  --vs-surface-container-high:   #e7e8e9;   /* hover states */
+  --vs-surface-container-highest:#e1e3e4;   /* active/focused cards */
+  --vs-surface-container-lowest: #ffffff;   /* interactive cards (max contrast) */
+  --vs-surface-variant:          #e1e3e4;
+  --vs-surface-tint:             #3a5f94;
+
+  /* Text */
+  --vs-on-surface:         #191c1d;   /* never pure black */
+  --vs-on-surface-variant: #43474f;   /* muted labels */
+  --vs-on-background:      #191c1d;
+
+  /* Outline */
+  --vs-outline:            #737780;
+  --vs-outline-variant:    #c3c6d1;  /* use at 15% opacity only */
+
+  /* Error */
+  --vs-error:              #ba1a1a;
+  --vs-error-container:    #ffdad6;
+  --vs-on-error:           #ffffff;
+
+  /* Brand Gold — Book Appointment CTA (preserved from RRDCH) */
+  --vs-gold:               #E8A020;
+  --vs-gold-dark:          #c4871a;
+
+  /* Ambient shadow (tinted with primary navy) */
+  --vs-shadow-ambient: 0px 24px 48px -12px rgba(0, 30, 64, 0.08);
+  --vs-shadow-floating: 0px 8px 24px -4px rgba(0, 30, 64, 0.12);
+
+  /* Spacing scale (×2) */
+  --vs-space-1: 4px;
+  --vs-space-2: 8px;
+  --vs-space-3: 12px;
+  --vs-space-4: 16px;
+  --vs-space-6: 24px;
+  --vs-space-8: 32px;
+  --vs-space-12: 48px;
+  --vs-space-16: 64px;
+}
