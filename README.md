@@ -1,4 +1,5 @@
 # 🦷 RRDCH Dental Portal
+[![Live Demo](https://img.shields.io/badge/demo-live_demo-brightgreen?style=for-the-badge&logo=vercel)](https://webapp-psi-dun.vercel.app/)
 [![Firebase](https://img.shields.io/badge/backend-Firebase-ffca28?style=flat&logo=firebase)](https://firebase.google.com/)
 [![React](https://img.shields.io/badge/frontend-React_19-61dafb?style=flat&logo=react)](https://react.dev/)
 [![Tailwind](https://img.shields.io/badge/styling-Tailwind_CSS_V4-38b2ac?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
