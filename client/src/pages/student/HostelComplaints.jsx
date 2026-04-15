@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiHome, FiSend, FiList, FiCheckCircle, FiAlertCircle, FiShield, FiFileText } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
+import { useApp } from '../../context/AppContext';
 
 const HostelComplaints = () => {
   const { t, i18n } = useTranslation();
+  const { addComplaint } = useApp();
   const lang = i18n.language;
   const [form, setForm] = useState({ name: '', room: '', category: '', description: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -19,18 +21,26 @@ const HostelComplaints = () => {
     { id: 'others', label: lang === 'kn' ? 'ಇತರೆ' : 'Others' },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.category) {
       toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a category');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await addComplaint({
+        ...form,
+        status: 'Open',
+        studentId: 'RRDCH-STU' // Default or fetch from auth
+      });
       setSubmitted(true);
       toast.success(lang === 'kn' ? 'ದೂರನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ' : 'Complaint submitted successfully');
-    }, 1500);
+    } catch (err) {
+      toast.error(lang === 'kn' ? 'ದೋಷ ಸಂಭವಿಸಿದೆ' : 'Failed to submit complaint');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

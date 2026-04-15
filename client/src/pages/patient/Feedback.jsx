@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { FiStar, FiSend, FiCheckCircle, FiMessageSquare } from 'react-icons/fi';
+import { useApp } from '../../context/AppContext';
 
 const Feedback = () => {
   const { t, i18n } = useTranslation();
+  const { addFeedback } = useApp();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState('');
@@ -13,13 +16,26 @@ const Feedback = () => {
   
   const lang = i18n.language;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (rating === 0) {
+      toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ನಕ್ಷತ್ರದ ರೇಟಿಂಗ್ ಆಯ್ಕೆಮಾಡಿ' : 'Please select a star rating');
+      return;
+    }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await addFeedback({
+        rating,
+        comment,
+        patientName: 'Anonymous Patient' // Or from context
+      });
       setSubmitted(true);
-    }, 1200);
+      toast.success(lang === 'kn' ? 'ಪ್ರತಿಕ್ರಿಯೆಗಾಗಿ ಧನ್ಯವಾದಗಳು' : 'Thank you for your feedback!');
+    } catch (err) {
+      toast.error(lang === 'kn' ? 'ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ' : 'Failed to submit feedback');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

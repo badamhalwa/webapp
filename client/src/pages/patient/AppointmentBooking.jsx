@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import { FiUser, FiActivity, FiCalendar, FiCheckCircle, FiChevronRight, FiChevronLeft, FiClock, FiPhone, FiCopy, FiCheck } from 'react-icons/fi';
 import { departments } from '../../data/mockData';
+import { useApp } from '../../context/AppContext';
 
 const AppointmentBooking = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { addAppointment } = useApp();
   const lang = i18n.language;
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -25,26 +28,20 @@ const AppointmentBooking = () => {
   const nextStep = () => {
     // Basic validation per step
     if (step === 1) {
-      if (!formData.name || !formData.phone || !formData.gender) {
-        setErrors({
-          name: !formData.name,
-          phone: !formData.phone,
-          gender: !formData.gender
-        });
-        return;
-      }
+      if (!formData.name) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ಹೆಸರನ್ನು ನಮೂದಿಸಿ' : 'Please enter patient name'); return; }
+      if (!formData.phone) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ' : 'Please enter phone number'); return; }
+      if (!formData.gender) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ಲಿಂಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select gender'); return; }
     }
     if (step === 2) {
       if (!formData.departmentId) {
-        setErrors({ departmentId: true });
+        toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ವಿಭಾಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a department');
         return;
       }
     }
     if (step === 3) {
-      if (!formData.date || !formData.timeSlot) {
-        setErrors({ date: !formData.date, timeSlot: !formData.timeSlot });
-        return;
-      }
+      if (!formData.date) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a date'); return; }
+      if (!formData.doctorId) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ವೈದ್ಯರನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a specialist doctor'); return; }
+      if (!formData.timeSlot) { toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ಸಮಯವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a time slot'); return; }
     }
     
     setErrors({});
@@ -54,15 +51,24 @@ const AppointmentBooking = () => {
 
   const prevStep = () => setStep(s => s - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Mock API call
-    setTimeout(() => {
-      setLoading(false);
-      setBookingId('RRDCH-' + Math.floor(Math.random() * 90000 + 10000));
+    try {
+      const id = 'RRDCH-' + Math.floor(Math.random() * 90000 + 10000);
+      await addAppointment({
+        ...formData,
+        bookingId: id,
+        status: 'Pending'
+      });
+      setBookingId(id);
       setSuccess(true);
-    }, 2000);
+      toast.success(lang === 'kn' ? 'ಅಪಾಯಿಂಟ್ಮೆಂಟ್ ಯಶಸ್ವಿಯಾಗಿ ಬುಕ್ ಆಗಿದೆ' : 'Appointment booked successfully');
+    } catch (err) {
+      toast.error(lang === 'kn' ? 'ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.' : 'Failed to book appointment. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const copyId = () => {
