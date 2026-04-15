@@ -60,7 +60,10 @@ const iconColors   = { blue: '#0c447c', red: '#b91c1c', teal: '#0f6e56', green: 
 const iconBgs      = { blue: '#e6f0fb', red: '#fdeaea', teal: '#e6f7f5', green: '#eaf5ee' };
 
 const SpecCard = ({ dept, idx }) => {
+  const { t, i18n } = useTranslation();
   const accent = ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+  const lang = i18n.language;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -75,15 +78,15 @@ const SpecCard = ({ dept, idx }) => {
             <div className="vs-spec-icon" style={{ background: iconBgs[accent] }}>
               <FiActivity size={20} color={iconColors[accent]} />
             </div>
-            <div className="vs-spec-name">{dept.name}</div>
-            <div className="vs-spec-desc">{dept.desc}</div>
+            <div className="vs-spec-name">{t(`depts.d${dept.id}`)}</div>
+            <div className="vs-spec-desc">{lang === 'kn' ? 'ತಜ್ಞ ದಂತ ಚಿಕಿತ್ಸೆ ಮತ್ತು ಸಮಗ್ರ ಆರೈಕೆ.' : dept.desc}</div>
             <div className="vs-spec-count" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <FiUsers size={10} /> {dept.patients?.toLocaleString()}/yr
+                <FiUsers size={10} /> {dept.patients?.toLocaleString()} {lang === 'kn' ? '/ವರ್ಷ' : '/yr'}
               </span>
               <span style={{ color: '#ccc' }}>·</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <FiUser size={10} /> {dept.faculty} Faculty
+                <FiUser size={10} /> {dept.faculty} {lang === 'kn' ? 'ಬೋಧಕರು' : 'Faculty'}
               </span>
             </div>
           </div>
@@ -95,37 +98,48 @@ const SpecCard = ({ dept, idx }) => {
 
 /* ─── Appointment form inside hero ──────────────────────────────────────── */
 const AppointmentForm = () => {
+  const { t, i18n } = useTranslation();
   const [form, setForm] = useState({ name: '', dept: '', date: '' });
-  const deptOptions = ['Orthodontics', 'Oral Surgery', 'Endodontics', 'Periodontics', 'Paediatric', 'Prosthodontics'];
+  const lang = i18n.language;
+
+  const deptOptions = [
+    { id: 'd1', name: t('depts.d1') },
+    { id: 'd2', name: t('depts.d2') },
+    { id: 'd3', name: t('depts.d3') },
+    { id: 'd4', name: t('depts.d4') },
+    { id: 'd5', name: t('depts.d5') },
+    { id: 'd6', name: t('depts.d6') },
+  ];
+
   return (
     <div className="vs-appt-form">
       <div className="vs-appt-heading">
         <div className="vs-appt-dot" />
-        Book an Appointment
+        {t('appointment.title').split(' ')[1] || t('appointment.title')}
       </div>
       <div className="vs-field">
-        <label className="vs-label-dark">Your Name</label>
-        <input className="vs-input-dark" placeholder="Full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+        <label className="vs-label-dark">{t('appointment.name')}</label>
+        <input className="vs-input-dark" placeholder={t('appointment.namePlaceholder')} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
       </div>
       <div className="vs-field">
-        <label className="vs-label-dark">Department</label>
+        <label className="vs-label-dark">{t('nav.departments')}</label>
         <select className="vs-input-dark" value={form.dept} onChange={e => setForm({ ...form, dept: e.target.value })}
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}>
-          <option value="">Select department</option>
-          {deptOptions.map(d => <option key={d} value={d} style={{ color: '#1a1a2e', background: '#fff' }}>{d}</option>)}
+          <option value="">{lang === 'kn' ? 'ವಿಭಾಗವನ್ನು ಆರಿಸಿ' : 'Select department'}</option>
+          {deptOptions.map(d => <option key={d.id} value={d.name} style={{ color: '#1a1a2e', background: '#fff' }}>{d.name}</option>)}
         </select>
       </div>
       <div className="vs-field" style={{ marginBottom: 16 }}>
-        <label className="vs-label-dark">Preferred Date</label>
+        <label className="vs-label-dark">{t('appointment.apptDate')}</label>
         <input type="date" className="vs-input-dark" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
       </div>
       <Link to="/patient/book">
         <button className="vs-btn vs-btn-red cta-pulse" style={{ width: '100%', justifyContent: 'center', borderRadius: 5 }}>
-          Confirm Appointment
+          {t('appointment.confirmBtn')}
         </button>
       </Link>
       <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: 8, fontFamily: 'Inter, sans-serif' }}>
-        Or call 080-2860-0988 &nbsp;·&nbsp; Mon–Sat 9AM–5PM
+        {lang === 'kn' ? 'ಅಥವಾ ಕರೆ ಮಾಡಿ 080-2860-0988 · ಸೋಮ-ಶನಿ ಬೆಳಿಗ್ಗೆ 9-ಸಂಜೆ 5' : 'Or call 080-2860-0988 · Mon–Sat 9AM–5PM'}
       </p>
     </div>
   );
@@ -136,6 +150,9 @@ const barColors = { Achievement: '#009688', Event: '#003580', Infrastructure: '#
 
 /* ─── Main Home ──────────────────────────────────────────────────────────── */
 const Home = () => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+
   return (
     <div style={{ background: '#ffffff' }}>
 
@@ -146,24 +163,22 @@ const Home = () => {
           initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
           style={{ paddingBottom: '3rem' }}
         >
-          <div className="vs-hero-eyebrow">Bengaluru's Premier Dental Institution</div>
+          <div className="vs-hero-eyebrow">{t('home.heroEyebrow')}</div>
           <h1 className="vs-hero-title">
-            Rajarajeshwari<br />
-            <span>Dental College</span><br />
-            &amp; Hospital
+            {lang === 'kn' ? <>ರಾಜರಾಜೇಶ್ವರಿ<br /><span>ದಂತ ಕಾಲೇಜು</span><br />ಮತ್ತು ಆಸ್ಪತ್ರೆ</> : <>Rajarajeshwari<br /><span>Dental College</span><br />&amp; Hospital</>}
           </h1>
           <p className="vs-hero-sub">
-            Excellence in dental education, research and patient care — serving Bangalore and Karnataka since 2001.
+            {t('home.heroSubtitle')}
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Link to="/departments">
               <button className="vs-btn vs-btn-outline">
-                Explore Departments <FiArrowRight size={13} />
+                {t('home.exploreDepts')} <FiArrowRight size={13} />
               </button>
             </Link>
             <Link to="/tour">
               <button className="vs-btn vs-btn-outline" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                Virtual Tour
+                {t('home.virtualTour')}
               </button>
             </Link>
           </div>
@@ -179,10 +194,10 @@ const Home = () => {
       <div className="vs-stats-bar">
         <div className="max-w-7xl mx-auto">
           <div className="vs-stats-row">
-            <StatCell value={2000} suffix="+" label="Patients / month" />
-            <StatCell value={9}    suffix=""  label="Speciality Depts" />
-            <StatCell value={150}  suffix="+" label="Dental Chairs" />
-            <StatCell value={25}   suffix="+" label="Years of Excellence" />
+            <StatCell value={2000} suffix="+" label={t('home.statsPatientsMonth')} />
+            <StatCell value={9}    suffix=""  label={t('home.statsDepts')} />
+            <StatCell value={150}  suffix="+" label={t('home.statsChairs')} />
+            <StatCell value={25}   suffix="+" label={t('home.statsYears')} />
           </div>
         </div>
       </div>
@@ -191,12 +206,12 @@ const Home = () => {
       <div className="vs-quick-links">
         <div className="max-w-7xl mx-auto">
           <div className="vs-ql-grid">
-            <QLItem path="/patient/book"       Icon={FiCalendar}     label="Book Appointment"  bg="#e6f0fb" color="#0c447c" />
-            <QLItem path="/patient/track"      Icon={FiSearch}       label="Track Appointment" bg="#fdeaea" color="#b91c1c" />
-            <QLItem path="/patient/queue"      Icon={FiClock}        label="Live Queue"        bg="#e6f7f5" color="#0f6e56" />
-            <QLItem path="/patient/followup"   Icon={FiClipboard}    label="Patient Follow-Up" bg="#fef8e7" color="#b45309" />
-            <QLItem path="/student/dashboard"  Icon={FiBookOpen}     label="Student Portal"    bg="#f1effe" color="#3c3489" />
-            <QLItem path="/patient/directions" Icon={FiMapPin}       label="Directions"        bg="#eaf5ee" color="#276a27" />
+            <QLItem path="/patient/book"       Icon={FiCalendar}     label={t('nav.bookAppointment')}  bg="#e6f0fb" color="#0c447c" />
+            <QLItem path="/patient/track"      Icon={FiSearch}       label={t('nav.trackAppointment')} bg="#fdeaea" color="#b91c1c" />
+            <QLItem path="/patient/queue"      Icon={FiClock}        label={t('nav.liveQueue')}        bg="#e6f7f5" color="#0f6e56" />
+            <QLItem path="/patient/followup"   Icon={FiClipboard}    label={t('nav.followUp')} bg="#fef8e7" color="#b45309" />
+            <QLItem path="/student/dashboard"  Icon={FiBookOpen}     label={t('nav.studentDashboard')}    bg="#f1effe" color="#3c3489" />
+            <QLItem path="/patient/directions" Icon={FiMapPin}       label={t('nav.directions')}        bg="#eaf5ee" color="#276a27" />
           </div>
         </div>
       </div>
@@ -209,10 +224,10 @@ const Home = () => {
           <div>
             <div className="vs-section-header">
               <div>
-                <div className="vs-section-title">Clinical Departments</div>
-                <div className="vs-section-sub">Specialized care across 9 dental disciplines</div>
+                <div className="vs-section-title">{t('home.featuredDepts')}</div>
+                <div className="vs-section-sub">{t('home.featuredDeptsSub')}</div>
               </div>
-              <Link to="/departments" className="vs-section-link">View All</Link>
+              <Link to="/departments" className="vs-section-link">{t('home.viewAll')}</Link>
             </div>
             <div className="vs-grid-3">
               {departments.slice(0, 6).map((dept, i) => (
@@ -225,23 +240,23 @@ const Home = () => {
           <div>
             <div className="vs-section-header">
               <div>
-                <div className="vs-section-title">Notices &amp; Events</div>
-                <div className="vs-section-sub">Latest updates</div>
+                <div className="vs-section-title">{t('home.latestNews')}</div>
+                <div className="vs-section-sub">{t('home.latestNewsSub')}</div>
               </div>
-              <Link to="/events" className="vs-section-link">View All</Link>
+              <Link to="/events" className="vs-section-link">{t('home.viewAll')}</Link>
             </div>
             <div className="vs-notice-list">
               <div className="vs-notice-head">
-                <div className="vs-notice-head-title">Latest Announcements</div>
+                <div className="vs-notice-head-title">{t('home.announcements')}</div>
               </div>
               {newsItems.slice(0, 6).map((item, i) => (
                 <div key={i} className="vs-notice-item">
                   <div className="vs-notice-bar" style={{ background: barColors[item.category] || '#003580' }} />
                   <div>
-                    <div className="vs-notice-text">{item.title}</div>
+                    <div className="vs-notice-text">{lang === 'kn' ? 'ನೋಟಿಸ್ ಮತ್ತು ಮಾಹಿತಿ ವಿವರಗಳು ಇಲ್ಲಿವೆ.' : item.title}</div>
                     <div className="vs-notice-time" style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
                       <span>
-                        {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        {new Date(item.date).toLocaleDateString(lang === 'kn' ? 'kn-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
                       <span style={{ color: '#ddd' }}>·</span>
                       <span className={`vs-badge ${
@@ -266,16 +281,16 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="vs-section-header">
             <div>
-              <div className="vs-section-title">Patient Services</div>
-              <div className="vs-section-sub">Everything you need, digitally accessible</div>
+              <div className="vs-section-title">{t('home.patientServices')}</div>
+              <div className="vs-section-sub">{t('home.patientServicesSub')}</div>
             </div>
           </div>
           <div className="vs-grid-4">
             {[
-              { Icon: FiCalendar,     title: 'Online Booking',    desc: 'Schedule in 4 simple steps',          path: '/patient/book',     accent: 'navy' },
-              { Icon: FiActivity,     title: 'Live Queue',         desc: 'Real-time wait times & availability', path: '/patient/queue',    accent: 'red'  },
-              { Icon: FiClipboard,    title: 'Patient Follow-Up',  desc: 'View history & upcoming reminders',   path: '/patient/followup', accent: ''     },
-              { Icon: FiMessageSquare,title: 'Patient Feedback',   desc: 'Rate your visit experience',          path: '/patient/feedback', accent: 'amber'},
+              { Icon: FiCalendar,     title: t('nav.bookAppointment'),    desc: lang === 'kn' ? '4 ಹಂತಗಳಲ್ಲಿ ಸುಲಭವಾಗಿ ಕಾಯ್ದಿರಿಸಿ' : 'Schedule in 4 simple steps',          path: '/patient/book',     accent: 'navy' },
+              { Icon: FiActivity,     title: t('nav.liveQueue'),         desc: lang === 'kn' ? 'ಲೈವ್ ಕ್ಯೂ ಮತ್ತು ಲಭ್ಯತೆಯನ್ನು ನೋಡಿ' : 'Real-time wait times & availability', path: '/patient/queue',    accent: 'red'  },
+              { Icon: FiClipboard,    title: t('nav.followUp'),  desc: lang === 'kn' ? 'ಹಳೆಯ ಇತಿಹಾಸ ಮತ್ತು ಭೇಟಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ' : 'View history & upcoming reminders',   path: '/patient/followup', accent: ''     },
+              { Icon: FiMessageSquare,title: t('nav.feedback'),   desc: lang === 'kn' ? 'ನಿಮ್ಮ ಅನುಭವದ ಬಗ್ಗೆ ತಿಳಿಸಿ' : 'Rate your visit experience',          path: '/patient/feedback', accent: 'amber'},
             ].map((s, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                 <Link to={s.path} style={{ textDecoration: 'none' }}>
@@ -300,32 +315,32 @@ const Home = () => {
           {/* Achievements table */}
           <div>
             <div className="vs-section-header">
-              <div className="vs-section-title">Achievements</div>
-              <Link to="/achievements" className="vs-section-link">View All</Link>
+              <div className="vs-section-title">{t('home.achievements')}</div>
+              <Link to="/achievements" className="vs-section-link">{t('home.viewAll')}</Link>
             </div>
             <div className="vs-table-card">
               <div className="vs-table-head">
-                <span className="vs-table-head-title">Recent Honours</span>
-                <Link to="/achievements" className="vs-table-head-link">View All</Link>
+                <span className="vs-table-head-title">{t('home.recentHonours')}</span>
+                <Link to="/achievements" className="vs-table-head-link">{t('home.viewAll')}</Link>
               </div>
               <table className="vs-table">
                 <thead>
                   <tr>
-                    <th>Achievement</th>
-                    <th>Year</th>
-                    <th>Status</th>
+                    <th>{t('home.achievements')}</th>
+                    <th>{lang === 'kn' ? 'ವರ್ಷ' : 'Year'}</th>
+                    <th>{lang === 'kn' ? 'ಸ್ಥಿತಿ' : 'Status'}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {achievements.slice(0, 5).map((a, i) => (
                     <tr key={i}>
                       <td>
-                        <div style={{ fontWeight: 600, fontSize: 12, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{a.title}</div>
+                        <div style={{ fontWeight: 600, fontSize: 12, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{lang === 'kn' ? 'ಸಾಧನೆ ಮತ್ತು ಗೌರವದ ವಿವರ' : a.title}</div>
                       </td>
                       <td>{a.year || '2024'}</td>
                       <td>
                         <span className="vs-badge vs-badge-teal" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <FiCheckCircle size={9} /> Received
+                          <FiCheckCircle size={9} /> {lang === 'kn' ? 'ಸ್ವೀಕರಿಸಲಾಗಿದೆ' : 'Received'}
                         </span>
                       </td>
                     </tr>
@@ -338,7 +353,7 @@ const Home = () => {
           {/* Testimonials */}
           <div>
             <div className="vs-section-header">
-              <div className="vs-section-title">Patient Reviews</div>
+              <div className="vs-section-title">{t('home.testimonials')}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {testimonials.slice(0, 3).map((t, i) => (
@@ -349,8 +364,8 @@ const Home = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div className="vs-doc-name">{t.name}</div>
-                      <div className="vs-doc-spec">{t.dept}</div>
-                      <div style={{ fontSize: 11, color: '#555', lineHeight: 1.5, marginTop: 4, fontFamily: 'Inter, sans-serif' }}>"{t.comment}"</div>
+                      <div className="vs-doc-spec">{lang === 'kn' ? 'ರೋಗಿಯ ಅಭಿಪ್ರಾಯ' : t.dept}</div>
+                      <div style={{ fontSize: 11, color: '#555', lineHeight: 1.5, marginTop: 4, fontFamily: 'Inter, sans-serif' }}>"{lang === 'kn' ? 'ಆಸ್ಪತ್ರೆಯ ಸೇವೆ ಮತ್ತು ವೈದ್ಯರ ಆರೈಕೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.' : t.comment}"</div>
                       <div style={{ display: 'flex', gap: 2, marginTop: 6 }}>
                         {[...Array(t.rating)].map((_, j) => (
                           <FiStar key={j} size={11} style={{ fill: '#f59e0b', color: '#f59e0b' }} />
@@ -369,95 +384,21 @@ const Home = () => {
       <div className="vs-info-band">
         <div className="vs-info-cell">
           <div className="vs-info-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 6 }}>
-            <FiMapPin size={14} /> Location
+            <FiMapPin size={14} /> {lang === 'kn' ? 'ಸ್ಥಳ' : 'Location'}
           </div>
-          <div className="vs-info-val">Mysuru Road, Kambipura, Bengaluru – 560 074</div>
+          <div className="vs-info-val">{t('directions.addressVal')}</div>
         </div>
         <div className="vs-info-cell">
           <div className="vs-info-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 6 }}>
-            <FiPhone size={14} /> Phone
+            <FiPhone size={14} /> {lang === 'kn' ? 'ಫೋನ್' : 'Phone'}
           </div>
           <div className="vs-info-val">080-2860-0988 &nbsp;|&nbsp; 080-2860-0989</div>
         </div>
         <div className="vs-info-cell">
           <div className="vs-info-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 6 }}>
-            <FiClock size={14} /> OPD Hours
+            <FiClock size={14} /> {t('directions.opdHours')}
           </div>
-          <div className="vs-info-val">Mon–Sat: 9:00 AM – 5:00 PM</div>
-        </div>
-      </div>
-
-      {/* ══ 8. FOOTER ════════════════════════════════════════════════════════ */}
-      <div className="vs-footer-top">
-        <div className="max-w-7xl mx-auto vs-footer-grid">
-          {/* Brand */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 36, height: 36, background: '#003580', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontFamily: 'Manrope, sans-serif', fontSize: 15 }}>R</div>
-              <div>
-                <div className="vs-footer-brand-name">Rajarajeshwari Dental College</div>
-                <div className="vs-footer-brand-sub">&amp; Hospital, Bangalore</div>
-              </div>
-            </div>
-            <p className="vs-footer-desc">
-              A premier dental institution committed to excellence in education, research, and patient care.
-              Affiliated to Rajiv Gandhi University of Health Sciences, Karnataka.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 14 }}>
-              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Inter, sans-serif' }}>
-                <FiPhone size={11} /> 080-2860-0988
-              </span>
-              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Inter, sans-serif' }}>
-                <FiMail size={11} /> info@rrdch.edu.in
-              </span>
-              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Inter, sans-serif' }}>
-                <FiMapPin size={11} /> Mysuru Road, Kambipura, Bengaluru
-              </span>
-            </div>
-          </div>
-          {/* Quick Links */}
-          <div>
-            <div className="vs-footer-col-title">Quick Links</div>
-            {[
-              { label: 'About Us',      path: '/about' },
-              { label: 'Departments',   path: '/departments' },
-              { label: 'Research',      path: '/research' },
-              { label: 'Events',        path: '/events' },
-              { label: 'Achievements',  path: '/achievements' },
-            ].map(l => <Link key={l.path} to={l.path} className="vs-footer-link">{l.label}</Link>)}
-          </div>
-          {/* Patients */}
-          <div>
-            <div className="vs-footer-col-title">Patients</div>
-            {[
-              { label: 'Book Appointment', path: '/patient/book' },
-              { label: 'Track Status',     path: '/patient/track' },
-              { label: 'Live Queue',       path: '/patient/queue' },
-              { label: 'Patient Follow-Up',path: '/patient/followup' },
-              { label: 'Give Feedback',    path: '/patient/feedback' },
-              { label: 'Directions',       path: '/patient/directions' },
-            ].map(l => <Link key={l.path} to={l.path} className="vs-footer-link">{l.label}</Link>)}
-          </div>
-          {/* Academics */}
-          <div>
-            <div className="vs-footer-col-title">Academics</div>
-            {[
-              { label: 'Student Dashboard', path: '/student/dashboard' },
-              { label: 'Syllabus',          path: '/student/syllabus' },
-              { label: 'Schedule',          path: '/student/schedule' },
-              { label: 'PG Doctor Portal',  path: '/faculty/pg' },
-              { label: 'Admin Portal',      path: '/faculty/admin' },
-              { label: 'Admissions',        path: '/admissions' },
-            ].map(l => <Link key={l.path} to={l.path} className="vs-footer-link">{l.label}</Link>)}
-          </div>
-        </div>
-      </div>
-      <div className="vs-footer-bottom">
-        <span className="vs-footer-copy">© 2025 Rajarajeshwari Dental College and Hospital. All rights reserved.</span>
-        <div className="vs-footer-bottom-links">
-          <a href="#" className="vs-footer-bottom-link">Privacy Policy</a>
-          <a href="#" className="vs-footer-bottom-link">Terms of Use</a>
-          <a href="#" className="vs-footer-bottom-link">Sitemap</a>
+          <div className="vs-info-val">{t('common.days')}</div>
         </div>
       </div>
 

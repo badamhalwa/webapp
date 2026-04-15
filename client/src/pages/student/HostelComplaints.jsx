@@ -1,176 +1,161 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import toast, { Toaster } from 'react-hot-toast';
-import { useApp } from '../../context/AppContext';
-import { Card, FormInput, FormTextarea, FormSelect, Button, StatusBadge, PageHero, SectionHeader } from '../../components/ui/UIComponents';
-import { FiSearch } from 'react-icons/fi';
-
-const categories = ['Plumbing', 'Electrical', 'Cleanliness', 'Security', 'Maintenance', 'Wi-Fi / Internet', 'Food', 'Other'];
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiHome, FiSend, FiList, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 
 const HostelComplaints = () => {
-  const { t } = useTranslation();
-  const { hostelComplaints, addComplaint } = useApp();
-  const [tab, setTab] = useState('submit');
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const [form, setForm] = useState({ name: '', room: '', category: '', description: '' });
-  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(null);
-  const [trackId, setTrackId] = useState('');
-  const [trackResult, setTrackResult] = useState(null);
-  const [trackError, setTrackError] = useState(false);
 
-  const validate = () => {
-    const e = {};
-    if (!form.name.trim()) e.name = 'Name is required';
-    if (!form.room.trim()) e.room = 'Room number is required';
-    if (!form.category) e.category = 'Please select a category';
-    if (!form.description.trim() || form.description.length < 10) e.description = 'Please provide at least 10 characters';
-    return e;
-  };
+  const categories = [
+    { id: 'electrical', label: lang === 'kn' ? 'ವಿದ್ಯುತ್ ಸಮಸ್ಯೆ' : 'Electrical' },
+    { id: 'plumbing', label: lang === 'kn' ? 'ಪ್ಲಂಬಿಂಗ್ ಸಮಸ್ಯೆ' : 'Plumbing' },
+    { id: 'cleaning', label: lang === 'kn' ? 'ಶೌಚಾಲಯ ಮತ್ತು ಸ್ವಚ್ಛತೆ' : 'Cleaning & Hygiene' },
+    { id: 'wifi', label: lang === 'kn' ? 'ಇಂಟರ್ನೆಟ್ / ವೈ-ಫೈ' : 'Wi-Fi / Internet' },
+    { id: 'others', label: lang === 'kn' ? 'ಇತರೆ' : 'Others' },
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
     setLoading(true);
     setTimeout(() => {
-      const id = 'HC-' + String(Date.now()).slice(-4);
-      const complaint = { ...form, id, status: 'submitted', date: new Date().toISOString().split('T')[0] };
-      addComplaint(complaint);
       setLoading(false);
-      setSubmitted({ ...complaint });
-      toast.success(t('hostel.success'));
-    }, 900);
-  };
-
-  const handleTrack = (e) => {
-    e.preventDefault();
-    setTrackError(false);
-    setTrackResult(null);
-    const result = hostelComplaints.find(c => c.id.toLowerCase() === trackId.toLowerCase());
-    if (result) setTrackResult(result);
-    else setTrackError(true);
+      setSubmitted(true);
+    }, 1500);
   };
 
   return (
-    <div>
-      <Toaster position="top-right"/>
-      <PageHero title={t('hostel.title')} subtitle="Submit and track hostel maintenance and service complaints." breadcrumb="Home / Students / Hostel Complaints" bg="from-purple-700 to-rrdch-blue"/>
-
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8 bg-gray-100 rounded-2xl p-1.5">
-          {['submit', 'track', 'history'].map(t => (
-            <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${tab === t ? 'bg-white shadow-sm text-rrdch-blue' : 'text-gray-500 hover:text-gray-700'}`}
-              aria-pressed={tab === t}
-            >
-              {t === 'submit' ? '📝 Submit' : t === 'track' ? '🔍 Track' : '📋 History'}
-            </button>
-          ))}
+    <div className="bg-gray-50 min-h-screen">
+      {/* Hero */}
+      <section className="bg-purple-700 text-white py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-4">{t('nav.hostelComplaints')}</h1>
+          <p className="text-purple-100 max-w-2xl">{t('hostel.subtitle')}</p>
         </div>
+      </section>
 
-        {/* Submit */}
-        <AnimatePresence mode="wait">
-          {tab === 'submit' && (
-            <motion.div key="submit" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              {submitted ? (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center">
-                  <div className="text-6xl mb-4">✅</div>
-                  <h3 className="text-2xl font-bold text-green-800 mb-2">Complaint Submitted!</h3>
-                  <p className="text-green-700 mb-4">Your complaint ID is <strong className="font-mono">{submitted.id}</strong>. Use this to track the status.</p>
-                  <p className="text-green-600 text-sm mb-6">The hostel administration will review your complaint within 24–48 hours.</p>
-                  <div className="flex gap-3 justify-center flex-wrap">
-                    <Button onClick={() => { setSubmitted(null); setForm({ name: '', room: '', category: '', description: '' }); }}>Submit Another</Button>
-                    <Button variant="outline" onClick={() => { setTab('track'); setTrackId(submitted.id); }}>Track This Complaint</Button>
-                  </div>
-                </div>
-              ) : (
-                <Card className="p-8">
-                  <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <FormInput id="hc-name" label={t('hostel.name')} required placeholder="Your full name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} error={errors.name}/>
-                      <FormInput id="hc-room" label={t('hostel.room')} required placeholder="e.g. B-204" value={form.room} onChange={e => setForm({...form, room: e.target.value})} error={errors.room}/>
-                    </div>
-                    <FormSelect id="hc-cat" label={t('hostel.category')} required value={form.category} onChange={e => setForm({...form, category: e.target.value})} error={errors.category}>
-                      <option value="">Select category</option>
-                      {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                    </FormSelect>
-                    <FormTextarea id="hc-desc" label={t('hostel.description')} required placeholder="Describe the issue in detail..." value={form.description} onChange={e => setForm({...form, description: e.target.value})} error={errors.description}/>
-                    <Button type="submit" size="lg" className="w-full justify-center" disabled={loading}>
-                      {loading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/> Submitting...</> : t('hostel.submit')}
-                    </Button>
-                  </form>
-                </Card>
-              )}
-            </motion.div>
-          )}
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          {/* Instructions Sidebar */}
+          <div className="md:col-span-1 space-y-6">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><FiAlertCircle className="text-purple-600"/> {lang === 'kn' ? 'ಮಾರ್ಗಸೂಚಿಗಳು' : 'Guidelines'}</h3>
+              <ul className="space-y-3">
+                {[
+                  lang === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸಿದ 24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ರಮ ಕೈಗೊಳ್ಳಲಾಗುವುದು.' : 'Issues are typically resolved within 24 working hours.',
+                  lang === 'kn' ? 'ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ವಾರ್ಡನ್ ಸಂಖ್ಯೆಗೆ ಕರೆ ಮಾಡಿ.' : 'For emergencies, contact the warden directly.',
+                  lang === 'kn' ? 'ದೂರಿನ ಸ್ಥಿತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಐಡಿಯಲ್ಲಿ ನೋಡಿ.' : 'Keep your complaint ID for tracking status.'
+                ].map((text, i) => (
+                  <li key={i} className="text-xs text-gray-500 leading-relaxed flex gap-2">
+                    <span className="text-purple-500 font-black">•</span> {text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg">
+              <FiList size={28} className="mb-4 opacity-80" />
+              <h3 className="font-bold mb-2">{t('hostel.track')}</h3>
+              <p className="text-xs text-purple-100 mb-4 opacity-80">{lang === 'kn' ? 'ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿ ಸ್ಥಿತಿಯನ್ನು ಪತ್ತೆಹಚ್ಚಿ.' : 'Check the progress of your previously submitted complaints.'}</p>
+              <button className="w-full bg-white/20 hover:bg-white/30 py-2.5 rounded-xl font-bold text-sm transition-colors border border-white/10 uppercase tracking-widest">{lang === 'kn' ? 'ಸ್ಥಿತಿ ನೋಡಿ' : 'Check Status'}</button>
+            </div>
+          </div>
 
-          {/* Track */}
-          {tab === 'track' && (
-            <motion.div key="track" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <Card className="p-8">
-                <form onSubmit={handleTrack} className="space-y-4 mb-6">
-                  <FormInput id="hc-trackid" label="Complaint ID" required placeholder="e.g. HC-1234" value={trackId} onChange={e => setTrackId(e.target.value)}/>
-                  <Button type="submit" className="w-full justify-center"><FiSearch/> {t('hostel.track')}</Button>
-                </form>
-                {trackError && <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center text-red-700">No complaint found with ID: <strong>{trackId}</strong></div>}
-                {trackResult && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-gray-50 rounded-xl p-6 space-y-3">
-                    <div className="flex justify-between items-center"><span className="font-bold">Complaint ID</span><span className="font-mono text-rrdch-blue">{trackResult.id}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-600">Name</span><span>{trackResult.name}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-600">Room</span><span>{trackResult.room}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-600">Category</span><span>{trackResult.category}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-600">Date</span><span>{trackResult.date}</span></div>
-                    <div className="flex justify-between items-center"><span className="text-gray-600">Status</span><StatusBadge status={trackResult.status}/></div>
-                    <div><p className="text-gray-600 text-sm mb-1">Description:</p><p className="text-gray-900 text-sm bg-white p-3 rounded-lg border border-gray-200">{trackResult.description}</p></div>
-                  </motion.div>
-                )}
-                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                  <p className="text-xs text-amber-700 font-medium mb-1">💡 Try these demo IDs:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {['HC-001', 'HC-002', 'HC-003'].map(id => (
-                      <button key={id} onClick={() => setTrackId(id)} className="text-xs bg-white border border-amber-300 rounded px-2 py-1 text-amber-800 hover:bg-amber-100">{id}</button>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-
-          {/* History */}
-          {tab === 'history' && (
-            <motion.div key="history" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              {hostelComplaints.length === 0 ? (
-                <Card className="p-10 text-center text-gray-400">
-                  <div className="text-5xl mb-3">📋</div>
-                  <p>No complaints submitted yet.</p>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {hostelComplaints.map((c, i) => (
-                    <Card key={c.id} className="p-5 flex flex-wrap gap-4 items-center">
-                      <div className="flex-1 min-w-48">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-mono text-sm text-rrdch-blue font-bold">{c.id}</span>
-                          <StatusBadge status={c.status}/>
-                        </div>
-                        <p className="font-medium text-gray-900">{c.category}</p>
-                        <p className="text-sm text-gray-500">Room {c.room} — {c.date}</p>
+          {/* Form Area */}
+          <div className="md:col-span-2">
+            <AnimatePresence mode="wait">
+              {!submitted ? (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl"
+                >
+                  <SectionHeader title={t('hostel.head')} />
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.name')}</label>
+                        <input className="vs-input" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required placeholder="e.g. Rahul Kumar" />
                       </div>
-                      <p className="text-sm text-gray-600 max-w-56">{c.description}</p>
-                    </Card>
-                  ))}
-                </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.room')}</label>
+                        <input className="vs-input" value={form.room} onChange={e=>setForm({...form, room: e.target.value})} required placeholder="e.g. B-302" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.category')}</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {categories.map(c => (
+                          <button
+                            key={c.id} type="button"
+                            onClick={() => setForm({...form, category: c.id})}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+                              form.category === c.id ? 'bg-purple-600 border-purple-600 text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-purple-200'
+                            }`}
+                          >
+                            {c.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.description')}</label>
+                      <textarea className="vs-input min-h-[120px]" value={form.description} onChange={e=>setForm({...form, description: e.target.value})} required placeholder={lang === 'kn' ? 'ನಿಮ್ಮ ದೂರನ್ನು ಸವಿಸ್ತಾರವಾಗಿ ವಿವರಿಸಿ...' : 'Describe the issue in detail...'} />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading || !form.category}
+                      className="w-full bg-purple-700 hover:bg-purple-800 text-white py-4 rounded-2xl font-bold shadow-lg shadow-purple-200 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale"
+                    >
+                      {loading ? t('common.loading') : <><FiSend /> {t('hostel.submit')}</>}
+                    </button>
+                  </form>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white p-12 rounded-2xl border border-gray-100 shadow-xl text-center"
+                >
+                  <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <FiCheckCircle size={40} />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('hostel.success')}</h2>
+                  <p className="text-gray-500 mb-8">{t('hostel.successSub')}</p>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="vs-btn vs-btn-outline mx-auto"
+                  >
+                    {lang === 'kn' ? 'ಹೊಸ ದೂರು ಸಲ್ಲಿಸಿ' : 'Submit New Complaint'}
+                  </button>
+                </motion.div>
               )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
+/* Helper for header inside form */
+const SectionHeader = ({ title }) => (
+  <div className="border-b border-gray-100 pb-4 mb-4">
+    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+      <FiHome className="text-purple-600" /> {title}
+    </h2>
+  </div>
+);
 
 export default HostelComplaints;

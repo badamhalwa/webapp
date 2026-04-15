@@ -1,14 +1,14 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { departments, doctors } from '../data/mockData';
-import { FiUser, FiActivity, FiAward, FiBookOpen } from 'react-icons/fi';
+import { FiUser, FiActivity, FiAward, FiArrowRight } from 'react-icons/fi';
+import { departments } from '../data/mockData';
 import principalImg from '../assets/principal.png';
 
-const ACCENT_CYCLE = ['blue', 'red', 'teal', 'green'];
-const accentColors  = { blue: '#003580', red: '#e8282b', teal: '#009688', green: '#276a27' };
-const accentBgs     = { blue: '#e6f0fb', red: '#fdeaea', teal: '#e6f7f5', green: '#eaf5ee' };
-
 const Faculty = () => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+
   return (
     <div style={{ background: '#ffffff' }}>
       
@@ -16,141 +16,91 @@ const Faculty = () => {
       <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
         <div className="max-w-7xl mx-auto">
           <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
-            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>Home</a>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>{t('nav.home')}</a>
             <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Faculty Directory</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('nav.faculty')}</span>
           </nav>
           <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
-            Our Distinguished Faculty
+            {t('faculty.title')}
           </h1>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
-            Meet the world-class educators and clinical experts shaping the next generation of dental professionals at RRDCH.
+            {lang === 'kn' ? 'ನಮ್ಮ ಕಾಲೇಜಿನ ಅತ್ಯಂತ ಅನುಭವಿ ಮತ್ತು ಪ್ರಸಿದ್ಧ ದಂತ ವೈದ್ಯಕೀಯ ಬೋಧಕ ಸಿಬ್ಬಂದಿಯ ತಂಡ ಇಲ್ಲಿದೆ.' : 'Meet our team of highly qualified clinicians, researchers, and dedicated educators shaping the future of dentistry.'}
           </p>
         </div>
       </section>
 
-      {/* ── Principal's Profile Section ── */}
+      {/* ── Principal Highlight ── */}
       <div className="vs-section">
         <div className="max-w-7xl mx-auto">
-          <div className="vs-section-header">
-            <div className="vs-section-title">Principal & Leadership</div>
-          </div>
-          <div className="vs-card" style={{ padding: '2.5rem', display: 'grid', gridTemplateColumns: 'minmax(200px, 220px) 1fr', gap: '2.5rem', alignItems: 'start' }}>
-            {/* Avatar */}
+          <div className="vs-card" style={{ padding: '3rem', cursor: 'default', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 48, alignItems: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ width: 140, height: 140, borderRadius: '50%', background: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 0 0 4px #e6f0fb', overflow: 'hidden' }}>
-                <img src={principalImg} alt="Dr. Girish H.C." style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ width: 220, height: 220, borderRadius: '50%', background: '#003580', padding: 4, margin: '0 auto 24px', position: 'relative' }}>
+                <img src={principalImg} alt="Dr. Girish H.C." style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
               </div>
-              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: '1.2rem', color: '#1a1a2e' }}>Dr. Girish H.C.</div>
-              <div style={{ fontSize: 12, color: '#003580', fontFamily: 'Inter, sans-serif', marginTop: 4, fontWeight: 600 }}>Principal & Dean</div>
-              <div style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>MDS, PhD</div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a2e' }}>{t('about.principalTitle')}</h2>
+              <div style={{ color: '#003580', fontWeight: 700, fontSize: 12, marginTop: 4 }}>{t('about.principalRole')}</div>
             </div>
-            {/* Stats / Message */}
             <div>
-              <div style={{ width: 3, height: 40, background: '#003580', borderRadius: 2, marginBottom: 20 }} />
-              <div style={{ marginBottom: 24 }}>
-                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 16, color: '#1a1a2e', marginBottom: 8 }}>Leading with Academic Excellence</h3>
-                <p style={{ fontSize: 13.5, lineHeight: 1.85, color: '#555e6b', fontFamily: 'Inter, sans-serif', fontStyle: 'italic' }}>
-                  "At Rajarajeshwari Dental College and Hospital, our strength lies in our exceptionally qualified faculty members. Each professor brings a wealth of clinical experience and academic rigour to ensure our students receive the finest dental education in the country."
-                </p>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                {[
-                  { label: 'Total Faculty', value: '50+ Experts', icon: FiAward },
-                  { label: 'Clinical Units', value: '9 Departments', icon: FiActivity },
-                ].map((stat, i) => (
-                  <div key={i} style={{ background: '#f7f9fc', padding: '1rem 1.25rem', borderRadius: 8, border: '1px solid #eaecf0', display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 6, background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003580', border: '1px solid #eaecf0' }}>
-                      <stat.icon size={18} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{stat.label}</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{stat.value}</div>
-                    </div>
-                  </div>
-                ))}
+              <div className="vs-badge vs-badge-blue" style={{ marginBottom: 12 }}>{t('faculty.leadership')}</div>
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1a1a2e', marginBottom: 16 }}>{t('faculty.academicExcellence')}</h3>
+              <p style={{ fontSize: 14, color: '#555e6b', lineHeight: 1.8, marginBottom: 24, fontFamily: 'Inter, sans-serif' }}>
+                 {lang === 'kn' ? 'ಡಾ. ಗಿರೀಶ್ ಹೆಚ್.ಸಿ. ಅವರ ನಾಯಕತ್ವದಲ್ಲಿ ನಮ್ಮ ಸಂಸ್ಥೆಯು ದಂತ ಶಿಕ್ಷಣ ಕ್ಷೇತ್ರದಲ್ಲಿ ಹೊಸ ಮೈಲಿಗಲ್ಲುಗಳನ್ನು ತಲುಪುತ್ತಿದೆ. ಅವರ ವೈಜ್ಞಾನಿಕ ದೂರದೃಷ್ಟಿ ಮತ್ತು ಶೈಕ್ಷಣಿಕ ಅನುಭವವು ನಮ್ಮ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಮಾರ್ಗದರ್ಶಕವಾಗಿದೆ.' : 'Under the visionary leadership of Dr. Girish H.C., RRDCH has consistently achieved top national rankings. His commitment to research-driven education and patient-centric clinical practices serves as the foundation of our academic excellence.'}
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: 12 }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: '#003580' }}>25+</div>
+                    <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase' }}>{lang === 'kn' ? 'ವರ್ಷಗಳ ಅನುಭವ' : 'Years Experience'}</div>
+                 </div>
+                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: 12 }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: '#003580' }}>100+</div>
+                    <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase' }}>{lang === 'kn' ? 'ಪಬ್ಲಿಕೇಶನ್ಸ್' : 'Publications'}</div>
+                 </div>
+                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: 12 }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: '#003580' }}>PhD</div>
+                    <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase' }}>{lang === 'kn' ? 'ಮಾರ್ಗದರ್ಶಕರು' : 'Doctorate'}</div>
+                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Faculty Groups ── */}
+      {/* ── Departments List ── */}
       <div className="vs-section-alt">
         <div className="max-w-7xl mx-auto">
           <div className="vs-section-header">
             <div>
-              <div className="vs-section-title">Departmental Faculty</div>
-              <div className="vs-section-sub">Clinical specialists listed by their respective departments</div>
+              <div className="vs-section-title">{t('faculty.deptFaculty')}</div>
+              <div className="vs-section-sub">{t('faculty.clinicalSpecialists')}</div>
             </div>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 20 }}>
-            {departments.map((dept, i) => {
-              const accent  = ACCENT_CYCLE[i % ACCENT_CYCLE.length];
-              const color   = accentColors[accent];
-              const deptDoctors = doctors[dept.id] || [];
-
-              return (
-                <motion.div 
-                  key={dept.id} 
-                  initial={{ opacity: 0, y: 16 }} 
-                  whileInView={{ opacity: 1, y: 0 }} 
-                  viewport={{ once: true }} 
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <div className="vs-card" style={{ height: '100%', display: 'flex', flexDirection: 'column', borderTop: `3px solid ${color}` }}>
-                    {/* Dept Header */}
-                    <div style={{ padding: '1.25rem 1.5rem', background: '#ffffff', borderBottom: '1px solid #f0f4f8' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{ width: 40, height: 40, borderRadius: 8, background: accentBgs[accent], display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <FiBookOpen size={20} color={color} />
-                        </div>
-                        <div>
-                          <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e' }}>{dept.name}</div>
-                          <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{deptDoctors.length} Faculty Members</div>
-                        </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+             {departments.map((dept, i) => (
+                <motion.div key={dept.id} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+                   <div className="vs-card" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                         <div style={{ width: 44, height: 44, borderRadius: 10, background: '#f1f5f9', color: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <FiActivity size={20} />
+                         </div>
+                         <div>
+                            <h4 style={{ fontSize: 15, fontWeight: 800, color: '#1a1a2e' }}>{t(`depts.d${dept.id}`)}</h4>
+                            <div style={{ fontSize: 12, color: '#555e6b' }}>{lang === 'kn' ? `ವಿಭಾಗ ಮುಖ್ಯಸ್ಥರು: ${dept.hod}` : `Led by ${dept.hod}`}</div>
+                         </div>
                       </div>
-                    </div>
-
-                    {/* Doctor List */}
-                    <div style={{ padding: '1.25rem 1.5rem', flex: 1, background: '#ffffff' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {deptDoctors.map((doc, dIdx) => (
-                          <div key={doc.id} style={{ display: 'flex', alignItems: 'start', gap: 10 }}>
-                            <div style={{ width: 4, height: 4, borderRadius: '50%', background: color, marginTop: 7, flexShrink: 0 }} />
-                            <div>
-                              <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e', fontFamily: 'Inter, sans-serif' }}>
-                                {doc.name}
-                              </div>
-                              {dIdx === 0 && (
-                                <div style={{ fontSize: 10, color: color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginTop: 1 }}>
-                                  Head of Department
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                      <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                         <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase' }}>{t('faculty.facultyMembers')}</div>
+                            <div style={{ fontSize: 14, fontWeight: 800, color: '#1a1a2e' }}>{dept.faculty}</div>
+                         </div>
+                         <button className="vs-btn vs-btn-outline" style={{ borderRadius: 8, gap: 6, fontSize: 12 }}>
+                            {lang === 'kn' ? 'ಯಾದಿ ನೋಡಿ' : 'View Team'} <FiArrowRight size={14} />
+                         </button>
                       </div>
-                    </div>
-                  </div>
+                   </div>
                 </motion.div>
-              );
-            })}
+             ))}
           </div>
-        </div>
-      </div>
-
-      {/* ── Admissions Banner (Standard UI) ── */}
-      <div className="vs-section">
-        <div className="max-w-4xl mx-auto text-center" style={{ padding: '3rem 0' }}>
-          <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: '#1a1a2e', marginBottom: 12 }}>Ready to learn from the best?</h2>
-          <p style={{ fontSize: 14, color: '#555e6b', marginBottom: 24, maxWidth: 600, margin: '0 auto 30px' }}>
-            Our faculty members are mentors who guide you through every clinical challenge. Start your journey at RRDCH today.
-          </p>
-          <a href="/admissions" className="vs-btn vs-btn-primary" style={{ padding: '12px 32px' }}>
-            Admissions Inquiry
-          </a>
         </div>
       </div>
 

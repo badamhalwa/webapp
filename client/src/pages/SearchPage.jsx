@@ -1,53 +1,81 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { PageHero, Card } from '../components/ui/UIComponents';
-import { departments, researchPublications, achievements } from '../data/mockData';
-import { Link } from 'react-router-dom';
-
-const allContent = [
-  ...departments.map(d => ({ type: 'Department', title: d.name, desc: d.desc, path: '/departments' })),
-  ...researchPublications.map(p => ({ type: 'Research', title: p.title, desc: p.authors, path: '/research' })),
-  ...achievements.map(a => ({ type: 'Achievement', title: a.title, desc: a.desc, path: '/achievements' })),
-  { type: 'Page', title: 'Book Appointment', desc: 'Book a dental appointment online at RRDCH', path: '/patient/book' },
-  { type: 'Page', title: 'Track Appointment', desc: 'Track your appointment status using booking ID', path: '/patient/track' },
-  { type: 'Page', title: 'Live Queue Status', desc: 'View real-time patient queue and doctor availability', path: '/patient/queue' },
-  { type: 'Page', title: 'Admissions', desc: 'BDS and MDS admission information and inquiry form', path: '/admissions' },
-  { type: 'Page', title: 'Hostel Complaints', desc: 'Submit and track hostel maintenance complaints', path: '/student/hostel' },
-];
-
-const typeColors = { Department: 'bg-blue-100 text-blue-700', Research: 'bg-purple-100 text-purple-700', Achievement: 'bg-amber-100 text-amber-700', Page: 'bg-teal-100 text-teal-700' };
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { FiSearch, FiArrowRight, FiFileText, FiUser, FiActivity } from 'react-icons/fi';
 
 const SearchPage = () => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const location = useLocation();
-  const query = new URLSearchParams(location.search).get('q') || '';
-  const results = query ? allContent.filter(item => `${item.title} ${item.desc}`.toLowerCase().includes(query.toLowerCase())) : [];
+  const [query, setQuery] = useState('');
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setQuery(params.get('q') || '');
+  }, [location.search]);
+
+  // Mock results
+  const results = [
+    { title: t('nav.bookAppointment'), path: '/patient/book', type: 'Service', icon: FiActivity },
+    { title: t('depts.d1'), path: '/departments', type: 'Department', icon: FiActivity },
+    { title: t('nav.about'), path: '/about', type: 'Page', icon: FiFileText },
+    { title: t('nav.faculty'), path: '/faculty', type: 'Team', icon: FiUser },
+  ].filter(r => r.title.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <div>
-      <PageHero title={`Search Results`} subtitle={query ? `Showing results for "${query}"` : 'Enter a search term above to get started.'} breadcrumb="Home / Search"/>
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        {results.length === 0 && query && (
-          <div className="text-center py-12">
-            <div className="text-5xl mb-4">🔍</div>
-            <p className="text-gray-600 text-lg">No results found for <strong>"{query}"</strong></p>
-            <p className="text-gray-400 text-sm mt-2">Try searching for departments, treatments, or services.</p>
-          </div>
-        )}
-        <div className="space-y-4">
-          {results.map((r, i) => (
-            <Link key={i} to={r.path}>
-              <Card hover className="p-5 flex items-start gap-4">
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${typeColors[r.type]}`}>{r.type}</span>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{r.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{r.desc}</p>
-                </div>
-              </Card>
-            </Link>
-          ))}
+    <div style={{ background: '#ffffff', minHeight: '80vh' }}>
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto">
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            {lang === 'kn' ? `"${query}" ಗಾಗಿ ಹುಡುಕಾಟದ ಫಲಿತಾಂಶಗಳು` : `Search Results for "${query}"`}
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560 }}>
+            {lang === 'kn' ? `${results.length} ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿವೆ.` : `Found ${results.length} matches across the portal.`}
+          </p>
         </div>
-        {results.length > 0 && <p className="text-gray-400 text-sm mt-6 text-center">{results.length} result{results.length !== 1 ? 's' : ''} found</p>}
+      </section>
+
+      <div className="vs-section">
+        <div className="max-w-4xl mx-auto">
+          {results.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {results.map((res, i) => (
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <Link to={res.path} style={{ textDecoration: 'none' }}>
+                    <div className="vs-card" style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', hover: { background: '#f8fafc' } }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <div style={{ width: 40, height: 40, borderRadius: 10, background: '#f1f5f9', color: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <res.icon size={20} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.05em' }}>{res.type}</div>
+                          <div style={{ fontSize: 15, fontWeight: 700, color: '#1a1a2e' }}>{res.title}</div>
+                        </div>
+                      </div>
+                      <FiArrowRight size={18} color="#cbd5e1" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="vs-card" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '4rem', marginBottom: 24 }}>🔎</div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e', marginBottom: 12 }}>{lang === 'kn' ? 'ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ' : 'No Results Found'}</h2>
+              <p style={{ color: '#64748b', fontSize: 14, maxWidth: 400, margin: '0 auto mb-8' }}>
+                {lang === 'kn' ? 'ಕ್ಷಮಿಸಿ, ನಿಮ್ಮ ಹುಡುಕಾಟಕ್ಕೆ ಹೊಂದಿಕೆಯಾಗುವ ಯಾವುದೇ ವಿಷಯಗಳು ನಮಗೆ ಕಂಡುಬಂದಿಲ್ಲ.' : "Sorry, we couldn't find any content matching your search terms. Please try different keywords."}
+              </p>
+              <Link to="/">
+                <button className="vs-btn vs-btn-primary" style={{ margin: '0 auto' }}>{t('nav.home')}</button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
+
     </div>
   );
 };

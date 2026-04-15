@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiPhone, FiMail, FiMapPin, FiFacebook, FiTwitter, FiInstagram, FiYoutube } from 'react-icons/fi';
 
 import logo from '../../assets/logo.png';
 
 const Footer = () => {
+  const { t, i18n } = useTranslation();
   const year = new Date().getFullYear();
+  const lang = i18n.language;
+
   return (
     <footer className="bg-rrdch-blue-dark text-white mt-16">
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -15,12 +19,13 @@ const Footer = () => {
             <img src={logo} alt="RRDCH Logo" className="w-12 h-12 object-contain" />
             <div>
               <div className="font-bold text-lg">RRDCH</div>
-              <div className="text-xs text-blue-200">Dental College &amp; Hospital</div>
+              <div className="text-xs text-blue-200">
+                {lang === 'kn' ? 'ದಂತ ವೈದ್ಯಕೀಯ ಕಾಲೇಜು ಮತ್ತು ಆಸ್ಪತ್ರೆ' : 'Dental College & Hospital'}
+              </div>
             </div>
           </div>
           <p className="text-blue-200 text-sm leading-relaxed">
-            A premier institution for dental education, research and comprehensive patient care since 2001.
-            Affiliated to RGUHS, approved by DCI.
+            {t('footer.descShort')}
           </p>
           <div className="flex gap-3 mt-4">
             <a href="#" aria-label="Facebook" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiFacebook size={16}/></a>
@@ -32,10 +37,18 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div>
-          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h3>
+          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{lang === 'kn' ? 'ತ್ವರಿತ ಲಿಂಕ್‌ಗಳು' : 'Quick Links'}</h3>
           <div className="space-y-2">
-            {[['/', 'Home'], ['/about', 'About Us'], ['/departments', 'Departments'], ['/admissions', 'Admissions'],
-              ['/research', 'Research'], ['/achievements', 'Achievements'], ['/events', 'Events'], ['/tour', 'Virtual Tour']].map(([to, label]) => (
+            {[
+              ['/', t('nav.home')], 
+              ['/about', t('nav.about')], 
+              ['/departments', t('nav.departments')], 
+              ['/admissions', t('nav.admissions')],
+              ['/research', t('nav.research')], 
+              ['/achievements', t('nav.achievements')], 
+              ['/events', t('nav.events')], 
+              ['/tour', t('nav.virtualTour')]
+            ].map(([to, label]) => (
               <Link key={to} to={to} className="block text-blue-200 text-sm hover:text-white transition-colors hover:translate-x-1 transform">{label}</Link>
             ))}
           </div>
@@ -43,11 +56,16 @@ const Footer = () => {
 
         {/* Patient Services */}
         <div>
-          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Patient Services</h3>
+          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{t('nav.patients')}</h3>
           <div className="space-y-2">
-            {[['/patient/book', 'Book Appointment'], ['/patient/track', 'Track Appointment'],
-              ['/patient/queue', 'Live Queue Status'], ['/patient/followup', 'Follow-Up System'],
-              ['/patient/directions', 'Directions'], ['/patient/feedback', 'Give Feedback']].map(([to, label]) => (
+            {[
+              ['/patient/book', t('nav.bookAppointment')], 
+              ['/patient/track', t('nav.trackAppointment')],
+              ['/patient/queue', t('nav.liveQueue')], 
+              ['/patient/followup', t('nav.followUp')],
+              ['/patient/directions', t('nav.directions')], 
+              ['/patient/feedback', t('nav.feedback')]
+            ].map(([to, label]) => (
               <Link key={to} to={to} className="block text-blue-200 text-sm hover:text-white transition-colors hover:translate-x-1 transform">{label}</Link>
             ))}
           </div>
@@ -55,11 +73,11 @@ const Footer = () => {
 
         {/* Contact */}
         <div>
-          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Contact Us</h3>
+          <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{lang === 'kn' ? 'ಸಂಪರ್ಕಿಸಿ' : 'Contact Us'}</h3>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <FiMapPin className="text-rrdch-teal mt-0.5 flex-shrink-0" size={16}/>
-              <span className="text-blue-200 text-sm">Mysuru Road, Kambipura, Bangalore - 560098, Karnataka</span>
+              <span className="text-blue-200 text-sm">{t('directions.addressVal')}</span>
             </div>
             <div className="flex items-center gap-3">
               <FiPhone className="text-rrdch-teal flex-shrink-0" size={16}/>
@@ -71,16 +89,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="mt-4 p-3 bg-white/10 rounded-lg">
-            <p className="text-xs text-blue-200">OPD Hours</p>
-            <p className="text-sm font-medium">Mon – Sat: 9:00 AM – 5:00 PM</p>
-            <p className="text-xs text-blue-200 mt-1">Emergency: 24×7</p>
+            <p className="text-xs text-blue-200">{t('directions.opdHours')}</p>
+            <p className="text-sm font-medium">{t('common.days')}</p>
+            <p className="text-xs text-blue-200 mt-1">{t('directions.emergency')}</p>
           </div>
         </div>
       </div>
 
       <div className="border-t border-white/10 py-4 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <p className="text-blue-300 text-xs">© {year} Rajarajeshwari Dental College and Hospital. All rights reserved.</p>
+          <p className="text-blue-300 text-xs">© {year} {t('footer.brandName')}. {t('footer.rights')}</p>
           <div className="flex gap-4">
             <span className="text-blue-300 text-xs bg-white/10 px-3 py-1 rounded-full">NAAC A++</span>
             <span className="text-blue-300 text-xs bg-white/10 px-3 py-1 rounded-full">DCI Approved</span>

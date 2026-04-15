@@ -1,95 +1,86 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PageHero, Card } from '../components/ui/UIComponents';
-
-const areas = [
-  { id: 'main', label: 'Main Building', emoji: '🏛️', desc: 'The iconic main building housing administrative offices, principal chamber and lecture halls.', color: 'from-blue-500 to-blue-700' },
-  { id: 'opd', label: 'OPD Block', emoji: '🦷', desc: 'Outpatient dental block with 200 dental chairs across 9 specialty departments.', color: 'from-teal-500 to-teal-700' },
-  { id: 'lab', label: 'Dental Labs', emoji: '🔬', desc: 'State-of-the-art simulation labs, prosthetics lab and oral pathology labs.', color: 'from-purple-500 to-purple-700' },
-  { id: 'lib', label: 'Library', emoji: '📚', desc: 'Digital library with 15,000+ books, e-journals and 24×7 access for students.', color: 'from-amber-500 to-amber-700' },
-  { id: 'hostel', label: 'Hostel', emoji: '🏠', desc: 'Separate hostels for boys and girls with modern amenities and security.', color: 'from-green-500 to-green-700' },
-  { id: 'sports', label: 'Sports Complex', emoji: '⚽', desc: 'Indoor and outdoor sports facilities including badminton, cricket and basketball.', color: 'from-red-500 to-red-700' },
-  { id: 'canteen', label: 'Cafeteria', emoji: '🍽️', desc: 'Multi-cuisine cafeteria serving healthy, affordable meals to students and staff.', color: 'from-orange-500 to-orange-700' },
-  { id: 'auditorium', label: 'Auditorium', emoji: '🎭', desc: 'Air-conditioned auditorium with 800-seat capacity for conferences and events.', color: 'from-indigo-500 to-indigo-700' },
-];
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { FiMap, FiPlay, FiMaximize, FiNavigation } from 'react-icons/fi';
 
 const VirtualTour = () => {
-  const [selected, setSelected] = useState(null);
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+
+  const highlights = [
+    { title: lang === 'kn' ? 'ಕ್ಲಿನಿಕಲ್ ಬ್ಲಾಕ್ (OPD)' : 'Main Clinical Block', desc: lang === 'kn' ? 'ನಮ್ಮ 9 ವಿಶೇಷ ವಿಭಾಗಗಳು ಮತ್ತು ರೋಗಿಗಳ ತಪಾಸಣಾ ಕೊಠಡಿಗಳು.' : "Explore our 9 specialized departments and outpatient facilities." },
+    { title: lang === 'kn' ? 'ಲೆಕ್ಚರ್ ಹಾಲ್‌ಗಳು' : 'Smart Classrooms', desc: lang === 'kn' ? 'ಆಧುನಿಕ ತಂತ್ರಜ್ಞಾನ ಹೊಂದಿರುವ ಇ-ಲರ್ನಿಂಗ್ ತರಗತಿ ಕೊಠಡಿಗಳು.' : 'State-of-the-art smart lecture halls for interactive learning.' },
+    { title: lang === 'kn' ? 'ಸಂಶೋಧನಾ ಕೇಂದ್ರ' : 'Research Labs', desc: lang === 'kn' ? 'ಅತ್ಯಾಧುನಿಕ ದಂತ ವೈದ್ಯಕೀಯ ಸಂಶೋಧನಾ ಪ್ರಯೋಗಾಲಯಗಳು.' : 'Discover our advanced labs dedicated to dental innovation.' },
+    { title: lang === 'kn' ? 'ಹೈ-ಟೆಕ್ ಆಡಿಟೋರಿಯಂ' : 'Main Auditorium', desc: lang === 'kn' ? '800+ ಆಸನಗಳ ಸಾಮರ್ಥ್ಯ ಹೊಂದಿರುವ ಕಾರ್ಯಕ್ರಮಗಳ ಸಭಾಂಗಣ.' : 'A premium venue for international conferences and events.' },
+  ];
 
   return (
-    <div>
-      <PageHero title="Virtual Campus Tour" subtitle="Explore our world-class facilities from the comfort of your home." breadcrumb="Home / Virtual Tour" bg="from-purple-700 to-rrdch-blue"/>
-
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
-          Click any area below to explore that section of the RRDCH campus. Our campus spans over 15 acres with modern infrastructure.
-        </p>
-
-        {/* Campus map grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          {areas.map((area, i) => (
-            <motion.button key={area.id} onClick={() => setSelected(selected?.id === area.id ? null : area)}
-              initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-              whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
-              className={`bg-gradient-to-br ${area.color} text-white rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition-all ${selected?.id === area.id ? 'ring-4 ring-white ring-offset-2' : ''}`}
-              aria-pressed={selected?.id === area.id}
-            >
-              <div className="text-4xl mb-2">{area.emoji}</div>
-              <div className="font-semibold text-sm">{area.label}</div>
-            </motion.button>
-          ))}
+    <div style={{ background: '#ffffff' }}>
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto">
+          <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>{t('nav.home')}</a>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('nav.virtualTour')}</span>
+          </nav>
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            {t('nav.virtualTour')}
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
+            {lang === 'kn' ? 'ನಿಮ್ಮ ಮನೆಯಲ್ಲೇ ಕುಳಿತು ನಮ್ಮ ಕ್ಯಾಂಪಸ್‌ನ ಅದ್ಭುತ 360-ಡಿಗ್ರಿ ಪ್ರವಾಸವನ್ನು ಮಾಡಿ.' : "Experience our world-class infrastructure through an immersive 360-degree virtual walkthrough of the campus, clinics, and academic facilities."}
+          </p>
         </div>
+      </section>
 
-        {/* Detail panel */}
-        <AnimatePresence>
-          {selected && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <Card className="p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="vs-section">
+        <div className="max-w-7xl mx-auto">
+          
+          {/* Main Visualizer Container */}
+          <div style={{ position: 'relative', width: '100%', height: '500px', background: '#001a40', borderRadius: '24px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 20px 40px rgba(0,53,128,0.2)' }}>
+             <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=2070&auto=format&fit=crop" alt="Campus View" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} />
+             
+             <div style={{ position: 'absolute', textAlign: 'center', color: '#fff', zIndex: 10 }}>
+                <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', cursor: 'pointer', transition: 'all 0.3s' }} className="cta-pulse">
+                   <FiPlay size={32} fill="#fff" />
+                </div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 8 }}>{lang === 'kn' ? '360° ಶೋಧನೆ ಪ್ರಾರಂಭಿಸಿ' : 'Launch 360° Explorer'}</h3>
+                <p style={{ fontSize: 14, opacity: 0.7 }}>{lang === 'kn' ? 'ದೃಶ್ಯ ಮ್ಯಾಪ್ ಮೂಲಕ ಕ್ಯಾಂಪಸ್ ನೋಡಿ' : 'Use interactive hotspots to navigate the building'}</p>
+             </div>
+
+             {/* Controls Overlay */}
+             <div style={{ position: 'absolute', bottom: 20, right: 20, display: 'flex', gap: 10 }}>
+                <button style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FiMaximize size={18} /></button>
+                <button style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FiNavigation size={18} /></button>
+             </div>
+          </div>
+
+          <div style={{ marginTop: 40 }}>
+             <div className="vs-section-header">
                 <div>
-                  <div className="text-7xl mb-4">{selected.emoji}</div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-3">{selected.label}</h2>
-                  <p className="text-gray-600 text-lg leading-relaxed">{selected.desc}</p>
-                  <div className="mt-6 flex gap-3">
-                    <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-medium">360° View Available</span>
-                    <span className="text-xs bg-teal-100 text-teal-700 px-3 py-1.5 rounded-full font-medium">Virtual Walkthrough</span>
-                  </div>
+                   <div className="vs-section-title">{lang === 'kn' ? 'ಕ್ಯಾಂಪಸ್ ಹೈಲೈಟ್ಸ್' : 'Campus Highlights'}</div>
                 </div>
-                {/* Simulate 360 viewer with animated gradient */}
-                <div className={`bg-gradient-to-br ${selected.color} rounded-2xl h-64 flex items-center justify-center shadow-xl`}>
-                  <div className="text-center text-white">
-                    <div className="text-8xl mb-3 animate-pulse">{selected.emoji}</div>
-                    <p className="text-white/80 text-sm">360° Interactive View</p>
-                    <p className="text-white/60 text-xs mt-1">(Click & drag to explore)</p>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!selected && (
-          <div className="text-center text-gray-400 py-8">
-            <div className="text-5xl mb-3">👆</div>
-            <p>Select any area above to begin the virtual tour</p>
+             </div>
+             
+             <div className="vs-grid-4">
+                {highlights.map((h, i) => (
+                   <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                      <div className="vs-card" style={{ padding: '1.5rem', cursor: 'pointer' }}>
+                         <div style={{ width: 40, height: 40, borderRadius: 8, background: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                            <FiMap size={20} />
+                         </div>
+                         <h4 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', marginBottom: 8 }}>{h.title}</h4>
+                         <p style={{ fontSize: 11, color: '#64748b', lineHeight: 1.6 }}>{h.desc}</p>
+                      </div>
+                   </motion.div>
+                ))}
+             </div>
           </div>
-        )}
-      </section>
 
-      {/* Gallery row */}
-      <section className="bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Campus Gallery</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['🏛️ Main Building', '🦷 OPD Block', '🔬 Research Lab', '📚 Digital Library', '🏋️ Sports Complex', '🏠 Hostel Block', '🎭 Auditorium', '🌳 Campus Gardens'].map((label, i) => (
-              <motion.div key={i} whileHover={{ scale: 1.03 }}
-                className={`h-40 rounded-2xl flex items-end p-4 shadow-md cursor-pointer bg-gradient-to-br ${['from-blue-400 to-blue-700', 'from-teal-400 to-teal-700', 'from-purple-400 to-purple-700', 'from-amber-400 to-amber-700', 'from-red-400 to-red-700', 'from-green-400 to-green-700', 'from-indigo-400 to-indigo-700', 'from-emerald-400 to-emerald-700'][i]}`}
-              >
-                <span className="text-white font-semibold text-sm drop-shadow">{label}</span>
-              </motion.div>
-            ))}
-          </div>
         </div>
-      </section>
+      </div>
+
     </div>
   );
 };

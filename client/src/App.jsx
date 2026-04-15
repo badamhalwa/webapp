@@ -2,7 +2,8 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AppProvider } from './context/AppContext';
-import './i18n/i18n';
+import i18n from './i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -41,6 +42,8 @@ import PGDoctorDashboard from './pages/faculty/PGDoctorDashboard';
 import AdminDashboard from './pages/faculty/AdminDashboard';
 
 function App() {
+  const { t } = useTranslation();
+
   return (
     <AppProvider>
       <BrowserRouter>
@@ -89,9 +92,9 @@ function App() {
                 <Route path="*" element={
                   <div className="min-h-[60vh] flex items-center justify-center flex-col gap-4 text-center px-4">
                     <div className="text-8xl">🦷</div>
-                    <h1 className="text-4xl font-bold text-gray-900">404 — Page Not Found</h1>
-                    <p className="text-gray-500">The page you're looking for doesn't exist.</p>
-                    <a href="/" className="bg-rrdch-blue text-white px-6 py-3 rounded-xl font-semibold hover:bg-rrdch-blue-dark transition-colors mt-2">Go to Home</a>
+                    <h1 className="text-4xl font-bold text-gray-900">{i18n.language === 'kn' ? '404 — ಪುಟ ಕಂಡುಬಂದಿಲ್ಲ' : '404 — Page Not Found'}</h1>
+                    <p className="text-gray-500">{i18n.language === 'kn' ? 'ನೀವು ಹುಡುಕುತ್ತಿರುವ ಪುಟವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.' : "The page you're looking for doesn't exist."}</p>
+                    <a href="/" className="bg-rrdch-blue text-white px-6 py-3 rounded-xl font-semibold hover:bg-rrdch-blue-dark transition-colors mt-2">{i18n.language === 'kn' ? 'ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ' : 'Go to Home'}</a>
                   </div>
                 } />
               </Routes>

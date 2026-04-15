@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiPhone, FiMapPin, FiClock, FiNavigation, FiExternalLink } from 'react-icons/fi';
 
 const Directions = () => {
+  const { t } = useTranslation();
+
   return (
     <div style={{ background: '#ffffff' }}>
       
@@ -9,17 +12,17 @@ const Directions = () => {
       <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
         <div className="max-w-7xl mx-auto">
           <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
-            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>Home</a>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>{t('nav.home')}</a>
             <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Patients</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('nav.patients')}</span>
             <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Location & Directions</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('directions.title')}</span>
           </nav>
           <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
-            Visit Our Campus
+            {t('directions.title')}
           </h1>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
-            Find your way to Rajarajeshwari Dental College & Hospital located on Mysuru Road, Bengaluru.
+            {t('directions.subtitle')}
           </p>
         </div>
       </section>
@@ -42,7 +45,7 @@ const Directions = () => {
                  <a href="https://maps.google.com/?q=Rajarajeshwari+Dental+College+Hospital+Bangalore" target="_blank" rel="noopener noreferrer"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#003580', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: 'Manrope, sans-serif' }}
                 >
-                  OPEN IN GOOGLE MAPS <FiExternalLink size={14} />
+                  {t('directions.openGoogle')} <FiExternalLink size={14} />
                 </a>
               </div>
             </div>
@@ -55,9 +58,9 @@ const Directions = () => {
                   <FiMapPin size={22} />
                 </div>
                 <div>
-                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 4 }}>Primary Address</h3>
+                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 4 }}>{t('directions.address')}</h3>
                   <p style={{ fontSize: 13, color: '#555e6b', lineHeight: 1.6, fontFamily: 'Inter, sans-serif' }}>
-                    Mysuru Road, Kambipura,<br/>Bengaluru, Karnataka 560098
+                    {t('directions.addressVal')}
                   </p>
                 </div>
               </div>
@@ -67,7 +70,7 @@ const Directions = () => {
                   <FiPhone size={22} />
                 </div>
                 <div>
-                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 4 }}>Contact Helpline</h3>
+                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 4 }}>{t('directions.helpline')}</h3>
                   <div style={{ fontSize: 13, color: '#003580', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
                     <a href="tel:08028600988" style={{ color: 'inherit', textDecoration: 'none' }}>080-2860-0988</a><br/>
                     <a href="tel:08028600989" style={{ color: 'inherit', textDecoration: 'none' }}>080-2860-0989</a>
@@ -80,18 +83,18 @@ const Directions = () => {
                   <FiClock size={22} />
                 </div>
                 <div>
-                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 6 }}>Clinical OPD Hours</h3>
+                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 6 }}>{t('directions.opdHours')}</h3>
                   <div style={{ fontSize: 12, color: '#555e6b', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span>Mon – Fri:</span>
+                      <span>{t('directions.monFri')}:</span>
                       <strong style={{ color: '#1a1a2e' }}>9:00 AM – 5:00 PM</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span>Saturday:</span>
+                      <span>{t('directions.sat')}:</span>
                       <strong style={{ color: '#1a1a2e' }}>9:00 AM – 1:00 PM</strong>
                     </div>
                     <div style={{ marginTop: 4, padding: '4px 8px', borderRadius: 4, background: '#fdeaea', color: '#e8282b', fontSize: 10, fontWeight: 800, textAlign: 'center' }}>
-                      EMERGENCY: 24/7
+                      {t('directions.emergency')}
                     </div>
                   </div>
                 </div>
@@ -103,16 +106,16 @@ const Directions = () => {
                     <FiNavigation size={22} />
                   </div>
                   <div>
-                    <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 2 }}>Commute Guide</h3>
-                    <p style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif' }}>Best ways to reach our hospital campus</p>
+                    <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 14, color: '#1a1a2e', marginBottom: 2 }}>{t('directions.commute')}</h3>
+                    <p style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif' }}>{t('directions.commuteSub')}</p>
                   </div>
                 </div>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {[
-                    { mode: 'BMTC BUS', desc: 'Routes 97D, 225, 226 stop at Kambipura Gate.' },
-                    { mode: 'METRO', desc: 'Purple Line: Kengeri Metro Station (3 km away).' },
-                    { mode: 'BY ROAD', desc: 'Located on Bangalore-Mysuru NH-275.' },
+                    { mode: t('directions.bus'), desc: t('directions.busDesc') },
+                    { mode: t('directions.metro'), desc: t('directions.metroDesc') },
+                    { mode: t('directions.road'), desc: t('directions.roadDesc') },
                   ].map((item, idx) => (
                     <div key={idx} style={{ background: '#fcfcfd', border: '1px solid #f2f4f7', borderRadius: 8, padding: '10px 12px' }}>
                       <div style={{ fontSize: 10, fontWeight: 800, color: '#1a1a2e', marginBottom: 2 }}>{item.mode}</div>
