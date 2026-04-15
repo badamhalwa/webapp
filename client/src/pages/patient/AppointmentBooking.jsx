@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { FiUser, FiActivity, FiCalendar, FiCheckCircle, FiChevronRight, FiChevronLeft, FiClock, FiPhone, FiCopy, FiCheck } from 'react-icons/fi';
 import { departments } from '../../data/mockData';
 
 const AppointmentBooking = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const lang = i18n.language;
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [bookingId, setBookingId] = useState('');
   
   const [formData, setFormData] = useState({
     name: '', phone: '', email: '', dob: '', gender: '',
@@ -57,12 +60,13 @@ const AppointmentBooking = () => {
     // Mock API call
     setTimeout(() => {
       setLoading(false);
+      setBookingId('RRDCH-' + Math.floor(Math.random() * 90000 + 10000));
       setSuccess(true);
     }, 2000);
   };
 
   const copyId = () => {
-    navigator.clipboard.writeText('RRDCH-' + Math.floor(Math.random() * 90000 + 10000));
+    navigator.clipboard.writeText(bookingId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -103,7 +107,7 @@ const AppointmentBooking = () => {
             <div className="bg-gray-50 p-6 rounded-2xl mb-8 flex flex-col items-center">
                <div className="text-xs font-bold text-gray-400 uppercase mb-2">{t('appointment.bookingId')}</div>
                <div className="flex items-center gap-4">
-                  <span className="text-2xl font-black text-rrdch-blue tracking-wider">RRDCH-58291</span>
+                  <span className="text-2xl font-black text-rrdch-blue tracking-wider">{bookingId}</span>
                   <button onClick={copyId} className="p-2 text-gray-400 hover:text-rrdch-blue transition-colors relative">
                     {copied ? <FiCheck size={18} className="text-green-500" /> : <FiCopy size={18} />}
                     {copied && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded">{t('appointment.idCopied')}</span>}
@@ -113,12 +117,17 @@ const AppointmentBooking = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <button 
-                onClick={() => { setSuccess(false); setStep(1); setFormData({name:'', phone:'', email:'', dob:'', gender:'', departmentId:'', doctorId:'', date:'', timeSlot:'', reason:''}); }}
+                onClick={() => { setSuccess(false); setStep(1); setFormData({name:'', phone:'', email:'', dob:'', gender:'', departmentId:'', doctorId:'', date:'', timeSlot:'', reason:''}); setBookingId(''); }}
                 className="vs-btn vs-btn-outline justify-center"
               >
                 {t('appointment.bookAnother')}
               </button>
-              <button className="vs-btn vs-btn-primary justify-center">{t('appointment.trackStatus')}</button>
+              <button 
+                onClick={() => navigate('/patient/track', { state: { bookingId } })}
+                className="vs-btn vs-btn-primary justify-center"
+              >
+                {t('appointment.trackStatus')}
+              </button>
             </div>
           </motion.div>
         </div>

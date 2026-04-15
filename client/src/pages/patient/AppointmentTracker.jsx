@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { FiSearch, FiClock, FiCheckCircle, FiUser, FiActivity, FiArrowRight, FiInfo } from 'react-icons/fi';
 import { Card, SectionHeader } from '../../components/ui/UIComponents';
 
 const AppointmentTracker = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const location = useLocation();
   
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    // If we came from booking success, auto-fill and search
+    if (location.state?.bookingId) {
+      setQuery(location.state.bookingId);
+      // Trigger search if it's the specific mock ID or just set the query
+      // For demo, we'll just set it. If we want it to auto-trigger, we call handleTrack mock logic.
+    }
+  }, [location.state]);
 
   const handleTrack = (e) => {
     e.preventDefault();
