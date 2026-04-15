@@ -10,7 +10,17 @@ import {
 } from 'react-icons/fi';
 
 const AdminDashboard = () => {
-  const { appointments, hostelComplaints, feedbacks, queue } = useApp();
+  const { appointments, hostelComplaints, feedbacks, queue, updateAppointmentStatus } = useApp();
+  const { t } = useApp(); // If needed for translations, though we use hardcoded text in Admin usually
+  
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      await updateAppointmentStatus(id, newStatus);
+      // Optional: Add a local toast if react-hot-toast is available
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    }
+  };
 
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const pendingComplaints = hostelComplaints.filter(c => c.status !== 'resolved').length;
@@ -87,19 +97,31 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody style={{ fontSize: 13 }}>
-                    {appointments.slice(0, 6).map((appt) => (
+                    {appointments.slice(0, 10).map((appt) => (
                       <tr key={appt.id} style={{ borderBottom: '1px solid #f8fafc' }}>
-                        <td style={{ padding: '14px 16px', color: '#64748b', fontFamily: 'monospace' }}>#{appt.id.slice(0,4)}</td>
-                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#334155' }}>{appt.patientName}</td>
-                        <td style={{ padding: '14px 16px', color: '#64748b' }}>{appt.department?.split(' ')[0]}</td>
+                        <td style={{ padding: '14px 16px', color: '#64748b', fontFamily: 'monospace' }}>
+                          {appt.bookingId ? appt.bookingId : `#${appt.id.slice(0,4)}`}
+                        </td>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#334155' }}>{appt.name || appt.patientName}</td>
+                        <td style={{ padding: '14px 16px', color: '#64748b' }}>{appt.departmentId ? `Dept ${appt.departmentId}` : appt.department}</td>
                         <td style={{ padding: '14px 16px' }}>
-                          <span style={{ 
-                            fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
-                            background: appt.status === 'completed' ? '#eaf5ee' : '#fff7ed',
-                            color: appt.status === 'completed' ? '#009688' : '#c2410c'
-                          }}>
-                            {appt.status.toUpperCase()}
-                          </span>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                             <span style={{ 
+                               fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
+                               background: appt.status === 'Completed' ? '#eaf5ee' : appt.status === 'Confirmed' ? '#eef2ff' : '#fff7ed',
+                               color: appt.status === 'Completed' ? '#009688' : appt.status === 'Confirmed' ? '#4f46e5' : '#c2410c'
+                             }}>
+                               {appt.status?.toUpperCase() || 'PENDING'}
+                             </span>
+                             <div style={{ display: 'flex', gap: 4 }}>
+                                {appt.status !== 'Confirmed' && appt.status !== 'Completed' && (
+                                  <button onClick={() => handleStatusUpdate(appt.id, 'Confirmed')} style={{ border: 'none', background: '#eef2ff', color: '#4f46e5', fontSize: 9, fontWeight: 700, padding: '4px 8px', borderRadius: 4, cursor: 'pointer' }}>Confirm</button>
+                                )}
+                                {appt.status !== 'Completed' && (
+                                  <button onClick={() => handleStatusUpdate(appt.id, 'Completed')} style={{ border: 'none', background: '#eaf5ee', color: '#009688', fontSize: 9, fontWeight: 700, padding: '4px 8px', borderRadius: 4, cursor: 'pointer' }}>Complete</button>
+                                )}
+                             </div>
+                           </div>
                         </td>
                       </tr>
                     ))}

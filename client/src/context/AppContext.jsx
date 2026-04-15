@@ -110,6 +110,19 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const updateAppointmentStatus = async (appointmentId, newStatus) => {
+    try {
+      const apptRref = doc(db, 'appointments', appointmentId);
+      await updateDoc(apptRref, {
+        status: newStatus,
+        updatedAt: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error updating status:", err);
+      throw err;
+    }
+  };
+
   const addFeedback = async (fb) => {
     try {
       await addDoc(collection(db, 'feedbacks'), {
@@ -123,9 +136,12 @@ export const AppProvider = ({ children }) => {
   };
 
   const getAppointment = (query) => {
+    if (!query) return null;
+    const q = query.toLowerCase().trim();
     return appointments.find(a =>
-      (a.id && a.id.toLowerCase() === query.toLowerCase()) ||
-      a.phone === query
+      (a.id && a.id.toLowerCase() === q) ||
+      (a.bookingId && a.bookingId.toLowerCase() === q) ||
+      (a.phone && a.phone.trim() === q)
     );
   };
 
@@ -133,7 +149,7 @@ export const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={{
-      appointments, addAppointment, getAppointment,
+      appointments, addAppointment, updateAppointmentStatus, getAppointment,
       hostelComplaints, addComplaint, getComplaint,
       feedbacks, addFeedback,
       queue, availability,

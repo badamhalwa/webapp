@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { FiSearch, FiClock, FiCheckCircle, FiUser, FiActivity, FiArrowRight, FiInfo } from 'react-icons/fi';
 import { Card, SectionHeader } from '../../components/ui/UIComponents';
+import { useApp } from '../../context/AppContext';
 
 const AppointmentTracker = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const location = useLocation();
+  const { getAppointment } = useApp();
   
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,32 +27,28 @@ const AppointmentTracker = () => {
   }, [location.state]);
 
   const handleTrack = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!query.trim()) return;
 
     setLoading(true);
     setResult(null);
     setNotFound(false);
 
-    // Mock search logic
+    // Live search logic from AppContext
     setTimeout(() => {
+      const appt = getAppointment(query);
       setLoading(false);
-      if (query === 'RRDCH-001' || query === '9876543210') {
+      if (appt) {
         setResult({
-          id: 'RRDCH-001',
-          name: 'Praveen Kumar',
-          dept: t('depts.d1'),
-          doctor: 'Dr. Girish H.C.',
-          date: '15 Apr 2026',
-          time: '10:30 AM',
-          status: 'Confirmed',
-          pos: 3,
-          complaint: lang === 'kn' ? 'ಹಲ್ಲು ನೋವು ಮತ್ತು ಸುಸ್ತು' : 'Tooth ache and general sensitivity'
+          ...appt,
+          dept: appt.departmentId ? t(`depts.d${appt.departmentId}`) : 'General',
+          doctor: appt.doctorId ? `Specialist #${appt.doctorId}` : 'Assigned Specialist',
+          complaint: appt.reason || (lang === 'kn' ? 'ತಪಾಸಣೆ' : 'General Checkup')
         });
       } else {
         setNotFound(true);
       }
-    }, 1500);
+    }, 800);
   };
 
   return (
