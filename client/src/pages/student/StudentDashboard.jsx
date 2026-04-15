@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Card, Badge } from '../../components/ui/UIComponents';
 import { newsItems, syllabusData } from '../../data/mockData';
-import { FiArrowRight, FiCalendar, FiBook, FiClock, FiBell, FiUser, FiActivity, FiArrowUpRight, FiHome, FiAward, FiStar } from 'react-icons/fi';
+import { FiArrowRight, FiCalendar, FiBook, FiClock, FiBell, FiUser, FiActivity, FiHome, FiAward, FiStar } from 'react-icons/fi';
 
 const StudentDashboard = () => {
   const { t, i18n } = useTranslation();
@@ -140,7 +140,7 @@ const StudentDashboard = () => {
                     </div>
                   ))}
                   <Link to="/student/schedule" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: '#003580', textDecoration: 'none', borderTop: '1px solid #f1f5f9', paddingTop: 16, marginTop: 4 }}>
-                    View Full Schedule <FiArrowUpRight size={14} />
+                    View Full Schedule <FiArrowRight size={14} />
                   </Link>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { 
   FiCalendar, FiUsers, FiMessageSquare, FiAlertCircle, 
   FiArrowRight, FiActivity, FiStar, FiClock, FiShield,
-  FiFileText, FiUser, FiHome, FiGraduationCap, FiArrowUpRight
+  FiFileText, FiUser, FiHome, FiAward
 } from 'react-icons/fi';
 
 const AdminDashboard = () => {
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.1rem', color: '#1a1a2e' }}>Visits Overview</h3>
                 <Link to="/patient/track" style={{ fontSize: 12, fontWeight: 700, color: '#003580', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  Browse All <FiArrowUpRight />
+                  Browse All <FiArrowRight />
                 </Link>
               </div>
               <div style={{ padding: '12px' }}>
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.1rem', color: '#1a1a2e' }}>Campus Maintenance</h3>
                 <Link to="/student/hostel" style={{ fontSize: 12, fontWeight: 700, color: '#003580', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  Open Portal <FiArrowUpRight />
+                  Open Portal <FiArrowRight />
                 </Link>
               </div>
               <div style={{ padding: '12px' }}>
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
                 { label: 'Visits Management', path: '/patient/track', icon: FiCalendar, color: '#003580' },
                 { label: 'Patient Interaction', path: '/patient/feedback', icon: FiMessageSquare, color: '#009688' },
                 { label: 'Hostel Maintenance', path: '/student/hostel', icon: FiHome, color: '#e8282b' },
-                { label: 'Academic Support', path: '/student/dashboard', icon: FiGraduationCap, color: '#7c3aed' },
+                { label: 'Academic Support', path: '/student/dashboard', icon: FiAward, color: '#7c3aed' },
               ].map((a, i) => (
                 <Link key={i} to={a.path} style={{ textDecoration: 'none' }}>
                   <motion.div whileHover={{ scale: 1.02 }} className="vs-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: 16 }}>
