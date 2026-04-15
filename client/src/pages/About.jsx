@@ -46,6 +46,42 @@ const About = () => {
         </div>
       </section>
 
+      {/* ── Principal's Message ── */}
+      <div className="vs-section">
+        <div className="max-w-7xl mx-auto">
+          <div className="vs-section-header">
+            <div className="vs-section-title">{t('about.principalMsg')}</div>
+          </div>
+          <div className="vs-card" style={{ padding: '2.5rem', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '2.5rem', alignItems: 'start' }}>
+            {/* Avatar */}
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: 140, height: 140, borderRadius: '50%', background: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 0 0 4px #e6f0fb', overflow: 'hidden' }}>
+                <img src={principalImg} alt="Dr. Girish H.C." style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>{t('about.principalTitle')}</div>
+              <div style={{ fontSize: 12, color: '#003580', fontFamily: 'Inter, sans-serif', marginTop: 4, fontWeight: 600 }}>{t('about.principalRole')}</div>
+              <div style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>MDS, PhD</div>
+            </div>
+            {/* Message */}
+            <div>
+              <div style={{ width: 3, height: 60, background: '#003580', borderRadius: 2, marginBottom: 20 }} />
+              {(lang === 'kn' ? [
+                '"ರಾಜರಾಜೇಶ್ವರಿ ದಂತ ಕಾಲೇಜು ಮತ್ತು ಆಸ್ಪತ್ರೆಗೆ ಸುಸ್ವಾಗತ — ಇದು ಕಳೆದ ಎರಡು ದಶಕಗಳಿಂದ ದಂತ ವೃತ್ತಿಪರರನ್ನು ರೂಪಿಸುತ್ತಿರುವ ಪ್ರಮುಖ ಸಂಸ್ಥೆ. ನಮ್ಮ ಶೈಕ್ಷಣಿಕ ಶ್ರೇಷ್ಠತೆಯು ಪ್ರತಿ ತರಗತಿ ಮತ್ತು ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ ಪ್ರತಿಫಲಿಸುತ್ತದೆ."',
+                '"ಉತ್ತಮ ದಂತವೈದ್ಯರು ಕೇವಲ ತಾಂತ್ರಿಕವಾಗಿ ಪರಿಣಿತರಲ್ಲ — ಅವರು ಸಹಾನುಭೂತಿಯುಳ್ಳ ಮನುಷ್ಯರು ಎಂದು ನಾವು ನಂಬುತ್ತೇವೆ. RRDCH ನಲ್ಲಿ, ನಾವು ಈ ಎರಡೂ ಆಯಾಮಗಳನ್ನು ಪೋಷಿಸುತ್ತೇವೆ."',
+                '"ನಮ್ಮ ಅತ್ಯುತ್ತಮ ಬೋಧಕ ಸಿಬ್ಬಂದಿ ಮತ್ತು ಆಧುನಿಕ ಸೌಲಭ್ಯಗಳು ನಮ್ಮ ವಿದ್ಯಾರ್ಥಿಗಳು ಸವಾಲುಗಳನ್ನು ಎದುರಿಸಲು ಸಿದ್ಧವಾಗುವಂತೆ ಮಾಡುತ್ತವೆ. ನಮ್ಮ ರೋಮಾಂಚಕ ಸಮುದಾಯದ ಭಾಗವಾಗಲು ನಾನು ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸುತ್ತೇನೆ."',
+              ] : [
+                '"Welcome to Rajarajeshwari Dental College and Hospital — an institution that has been shaping dental professionals for over two decades. Our commitment to excellence is reflected in every classroom, clinic and research lab on our campus."',
+                '"We believe that great dentists are not just technically proficient — they are compassionate human beings who understand the profound impact of oral health on overall well-being. At RRDCH, we nurture both dimensions of this calling."',
+                '"Our world-class faculty, state-of-the-art facilities, and a culture of curiosity and innovation ensure that our graduates are ready to meet the challenges of modern dentistry. I invite you to be part of our vibrant community."',
+              ]).map((p, i) => (
+                <p key={i} style={{ fontSize: 13.5, lineHeight: 1.85, color: '#374151', fontFamily: 'Inter, sans-serif', marginBottom: 16, fontStyle: 'italic' }}>{p}</p>
+              ))}
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#003580', fontFamily: 'Manrope, sans-serif', marginTop: 8 }}>— {t('about.principalTitle')}, {t('about.principalRole')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ── Mission & Vision ── */}
       <div className="vs-section">
         <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
@@ -99,42 +135,6 @@ const About = () => {
                 </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Principal's Message ── */}
-      <div className="vs-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="vs-section-header">
-            <div className="vs-section-title">{t('about.principalMsg')}</div>
-          </div>
-          <div className="vs-card" style={{ padding: '2.5rem', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '2.5rem', alignItems: 'start' }}>
-            {/* Avatar */}
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ width: 140, height: 140, borderRadius: '50%', background: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 0 0 4px #e6f0fb', overflow: 'hidden' }}>
-                <img src={principalImg} alt="Dr. Girish H.C." style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>{t('about.principalTitle')}</div>
-              <div style={{ fontSize: 12, color: '#003580', fontFamily: 'Inter, sans-serif', marginTop: 4, fontWeight: 600 }}>{t('about.principalRole')}</div>
-              <div style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>MDS, PhD</div>
-            </div>
-            {/* Message */}
-            <div>
-              <div style={{ width: 3, height: 60, background: '#003580', borderRadius: 2, marginBottom: 20 }} />
-              {(lang === 'kn' ? [
-                '"ರಾಜರಾಜೇಶ್ವರಿ ದಂತ ಕಾಲೇಜು ಮತ್ತು ಆಸ್ಪತ್ರೆಗೆ ಸುಸ್ವಾಗತ — ಇದು ಕಳೆದ ಎರಡು ದಶಕಗಳಿಂದ ದಂತ ವೃತ್ತಿಪರರನ್ನು ರೂಪಿಸುತ್ತಿರುವ ಪ್ರಮುಖ ಸಂಸ್ಥೆ. ನಮ್ಮ ಶೈಕ್ಷಣಿಕ ಶ್ರೇಷ್ಠತೆಯು ಪ್ರತಿ ತರಗತಿ ಮತ್ತು ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ ಪ್ರತಿಫಲಿಸುತ್ತದೆ."',
-                '"ಉತ್ತಮ ದಂತವೈದ್ಯರು ಕೇವಲ ತಾಂತ್ರಿಕವಾಗಿ ಪರಿಣಿತರಲ್ಲ — ಅವರು ಸಹಾನುಭೂತಿಯುಳ್ಳ ಮನುಷ್ಯರು ಎಂದು ನಾವು ನಂಬುತ್ತೇವೆ. RRDCH ನಲ್ಲಿ, ನಾವು ಈ ಎರಡೂ ಆಯಾಮಗಳನ್ನು ಪೋಷಿಸುತ್ತೇವೆ."',
-                '"ನಮ್ಮ ಅತ್ಯುತ್ತಮ ಬೋಧಕ ಸಿಬ್ಬಂದಿ ಮತ್ತು ಆಧುನಿಕ ಸೌಲಭ್ಯಗಳು ನಮ್ಮ ವಿದ್ಯಾರ್ಥಿಗಳು ಸವಾಲುಗಳನ್ನು ಎದುರಿಸಲು ಸಿದ್ಧವಾಗುವಂತೆ ಮಾಡುತ್ತವೆ. ನಮ್ಮ ರೋಮಾಂಚಕ ಸಮುದಾಯದ ಭಾಗವಾಗಲು ನಾನು ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸುತ್ತೇನೆ."',
-              ] : [
-                '"Welcome to Rajarajeshwari Dental College and Hospital — an institution that has been shaping dental professionals for over two decades. Our commitment to excellence is reflected in every classroom, clinic and research lab on our campus."',
-                '"We believe that great dentists are not just technically proficient — they are compassionate human beings who understand the profound impact of oral health on overall well-being. At RRDCH, we nurture both dimensions of this calling."',
-                '"Our world-class faculty, state-of-the-art facilities, and a culture of curiosity and innovation ensure that our graduates are ready to meet the challenges of modern dentistry. I invite you to be part of our vibrant community."',
-              ]).map((p, i) => (
-                <p key={i} style={{ fontSize: 13.5, lineHeight: 1.85, color: '#374151', fontFamily: 'Inter, sans-serif', marginBottom: 16, fontStyle: 'italic' }}>{p}</p>
-              ))}
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#003580', fontFamily: 'Manrope, sans-serif', marginTop: 8 }}>— {t('about.principalTitle')}, {t('about.principalRole')}</div>
-            </div>
           </div>
         </div>
       </div>
