@@ -1,125 +1,107 @@
-# RRDCH Website — README
+# 🦷 RRDCH Dental Portal
+[![Firebase](https://img.shields.io/badge/backend-Firebase-ffca28?style=flat&logo=firebase)](https://firebase.google.com/)
+[![React](https://img.shields.io/badge/frontend-React_19-61dafb?style=flat&logo=react)](https://react.dev/)
+[![Tailwind](https://img.shields.io/badge/styling-Tailwind_CSS_V4-38b2ac?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![i18n](https://img.shields.io/badge/localization-English_%2F_Kannada-blue?style=flat)](https://www.i18next.com/)
 
-## 🦷 Rajarajeshwari Dental College and Hospital
-
-A full-stack, production-quality website for RRDCH built with React + Tailwind CSS (frontend) and Node.js + Express (backend).
+A full-stack, production-ready portal for **RajaRajeswari Dental College & Hospital (RRDCH)**. This platform provides real-time dental services for patients, comprehensive administrative tools for doctors, and a dedicated hub for students.
 
 ---
 
-## 🚀 How to Run
+## ✨ Key Features
 
-### Frontend (React + Vite)
+### 👨‍⚕️ Patient Services
+- **Real-time Appointment Booking:** Book dental consultations across various specialized departments.
+- **Appointment Tracker:** Track the status of your booking using a unique ID or phone number.
+- **Live Patient Queue:** View real-time wait times and token numbers for different OPD departments.
+- **Interactive Directions:** Integrated floor-by-floor directions to navigate the hospital.
+- **Digital Feedback:** Voice your experience directly to the administration.
 
-```bash
-cd client
-npm run dev
-```
+### 🎓 Student Hub
+- **Hostel Complaint Management:** Students can report maintenance issues and track resolution status in real-time.
+- **Academic Resources:** Quick access to syllabus, schedules, and official notices.
+- **Student Dashboard:** Personal notification center for campus updates.
 
-Opens at: **http://localhost:5173**
+### 📊 Staff & Admin Dashboards
+- **PG Doctor Interface:** Manage patient statuses and update live queues on the fly.
+- **Admin Command Center:** High-level analytics on appointments, feedback, and campus maintenance.
 
-### Backend (Express API)
+### 🌐 Advanced UX
+- **Bi-lingual Support:** Seamless toggle between **English** and **Kannada** (ಕನ್ನಡ).
+- **Dynamic Animations:** Powered by `framer-motion` for a premium, interactive feel.
+- **Zero-Latency Updates:** Powered by **Firebase Firestore** real-time listeners.
 
-```bash
-cd server
-node server.js
-```
+---
 
-Runs at: **http://localhost:5000**
+## 🛠 Tech Stack
 
-> The frontend automatically proxies `/api/*` requests to the backend via Vite config.
+- **Frontend:** React 19, Vite 8, Tailwind CSS V4
+- **Backend:** Firebase Firestore (Real-time DB)
+- **Localization:** i18next
+- **Animations:** Framer Motion
+- **Icons:** React Icons
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (Latest LTS)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd webapp
+   ```
+
+2. **Frontend Setup:**
+   ```bash
+   cd client
+   npm install
+   npm run dev
+   ```
+   The app will be available at: **http://localhost:5173**
+
+3. **Backend Configuration:**
+   The project uses Firebase. The configuration is located at `client/src/firebase.js`. 
+   > **Note:** For development, the Firebase keys are provided for easy sync. In a production environment, ensure you use environment variables.
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 webapp/
 ├── client/                  # React + Vite frontend
-│   └── src/
-│       ├── pages/
-│       │   ├── Home.jsx
-│       │   ├── About.jsx
-│       │   ├── Departments.jsx
-│       │   ├── Research.jsx
-│       │   ├── Achievements.jsx
-│       │   ├── VirtualTour.jsx
-│       │   ├── Events.jsx
-│       │   ├── Admissions.jsx
-│       │   ├── SearchPage.jsx
-│       │   ├── patient/
-│       │   │   ├── AppointmentBooking.jsx
-│       │   │   ├── AppointmentTracker.jsx
-│       │   │   ├── PatientFollowUp.jsx
-│       │   │   ├── LiveQueue.jsx
-│       │   │   ├── Directions.jsx
-│       │   │   └── Feedback.jsx
-│       │   ├── student/
-│       │   │   ├── StudentDashboard.jsx
-│       │   │   ├── Syllabus.jsx
-│       │   │   ├── Schedule.jsx
-│       │   │   └── HostelComplaints.jsx
-│       │   └── faculty/
-│       │       ├── PGDoctorDashboard.jsx
-│       │       └── AdminDashboard.jsx
-│       ├── components/
-│       │   ├── layout/Navbar.jsx
-│       │   ├── layout/Footer.jsx
-│       │   └── ui/UIComponents.jsx
-│       ├── context/AppContext.jsx
-│       ├── data/mockData.js
-│       ├── i18n/{en,kn}.json
-│       └── App.jsx
-└── server/
-    └── server.js            # Express REST API
+│   ├── src/
+│   │   ├── pages/           # All application routes
+│   │   │   ├── patient/     # Patient-facing portal
+│   │   │   ├── student/     # Student/Hostel portal
+│   │   │   └── faculty/     # Admin & Doctor dashboards
+│   │   ├── components/      # Reusable UI & Layout components
+│   │   ├── context/         # AppState with Firebase Listeners
+│   │   ├── i18n/            # Localization files (en/kn)
+│   │   └── firebase.js      # Firebase Initialization
+│   └── public/              # Static assets
+└── server/                  # Legacy Express API (Optional)
 ```
 
 ---
 
-## 📋 Sample Data for Testing
+## 🎥 Live Updates Logic
 
-**Appointment Tracker:**
-- Booking IDs: `RRDCH-001`, `RRDCH-002`, `RRDCH-003`
-- Phone: `9876543210`
-
-**Hostel Complaints:**
-- IDs: `HC-001`, `HC-002`, `HC-003`
+This project leverages Firestore's `onSnapshot` to provide real-time updates without page refreshes. Whether it's a new appointment or a status update on a hostel complaint, every change is reflected across all connected clients instantly.
 
 ---
 
-## 🌐 Language Toggle
+## 🤝 Contribution
 
-Click the **ಕನ್ನಡ** button in the top-right navbar to switch to Kannada. All UI labels, navigation, and form labels switch instantly. Click **English** to switch back.
-
----
-
-## 🔴 Live Updates Simulation
-
-The Live Queue page and PG Doctor Dashboard update automatically every **15 seconds** using `setInterval` in the AppContext. In production, this would be replaced with a WebSocket connection.
+For internal development at RRDCH. Ensure that all UI changes are localized in both English and Kannada JSON files.
 
 ---
 
-## 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/appointments` | List all appointments |
-| GET | `/api/appointments?id=RRDCH-001` | Get by ID |
-| GET | `/api/appointments?phone=9876543210` | Get by phone |
-| POST | `/api/appointments` | Book new appointment |
-| PATCH | `/api/appointments/:id/status` | Update status |
-| GET | `/api/feedback` | Get all feedback |
-| POST | `/api/feedback` | Submit feedback |
-| GET | `/api/complaints` | Get all complaints |
-| GET | `/api/complaints?id=HC-001` | Get complaint by ID |
-| POST | `/api/complaints` | Submit complaint |
-| PATCH | `/api/complaints/:id/status` | Update status |
-| GET | `/api/queue` | Get live queue |
-| GET | `/api/stats` | Get admin stats |
-
----
-
-## 🔧 To Connect MongoDB
-
-1. Install mongoose: `npm install mongoose`
-2. Add `MONGODB_URI` to `.env` in `server/`
-3. Replace in-memory arrays with Mongoose models (schemas match existing data shapes)
+## ⚖️ License
+Internal Project - RajaRajeswari Dental College & Hospital.

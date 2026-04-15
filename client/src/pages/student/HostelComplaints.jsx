@@ -6,9 +6,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 
 const HostelComplaints = () => {
-  const { t, i18n } = useTranslation();
-  const { addComplaint } = useApp();
   const lang = i18n.language;
+  const { addComplaint, hostelComplaints } = useApp();
   const [form, setForm] = useState({ name: '', room: '', category: '', description: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -165,11 +164,45 @@ const HostelComplaints = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Real-time Tracking Section */}
+              <div style={{ marginTop: 40 }}>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#1a1a2e', marginBottom: 16 }}>
+                  {lang === 'kn' ? 'ಇತ್ತೀಚಿನ ದೂರುಗಳ ಸ್ಥಿತಿ' : 'Recent Case Updates'}
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                   {hostelComplaints.length === 0 ? (
+                     <div className="vs-card" style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+                       {lang === 'kn' ? 'ಯಾವುದೇ ದೂರುಗಳಿಲ್ಲ' : 'No recent complaints found.'}
+                     </div>
+                   ) : (
+                     hostelComplaints.slice(0, 5).map((complaint) => (
+                       <div key={complaint.id} className="vs-card" style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                             <div style={{ width: 40, height: 40, borderRadius: 10, background: '#f8fafc', color: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <FiAlertCircle size={20} />
+                             </div>
+                             <div>
+                                <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}>{complaint.category} (Room {complaint.room})</div>
+                                <div style={{ fontSize: 11, color: '#64748b' }}>Submitted {complaint.date || 'Today'}</div>
+                             </div>
+                          </div>
+                          <span style={{ 
+                            fontSize: 10, fontWeight: 800, padding: '6px 10px', borderRadius: 8,
+                            background: complaint.status === 'Resolved' ? '#eaf5ee' : complaint.status === 'In Progress' ? '#eef2ff' : '#fef2f2',
+                            color: complaint.status === 'Resolved' ? '#009688' : complaint.status === 'In Progress' ? '#4f46e5' : '#ef4444'
+                          }}>
+                            {complaint.status?.toUpperCase() || 'PENDING'}
+                          </span>
+                       </div>
+                     ))
+                   )}
+                </div>
+              </div>
             </div>
 
             {/* Sidebar Tools */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              
               <div className="vs-card" style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <FiAlertCircle color="#003580" size={20} />
@@ -191,17 +224,15 @@ const HostelComplaints = () => {
 
               <div style={{ background: '#003580', padding: '1.75rem', borderRadius: 16, color: '#fff', boxShadow: '0 10px 15px -3px rgba(0,53,128,0.2)' }}>
                 <FiShield size={32} style={{ marginBottom: 16, opacity: 0.8 }} />
-                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 16, marginBottom: 8 }}>{lang === 'kn' ? 'ಸ್ಥಿತಿ ಪತ್ತೆಹಚ್ಚಿ' : 'Track Response'}</h3>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 16, marginBottom: 8 }}>{lang === 'kn' ? 'ಸಹಾಯವಾಣಿ' : 'Emergency Help'}</h3>
                 <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: 20 }}>
-                  {lang === 'kn' ? 'ನಿಮ್ಮ ದೂರಿನ ಸ್ಥಿತಿಯನ್ನು ತಿಳಿಯಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.' : 'Monitor the progress of your submitted complaints in real-time.'}
+                   {lang === 'kn' ? 'ತ್ವರಿತ ಸಹಾಯಕ್ಕಾಗಿ ಹಾಸ್ಟೆಲ್ ಕಚೇರಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ.' : 'For immediate assistance, please visit the hostel administrative office in Block A.'}
                 </p>
                 <button style={{ width: '100%', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-                  {lang === 'kn' ? 'ಟ್ರ್ಯಾಕ್ ಮಾಡಿ' : 'Track Status'}
+                  {lang === 'kn' ? 'ಕರೆ ಮಾಡಿ' : 'Call Warden'}
                 </button>
               </div>
-
             </div>
-            
           </div>
         </div>
       </div>

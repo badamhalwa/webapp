@@ -110,6 +110,19 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const updateComplaintStatus = async (complaintId, newStatus) => {
+    try {
+      const ref = doc(db, 'complaints', complaintId);
+      await updateDoc(ref, {
+        status: newStatus,
+        updatedAt: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error updating complaint:", err);
+      throw err;
+    }
+  };
+
   const updateAppointmentStatus = async (appointmentId, newStatus) => {
     try {
       const apptRref = doc(db, 'appointments', appointmentId);
@@ -150,7 +163,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider value={{
       appointments, addAppointment, updateAppointmentStatus, getAppointment,
-      hostelComplaints, addComplaint, getComplaint,
+      hostelComplaints, addComplaint, getComplaint, updateComplaintStatus,
       feedbacks, addFeedback,
       queue, availability,
       notifications,

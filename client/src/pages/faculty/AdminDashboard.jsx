@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fi';
 
 const AdminDashboard = () => {
-  const { appointments, hostelComplaints, feedbacks, queue, updateAppointmentStatus } = useApp();
+  const { appointments, hostelComplaints, feedbacks, queue, updateAppointmentStatus, updateComplaintStatus } = useApp();
   const { t } = useApp(); // If needed for translations, though we use hardcoded text in Admin usually
   
   const handleStatusUpdate = async (id, newStatus) => {
@@ -158,14 +158,25 @@ const AdminDashboard = () => {
                         <tr key={c.id} style={{ borderBottom: '1px solid #f8fafc' }}>
                           <td style={{ padding: '14px 16px', fontWeight: 700, color: '#334155' }}>{c.room}</td>
                           <td style={{ padding: '14px 16px', color: '#64748b' }}>{c.category}</td>
-                          <td style={{ padding: '14px 16px', color: '#64748b' }}>{c.date}</td>
+                          <td style={{ padding: '14px 16px', color: '#64748b' }}>{c.date || 'Today'}</td>
                           <td style={{ padding: '14px 16px' }}>
-                            <span style={{ 
-                              fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
-                              background: '#fef2f2', color: '#ef4444'
-                            }}>
-                              PENDING
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ 
+                                fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
+                                background: c.status === 'Resolved' ? '#eaf5ee' : c.status === 'In Progress' ? '#eef2ff' : '#fef2f2',
+                                color: c.status === 'Resolved' ? '#009688' : c.status === 'In Progress' ? '#4f46e5' : '#ef4444'
+                              }}>
+                                {c.status?.toUpperCase() || 'PENDING'}
+                              </span>
+                              <div style={{ display: 'flex', gap: 4 }}>
+                                {c.status !== 'Resolved' && (
+                                  <button onClick={() => updateComplaintStatus(c.id, 'In Progress')} style={{ border: 'none', background: '#eef2ff', color: '#4f46e5', fontSize: 9, fontWeight: 700, padding: '4px 8px', borderRadius: 4, cursor: 'pointer' }}>Start</button>
+                                )}
+                                {c.status !== 'Resolved' && (
+                                  <button onClick={() => updateComplaintStatus(c.id, 'Resolved')} style={{ border: 'none', background: '#eaf5ee', color: '#009688', fontSize: 9, fontWeight: 700, padding: '4px 8px', borderRadius: 4, cursor: 'pointer' }}>Fix</button>
+                                )}
+                              </div>
+                            </div>
                           </td>
                         </tr>
                       ))}
