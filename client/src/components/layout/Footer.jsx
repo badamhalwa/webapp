@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiPhone, FiMail, FiMapPin, FiFacebook, FiTwitter, FiInstagram, FiYoutube } from 'react-icons/fi';
 
+import logo from '../../assets/logo.png';
+
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
@@ -10,10 +12,10 @@ const Footer = () => {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center font-bold text-xl">R</div>
+            <img src={logo} alt="RRDCH Logo" className="w-12 h-12 object-contain" />
             <div>
               <div className="font-bold text-lg">RRDCH</div>
-              <div className="text-xs text-blue-200">Rajarajeshwari Dental College</div>
+              <div className="text-xs text-blue-200">Dental College &amp; Hospital</div>
             </div>
           </div>
           <p className="text-blue-200 text-sm leading-relaxed">

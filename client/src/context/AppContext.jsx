@@ -1,4 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { 
+  collection, 
+  onSnapshot, 
+  addDoc, 
+  query, 
+  orderBy, 
+  serverTimestamp,
+  updateDoc,
+  doc
+} from 'firebase/firestore';
 import { mockAppointments, queueData, doctorAvailability } from '../data/mockData';
 
 const AppContext = createContext();
@@ -6,42 +17,59 @@ const AppContext = createContext();
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
-  const [appointments, setAppointments] = useState(() => {
-    const saved = localStorage.getItem('rrdch-appointments');
-    return saved ? JSON.parse(saved) : mockAppointments;
-  });
-  const [hostelComplaints, setHostelComplaints] = useState(() => {
-    const saved = localStorage.getItem('rrdch-complaints');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [appointments, setAppointments] = useState([]);
+  const [hostelComplaints, setHostelComplaints] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
-  const [queue, setQueue] = useState(queueData);
+  const [queue, setQueue] = useState([]);
   const [availability, setAvailability] = useState(doctorAvailability);
   const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Simulate live updates — polls every 60 seconds (production: replace with WebSocket)
+  // --- Real-time Firestore Listeners ---
+  useEffect(() => {
+    // 1. Appointments
+    const appointmentsQuery = query(collection(db, 'appointments'), orderBy('createdAt', 'desc'));
+    const unsubAppointments = onSnapshot(appointmentsQuery, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAppointments(data); // Removed mockAppointments fallback
+      setLoading(false);
+    }, (err) => console.error("Firestore Error (Appointments):", err));
+
+    // 2. Complaints
+    const complaintsQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'));
+    const unsubComplaints = onSnapshot(complaintsQuery, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setHostelComplaints(data);
+    }, (err) => console.error("Firestore Error (Complaints):", err));
+
+    // 3. Feedback
+    const feedbackQuery = query(collection(db, 'feedbacks'), orderBy('createdAt', 'desc'));
+    const unsubFeedback = onSnapshot(feedbackQuery, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFeedbacks(data);
+    }, (err) => console.error("Firestore Error (Feedback):", err));
+
+    // 4. Queue
+    const queueQuery = query(collection(db, 'queue'), orderBy('token', 'asc'));
+    const unsubQueue = onSnapshot(queueQuery, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setQueue(data); // Removed queueData fallback
+    }, (err) => console.error("Firestore Error (Queue):", err));
+
+
+    return () => {
+      unsubAppointments();
+      unsubComplaints();
+      unsubFeedback();
+      unsubQueue();
+    };
+  }, []);
+
+  // Simulated effects for localized state (notifications, doctor availability)
   useEffect(() => {
     const interval = setInterval(() => {
-      setQueue(prev => {
-        const updated = [...prev];
-        if (updated.length > 0) {
-          updated.forEach((item, i) => {
-            updated[i] = { ...item, waitTime: Math.max(0, item.waitTime - 1) };
-          });
-        }
-        return updated;
-      });
-
-      // Cycle doctor statuses
-      setAvailability(prev =>
-        prev.map(doc => ({
-          ...doc,
-          status: doc.status === 'break' ? 'available' : doc.status,
-        }))
-      );
-
       // Push notification
       const msgs = [
         'Token #1 is now being attended in Orthodontics',
@@ -52,28 +80,51 @@ export const AppProvider = ({ children }) => {
       ];
       const msg = msgs[Math.floor(Math.random() * msgs.length)];
       setNotifications(prev => [{ id: Date.now(), msg, time: new Date().toLocaleTimeString() }, ...prev.slice(0, 4)]);
-    }, 60000); // 60-second polling
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const addAppointment = (appt) => {
-    const updated = [appt, ...appointments];
-    setAppointments(updated);
-    localStorage.setItem('rrdch-appointments', JSON.stringify(updated));
+  // --- Firestore Data Operations ---
+  const addAppointment = async (appt) => {
+    try {
+      await addDoc(collection(db, 'appointments'), {
+        ...appt,
+        createdAt: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error adding appointment:", err);
+      throw err;
+    }
   };
 
-  const addComplaint = (complaint) => {
-    const updated = [complaint, ...hostelComplaints];
-    setHostelComplaints(updated);
-    localStorage.setItem('rrdch-complaints', JSON.stringify(updated));
+  const addComplaint = async (complaint) => {
+    try {
+      await addDoc(collection(db, 'complaints'), {
+        ...complaint,
+        createdAt: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error adding complaint:", err);
+      throw err;
+    }
   };
 
-  const addFeedback = (fb) => setFeedbacks(prev => [fb, ...prev]);
+  const addFeedback = async (fb) => {
+    try {
+      await addDoc(collection(db, 'feedbacks'), {
+        ...fb,
+        createdAt: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error adding feedback:", err);
+      throw err;
+    }
+  };
 
   const getAppointment = (query) => {
     return appointments.find(a =>
-      a.id.toLowerCase() === query.toLowerCase() ||
+      (a.id && a.id.toLowerCase() === query.toLowerCase()) ||
       a.phone === query
     );
   };
@@ -89,8 +140,10 @@ export const AppProvider = ({ children }) => {
       notifications,
       searchQuery, setSearchQuery,
       searchOpen, setSearchOpen,
+      loading
     }}>
       {children}
     </AppContext.Provider>
   );
 };
+

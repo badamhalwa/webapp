@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FiTarget, FiEye, FiAward, FiHeart, FiZap, FiShield, FiUser } from 'react-icons/fi';
+import principalImg from '../assets/principal.png';
 
 const timeline = [
   { year: '2001', event: 'RRDCH Founded — first BDS batch admitted' },
@@ -110,12 +111,12 @@ const About = () => {
           <div className="vs-card" style={{ padding: '2.5rem', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '2.5rem', alignItems: 'start' }}>
             {/* Avatar */}
             <div style={{ textAlign: 'center' }}>
-              <div style={{ width: 120, height: 120, borderRadius: '50%', background: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                <FiUser size={48} color="rgba(255,255,255,0.8)" />
+              <div style={{ width: 140, height: 140, borderRadius: '50%', background: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 0 0 4px #e6f0fb', overflow: 'hidden' }}>
+                <img src={principalImg} alt="Dr. Girish H.C." style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>Dr. Suresh Babu R</div>
+              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>Dr. Girish H.C.</div>
               <div style={{ fontSize: 12, color: '#003580', fontFamily: 'Inter, sans-serif', marginTop: 4, fontWeight: 600 }}>Principal &amp; Dean</div>
-              <div style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>MDS, PhD, FICD</div>
+              <div style={{ fontSize: 11, color: '#888', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>MDS, PhD</div>
             </div>
             {/* Message */}
             <div>
@@ -127,7 +128,7 @@ const About = () => {
               ].map((p, i) => (
                 <p key={i} style={{ fontSize: 13.5, lineHeight: 1.85, color: '#374151', fontFamily: 'Inter, sans-serif', marginBottom: 16, fontStyle: 'italic' }}>{p}</p>
               ))}
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#003580', fontFamily: 'Manrope, sans-serif', marginTop: 8 }}>— Dr. Suresh Babu R, Principal &amp; Dean</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#003580', fontFamily: 'Manrope, sans-serif', marginTop: 8 }}>— Dr. Girish H.C., Principal &amp; Dean</div>
             </div>
           </div>
         </div>

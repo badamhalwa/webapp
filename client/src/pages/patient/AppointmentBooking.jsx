@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import toast, { Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 import { departments, doctors } from '../../data/mockData';
-import { Card, FormInput, FormTextarea, FormSelect, Button, PageHero } from '../../components/ui/UIComponents';
-import { FiCheck, FiArrowRight, FiArrowLeft, FiCopy } from 'react-icons/fi';
+import { FiCheck, FiArrowRight, FiArrowLeft, FiCopy, FiCalendar, FiClock, FiUser, FiGrid } from 'react-icons/fi';
 
 const STEPS = ['Patient Info', 'Department', 'Doctor & Time', 'Confirm'];
 
@@ -69,164 +68,290 @@ const AppointmentBooking = () => {
   const minDate = new Date().toISOString().split('T')[0];
 
   if (success) return (
-    <div>
-      <PageHero title={t('appointment.title')} breadcrumb="Home / Patients / Book Appointment"/>
-      <div className="max-w-2xl mx-auto px-4 py-16">
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          className="bg-gradient-to-br from-green-50 to-teal-50 border border-green-200 rounded-2xl p-10 text-center"
-        >
-          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FiCheck size={40} className="text-white"/>
-          </div>
-          <h2 className="text-3xl font-bold text-green-800 mb-2">{t('appointment.success')}</h2>
-          <p className="text-green-700 mb-6">{form.name}, your appointment with <strong>{selectedDoctor?.name}</strong> in <strong>{selectedDept?.name}</strong> is confirmed for <strong>{form.date}</strong> at <strong>{form.time}</strong>.</p>
-          <div className="bg-white rounded-xl p-5 border border-green-200 mb-6">
-            <p className="text-sm text-gray-500 mb-1">{t('appointment.bookingId')}</p>
-            <div className="flex items-center justify-center gap-3">
-              <span className="text-3xl font-black text-rrdch-blue">{bookingId}</span>
-              <button onClick={() => { navigator.clipboard.writeText(bookingId); toast('Copied!'); }}
-                className="p-2 rounded-lg hover:bg-gray-100 text-gray-500" aria-label="Copy booking ID"
-              ><FiCopy/></button>
+    <div style={{ background: '#ffffff' }}>
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto">
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em' }}>
+            {t('appointment.title')}
+          </h1>
+        </div>
+      </section>
+      
+      <div className="vs-section">
+        <div className="max-w-2xl mx-auto">
+          <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+            className="vs-card" style={{ padding: '3rem', textAlign: 'center', background: '#fcfcfd' }}
+          >
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#eaf5ee', color: '#276a27', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <FiCheck size={40} />
             </div>
-            <p className="text-xs text-gray-400 mt-2">Save this ID to track your appointment status</p>
-          </div>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Button onClick={() => { setSuccess(false); setStep(0); setForm({ name:'',phone:'',email:'',dob:'',gender:'',departmentId:'',doctorId:'',date:'',time:'',reason:'' }); }}>Book Another</Button>
-            <Button variant="outline" onClick={() => window.location.href = '/patient/track'}>Track Appointment</Button>
-          </div>
-        </motion.div>
+            <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: '#1a3a3a', marginBottom: 12 }}>{t('appointment.success')}</h2>
+            <p style={{ fontSize: 13.5, color: '#555e6b', lineHeight: 1.6, marginBottom: 24, padding: '0 20px', fontFamily: 'Inter, sans-serif' }}>
+              {form.name}, your appointment with <strong>{selectedDoctor?.name}</strong> in <strong>{selectedDept?.name}</strong> is confirmed for <strong>{form.date}</strong> at <strong>{form.time}</strong>.
+            </p>
+            
+            <div style={{ background: '#ffffff', borderRadius: 12, padding: '20px', border: '1px solid #eaecf0', marginBottom: 32 }}>
+              <p style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, marginBottom: 8 }}>{t('appointment.bookingId')}</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+                <span style={{ fontSize: '2.25rem', fontWeight: 900, color: '#003580', letterSpacing: '0.02em', fontFamily: 'Manrope, sans-serif' }}>{bookingId}</span>
+                <button 
+                  onClick={() => { navigator.clipboard.writeText(bookingId); toast.success('ID Copied!'); }}
+                  style={{ background: '#f7f9fc', border: '1px solid #eaecf0', borderRadius: 8, padding: '8px', cursor: 'pointer', color: '#003580' }}
+                ><FiCopy size={18} /></button>
+              </div>
+              <p style={{ fontSize: 11, color: '#aaa', marginTop: 10 }}>Save this ID to track your queue status later.</p>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button 
+                onClick={() => { setSuccess(false); setStep(0); setForm({ name:'',phone:'',email:'',dob:'',gender:'',departmentId:'',doctorId:'',date:'',time:'',reason:'' }); }}
+                className="vs-btn vs-btn-primary"
+              >Book Another</button>
+              <button 
+                onClick={() => window.location.href = '/patient/track'}
+                className="vs-btn vs-btn-ghost"
+              >Track Status</button>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div>
-      <Toaster position="top-right"/>
-      <PageHero title={t('appointment.title')} subtitle="Complete your appointment booking in 4 simple steps." breadcrumb="Home / Patients / Book Appointment"/>
-
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Stepper */}
-        <div className="flex items-center justify-between mb-10">
-          {STEPS.map((label, i) => (
-            <React.Fragment key={i}>
-              <div className="flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${i < step ? 'bg-rrdch-teal text-white' : i === step ? 'bg-rrdch-blue text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'}`}>
-                  {i < step ? <FiCheck/> : i + 1}
-                </div>
-                <span className={`text-xs mt-1 hidden sm:block ${i === step ? 'text-rrdch-blue font-semibold' : 'text-gray-400'}`}>{label}</span>
-              </div>
-              {i < STEPS.length - 1 && <div className={`flex-1 h-0.5 mx-2 transition-all ${i < step ? 'bg-rrdch-teal' : 'bg-gray-200'}`}></div>}
-            </React.Fragment>
-          ))}
+    <div style={{ background: '#ffffff' }}>
+      <Toaster position="top-right" />
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto">
+          <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>Home</a>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Patients</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Book Appointment</span>
+          </nav>
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            {t('appointment.title')}
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
+            Complete your clinical appointment booking in 4 professional steps.
+          </p>
         </div>
+      </section>
 
-        <Card className="p-8">
-          <AnimatePresence mode="wait">
-            {/* Step 0 – Patient Info */}
-            {step === 0 && (
-              <motion.div key="s0" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} className="space-y-5">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{t('appointment.step1')}</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FormInput id="ap-name" label={t('appointment.name')} required placeholder="Full name" value={form.name} onChange={e => set('name', e.target.value)} error={errors.name}/>
-                  <FormInput id="ap-phone" label={t('appointment.phone')} required placeholder="10-digit number" value={form.phone} onChange={e => set('phone', e.target.value)} error={errors.phone}/>
+      <div className="vs-section">
+        <div className="max-w-3xl mx-auto">
+          
+          {/* ── Stepper ── */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40, padding: '0 10px' }}>
+            {STEPS.map((label, i) => (
+              <React.Fragment key={i}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ 
+                    width: 36, height: 36, borderRadius: '50%', margin: '0 auto 8px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 800, fontFamily: 'Manrope, sans-serif',
+                    background: i < step ? '#009688' : i === step ? '#003580' : '#f2f4f7',
+                    color: i <= step ? '#fff' : '#888',
+                    boxShadow: i === step ? '0 0 0 4px #e6f0fb' : 'none',
+                    transition: 'all 0.3s'
+                  }}>
+                    {i < step ? <FiCheck size={18} /> : i + 1}
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, fontFamily: 'Inter, sans-serif', color: i === step ? '#1a1a2e' : '#888', textTransform: 'uppercase', letterSpacing: '0.02em' }}>{label}</div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FormInput id="ap-email" label={t('appointment.email')} type="email" placeholder="Optional" value={form.email} onChange={e => set('email', e.target.value)}/>
-                  <FormInput id="ap-dob" label={t('appointment.dob')} type="date" value={form.dob} onChange={e => set('dob', e.target.value)}/>
-                </div>
-                <FormSelect id="ap-gender" label={t('appointment.gender')} required value={form.gender} onChange={e => set('gender', e.target.value)} error={errors.gender}>
-                  <option value="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </FormSelect>
-              </motion.div>
-            )}
+                {i < STEPS.length - 1 && (
+                  <div style={{ flex: 1, height: 2, background: i < step ? '#009688' : '#f2f4f7', margin: '0 12px 14px' }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
 
-            {/* Step 1 – Department */}
-            {step === 1 && (
-              <motion.div key="s1" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('appointment.step2')}</h2>
-                {errors.departmentId && <p className="text-red-500 text-sm mb-4">{errors.departmentId}</p>}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {departments.map(d => (
-                    <motion.button key={d.id} whileHover={{ scale: 1.02 }} onClick={() => set('departmentId', String(d.id))}
-                      className={`p-4 rounded-xl border-2 text-left transition-all flex items-center gap-3 ${form.departmentId === String(d.id) ? 'border-rrdch-blue bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
-                      aria-pressed={form.departmentId === String(d.id)}
-                    >
-                      <span className="text-3xl">{d.icon}</span>
-                      <div>
-                        <p className="font-semibold text-sm text-gray-900">{d.name}</p>
-                        <p className="text-xs text-gray-500">HOD: {d.hod}</p>
-                      </div>
-                      {form.departmentId === String(d.id) && <FiCheck className="ml-auto text-rrdch-blue"/>}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 2 – Doctor & Time */}
-            {step === 2 && (
-              <motion.div key="s2" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} className="space-y-5">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{t('appointment.step3')}</h2>
-                <FormSelect id="ap-doctor" label={t('appointment.doctor')} required value={form.doctorId} onChange={e => set('doctorId', e.target.value)} error={errors.doctorId}>
-                  <option value="">Select a doctor</option>
-                  {doctorList.map(d => <option key={d.id} value={d.id}>{d.name} — {d.qualification}</option>)}
-                </FormSelect>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FormInput id="ap-date" label={t('appointment.date')} required type="date" min={minDate} value={form.date} onChange={e => set('date', e.target.value)} error={errors.date}/>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-1">{t('appointment.time')} <span className="text-red-500">*</span></label>
-                    {errors.time && <p className="text-xs text-red-500 mb-1">{errors.time}</p>}
-                    <div className="flex flex-wrap gap-2">
-                      {(selectedDoctor?.slots || doctorList[0]?.slots || ['9:00 AM', '10:00 AM', '11:00 AM']).map(slot => (
-                        <button key={slot} onClick={() => set('time', slot)} aria-pressed={form.time === slot}
-                          className={`px-3 py-1.5 rounded-lg text-sm border-2 transition-all ${form.time === slot ? 'border-rrdch-blue bg-blue-50 text-rrdch-blue font-semibold' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}
-                        >{slot}</button>
-                      ))}
+          <div className="vs-card" style={{ padding: '2.5rem' }}>
+            <AnimatePresence mode="wait">
+              {/* Step 0 – Patient Info */}
+              {step === 0 && (
+                <motion.div key="s0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 16, color: '#1a1a2e', marginBottom: 6 }}>{t('appointment.step1')}</h2>
+                    <p style={{ fontSize: 12, color: '#888', fontFamily: 'Inter, sans-serif' }}>Please provide accurate patient registration details.</p>
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Full Name</label>
+                      <input className="vs-input" placeholder="Enter patient name" value={form.name} onChange={e => set('name', e.target.value)} />
+                      {errors.name && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.name}</div>}
+                    </div>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Mobile Number</label>
+                      <input className="vs-input" placeholder="10-digit phone" value={form.phone} onChange={e => set('phone', e.target.value)} />
+                      {errors.phone && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.phone}</div>}
                     </div>
                   </div>
-                </div>
-                <FormTextarea id="ap-reason" label={t('appointment.reason')} placeholder="Briefly describe your concern..." value={form.reason} onChange={e => set('reason', e.target.value)}/>
-              </motion.div>
-            )}
-
-            {/* Step 3 – Confirm */}
-            {step === 3 && (
-              <motion.div key="s3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('appointment.step4')}</h2>
-                <div className="bg-blue-50 rounded-xl p-6 space-y-3">
-                  {[
-                    ['Patient', form.name], ['Phone', form.phone], ['Gender', form.gender],
-                    ['Department', selectedDept?.name], ['Doctor', selectedDoctor?.name],
-                    ['Date', form.date], ['Time', form.time], ['Reason', form.reason || 'N/A'],
-                  ].map(([k, v]) => (
-                    <div key={k} className="flex justify-between border-b border-blue-100 pb-2">
-                      <span className="text-gray-600 text-sm">{k}</span>
-                      <span className="font-semibold text-gray-900 text-sm text-right">{v}</span>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Email (Optional)</label>
+                      <input className="vs-input" type="email" placeholder="email@example.com" value={form.email} onChange={e => set('email', e.target.value)} />
                     </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500 mt-4">By confirming, you agree to arrive 10 minutes before your scheduled time. Please carry a valid government ID.</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Date of Birth</label>
+                      <input className="vs-input" type="date" value={form.dob} onChange={e => set('dob', e.target.value)} />
+                    </div>
+                  </div>
+                  
+                  <div className="vs-form-group">
+                    <label className="vs-label">Gender</label>
+                    <select className="vs-input" value={form.gender} onChange={e => set('gender', e.target.value)}>
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                    {errors.gender && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.gender}</div>}
+                  </div>
+                </motion.div>
+              )}
 
-          {/* Navigation */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-100">
-            <Button variant="ghost" onClick={back} disabled={step === 0} className={step === 0 ? 'invisible' : ''}>
-              <FiArrowLeft/> {t('common.back')}
-            </Button>
-            {step < STEPS.length - 1 ? (
-              <Button onClick={next}>{t('common.next')} <FiArrowRight/></Button>
-            ) : (
-              <Button onClick={submit} disabled={loading} className="min-w-36 justify-center">
-                {loading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/> Booking...</> : <>{t('appointment.submit')} <FiCheck/></>}
-              </Button>
-            )}
+              {/* Step 1 – Department */}
+              {step === 1 && (
+                <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 16, color: '#1a1a2e', marginBottom: 6 }}>{t('appointment.step2')}</h2>
+                    <p style={{ fontSize: 12, color: '#888', fontFamily: 'Inter, sans-serif' }}>Select the specific clinical department for your visit.</p>
+                  </div>
+                  
+                  {errors.departmentId && <p style={{ color: '#e8282b', fontSize: 12, marginBottom: 12 }}>{errors.departmentId}</p>}
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    {departments.map(d => (
+                      <button 
+                        key={d.id} 
+                        onClick={() => set('departmentId', String(d.id))}
+                        style={{ 
+                          padding: '16px', borderRadius: 12, border: '2px solid', textAlign: 'left',
+                          display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', transition: 'all 0.2s',
+                          background: form.departmentId === String(d.id) ? '#f0f4f8' : '#ffffff',
+                          borderColor: form.departmentId === String(d.id) ? '#003580' : '#eaecf0'
+                        }}
+                      >
+                        <div style={{ fontSize: '1.5rem', width: 44, height: 44, borderRadius: 8, background: '#f7f9fc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{d.icon}</div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{d.name}</div>
+                          <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{d.hod}</div>
+                        </div>
+                        {form.departmentId === String(d.id) && <FiCheck color="#003580" />}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 2 – Doctor */}
+              {step === 2 && (
+                <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 16, color: '#1a1a2e', marginBottom: 6 }}>{t('appointment.step3')}</h2>
+                    <p style={{ fontSize: 12, color: '#888', fontFamily: 'Inter, sans-serif' }}>Choose your specialist and preferred time slot.</p>
+                  </div>
+                  
+                  <div className="vs-form-group" style={{ marginBottom: 20 }}>
+                    <label className="vs-label">Select Specialist</label>
+                    <select className="vs-input" value={form.doctorId} onChange={e => set('doctorId', e.target.value)}>
+                      <option value="">Choose a doctor...</option>
+                      {doctorList.map(d => <option key={d.id} value={d.id}>{d.name} — {d.qualification}</option>)}
+                    </select>
+                    {errors.doctorId && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.doctorId}</div>}
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Appointment Date</label>
+                      <input className="vs-input" type="date" min={minDate} value={form.date} onChange={e => set('date', e.target.value)} />
+                      {errors.date && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.date}</div>}
+                    </div>
+                    <div className="vs-form-group">
+                      <label className="vs-label">Time Slot</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {(selectedDoctor?.slots || ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM']).map(slot => (
+                          <button 
+                            key={slot} 
+                            onClick={() => set('time', slot)}
+                            style={{ 
+                              padding: '6px 12px', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                              background: form.time === slot ? '#003580' : '#ffffff',
+                              color: form.time === slot ? '#fff' : '#1a1a2e',
+                              border: form.time === slot ? '1px solid #003580' : '1px solid #eaecf0'
+                            }}
+                          >{slot}</button>
+                        ))}
+                      </div>
+                      {errors.time && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 8 }}>{errors.time}</div>}
+                    </div>
+                  </div>
+                  
+                  <div className="vs-form-group">
+                    <label className="vs-label">Reason for Visit</label>
+                    <textarea className="vs-input" style={{ height: 80, resize: 'none' }} placeholder="Briefly describe your dental concern..." value={form.reason} onChange={e => set('reason', e.target.value)}></textarea>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 3 – Confirm */}
+              {step === 3 && (
+                <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: 16, color: '#1a1a2e', marginBottom: 6 }}>{t('appointment.step4')}</h2>
+                    <p style={{ fontSize: 12, color: '#888', fontFamily: 'Inter, sans-serif' }}>Please verify your appointment summary before confirming.</p>
+                  </div>
+                  
+                  <div style={{ background: '#f7f9fc', border: '1px solid #eaecf0', borderRadius: 12, padding: '20px' }}>
+                    {[
+                      { icon: FiUser, label: 'Patient Name', val: form.name },
+                      { icon: FiGrid, label: 'Clinical Unit', val: selectedDept?.name },
+                      { icon: FiUser, label: 'Consultant', val: selectedDoctor?.name },
+                      { icon: FiCalendar, label: 'Scheduled Date', val: form.date },
+                      { icon: FiClock, label: 'Arrival Time', val: form.time },
+                    ].map((row, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: idx < 4 ? '1px solid #eaecf0' : 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: '#888', fontFamily: 'Inter, sans-serif' }}>
+                          <row.icon size={14} /> {row.label}
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{row.val}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: 11, color: '#888', marginTop: 16, fontStyle: 'italic', lineHeight: 1.5 }}>
+                    * By confirming, you agree to report to the registration desk 15 minutes prior to your time slot.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Pagination */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, paddingTop: 24, borderTop: '1px solid #f2f4f7' }}>
+              <button 
+                onClick={back} 
+                disabled={step === 0} 
+                className="vs-btn vs-btn-ghost" 
+                style={{ height: 44, padding: '0 24px', visibility: step === 0 ? 'hidden' : 'visible' }}
+              ><FiArrowLeft /> {t('common.back')}</button>
+              
+              {step < STEPS.length - 1 ? (
+                <button onClick={next} className="vs-btn vs-btn-primary" style={{ height: 44, padding: '0 32px' }}>
+                  {t('common.next')} <FiArrowRight />
+                </button>
+              ) : (
+                <button onClick={submit} disabled={loading} className="vs-btn vs-btn-primary" style={{ height: 44, padding: '0 40px' }}>
+                  {loading ? 'Processing...' : 'Confirm Appointment'}
+                </button>
+              )}
+            </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

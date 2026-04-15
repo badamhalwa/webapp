@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import toast, { Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
-import { Card, FormTextarea, FormSelect, Button, PageHero } from '../../components/ui/UIComponents';
-import { FiStar } from 'react-icons/fi';
+import { FiStar, FiCheckCircle, FiMessageSquare } from 'react-icons/fi';
 import { departments } from '../../data/mockData';
 
 const Feedback = () => {
@@ -40,82 +39,124 @@ const Feedback = () => {
 
   const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
-  if (submitted) return (
-    <div>
-      <PageHero title={t('feedback.title')} breadcrumb="Home / Patients / Feedback"/>
-      <div className="max-w-xl mx-auto px-4 py-16">
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          className="bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-200 rounded-2xl p-10 text-center"
-        >
-          <div className="text-7xl mb-4">🙏</div>
-          <h2 className="text-2xl font-bold text-teal-800 mb-2">{t('feedback.success')}</h2>
-          <p className="text-teal-700 mb-6">Your {ratingLabels[form.rating]} rating has been recorded. Your feedback helps us improve our services.</p>
-          <div className="flex justify-center mb-6">
-            {[...Array(5)].map((_, i) => (
-              <FiStar key={i} size={28} className={i < form.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}/>
-            ))}
-          </div>
-          <Button onClick={() => { setSubmitted(false); setForm({ name: '', department: '', rating: 0, comment: '' }); }}>
-            Submit Another
-          </Button>
-        </motion.div>
-      </div>
-    </div>
-  );
-
   return (
-    <div>
-      <Toaster position="top-right"/>
-      <PageHero title={t('feedback.title')} subtitle="Your feedback helps us continuously improve our services for all patients." breadcrumb="Home / Patients / Feedback"/>
+    <div style={{ background: '#ffffff' }}>
+      <Toaster position="top-right" />
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto">
+          <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>Home</a>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Patients</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>Patient Feedback</span>
+          </nav>
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            Experience Feedback
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
+            Your insights help us maintain the highest standards of clinical excellence and patient care.
+          </p>
+        </div>
+      </section>
 
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <Card className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Your Name <span className="text-red-500">*</span></label>
-              <input id="fb-name" className={`w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rrdch-blue ${errors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
-                placeholder="Your name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} aria-required="true"
-              />
-              {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
-            </div>
+      <div className="vs-section">
+        <div className="max-w-2xl mx-auto">
+          
+          <div className="vs-card" style={{ padding: '3rem' }}>
+            {submitted ? (
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ textAlign: 'center' }}>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#eaf5ee', color: '#276a27', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                  <FiCheckCircle size={32} />
+                </div>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.5rem', color: '#1a1a2e', marginBottom: 12 }}>Feedback Recorded</h3>
+                <p style={{ fontSize: 14, color: '#555e6b', lineHeight: 1.6, marginBottom: 24, fontFamily: 'Inter, sans-serif' }}>
+                  Thank you for sharing your {ratingLabels[form.rating]} experience. Your input has been forwarded to our quality assurance team.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 32 }}>
+                  {[...Array(5)].map((_, i) => (
+                    <FiStar key={i} size={28} style={{ color: i < form.rating ? '#f59e0b' : '#eaecf0', fill: i < form.rating ? '#f59e0b' : 'none' }} />
+                  ))}
+                </div>
+                <button onClick={() => { setSubmitted(false); setForm({ name: '', department: '', rating: 0, comment: '' }); }} className="vs-btn vs-btn-primary">
+                  Submit New Feedback
+                </button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div className="vs-form-group">
+                   <label className="vs-label">Full Name</label>
+                   <input className="vs-input" placeholder="Your name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                   {errors.name && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.name}</div>}
+                </div>
 
-            <FormSelect id="fb-dept" label="Department Visited" value={form.department} onChange={e => setForm({...form, department: e.target.value})}>
-              <option value="">Select department (optional)</option>
-              {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
-            </FormSelect>
+                <div className="vs-form-group">
+                   <label className="vs-label">Department Visited</label>
+                   <select className="vs-input" value={form.department} onChange={e => setForm({...form, department: e.target.value})}>
+                     <option value="">Select clinical unit (optional)</option>
+                     {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                   </select>
+                </div>
 
-            {/* Star Rating */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('feedback.rating')} <span className="text-red-500">*</span></label>
-              <div className="flex gap-2 mb-1" role="radiogroup" aria-label="Rating">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button key={star} type="button"
-                    onClick={() => { setForm({...form, rating: star}); setErrors(e => ({...e, rating: ''})); }}
-                    onMouseEnter={() => setHoverRating(star)} onMouseLeave={() => setHoverRating(0)}
-                    className="transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-full p-1"
-                    aria-label={`${star} star${star > 1 ? 's' : ''}`} aria-pressed={form.rating === star}
-                  >
-                    <FiStar size={36} className={star <= (hoverRating || form.rating) ? 'text-amber-400 fill-amber-400' : 'text-gray-300'} />
-                  </button>
-                ))}
-              </div>
-              {(hoverRating || form.rating) > 0 && (
-                <p className="text-sm text-amber-600 font-medium">{ratingLabels[hoverRating || form.rating]}</p>
-              )}
-              {errors.rating && <p className="text-xs text-red-500 mt-1">{errors.rating}</p>}
-            </div>
+                <div className="vs-form-group">
+                   <label className="vs-label">Rating of Service</label>
+                   <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <button 
+                          key={star} 
+                          type="button"
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => { setForm({...form, rating: star}); setErrors(e => ({...e, rating: ''})); }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0 }}
+                        >
+                          <FiStar 
+                            size={32} 
+                            style={{ 
+                              color: star <= (hoverRating || form.rating) ? '#f59e0b' : '#eaecf0', 
+                              fill: star <= (hoverRating || form.rating) ? '#f59e0b' : 'none',
+                              transition: 'all 0.2s'
+                            }} 
+                          />
+                        </button>
+                      ))}
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#f59e0b', marginLeft: 10, display: 'flex', alignItems: 'center', fontFamily: 'Manrope, sans-serif' }}>
+                        {ratingLabels[hoverRating || form.rating]}
+                      </div>
+                   </div>
+                   {errors.rating && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.rating}</div>}
+                </div>
 
-            <FormTextarea id="fb-comment" label={t('feedback.comment')} required
-              placeholder="Please share your experience about our services, doctors, staff, facilities..."
-              value={form.comment} onChange={e => setForm({...form, comment: e.target.value})} error={errors.comment}
-            />
+                <div className="vs-form-group">
+                   <label className="vs-label">Your Experience</label>
+                   <textarea 
+                     className="vs-input" 
+                     style={{ height: 120, resize: 'none' }} 
+                     placeholder="Please provide details about your visit, wait times, staff behavior, etc..."
+                     value={form.comment}
+                     onChange={e => setForm({...form, comment: e.target.value})}
+                   />
+                   {errors.comment && <div style={{ color: '#e8282b', fontSize: 11, marginTop: 4 }}>{errors.comment}</div>}
+                </div>
 
-            <Button type="submit" size="lg" className="w-full justify-center" disabled={loading}>
-              {loading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/> Submitting...</> : t('feedback.submit')}
-            </Button>
-          </form>
-        </Card>
+                <button type="submit" disabled={loading} className="vs-btn vs-btn-primary" style={{ height: 50, fontSize: 14 }}>
+                  {loading ? 'Submitting...' : <><FiMessageSquare /> Dispatch Feedback</>}
+                </button>
+              </form>
+            )}
+          </div>
+          
+          <div style={{ marginTop: 32, textAlign: 'center' }}>
+             <p style={{ fontSize: 12, color: '#888', fontStyle: 'italic', fontFamily: 'Inter, sans-serif' }}>
+                * All feedback is reviewed confidentially by our medical superintendent.
+             </p>
+          </div>
+
+        </div>
       </div>
+
     </div>
   );
 };

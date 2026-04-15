@@ -6,7 +6,9 @@ import './i18n/i18n';
 
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import StudentGuard from './components/auth/StudentGuard'; // Added import
 import { LoadingSpinner } from './components/ui/UIComponents';
+
 
 // Pages
 import Home from './pages/Home';
@@ -18,6 +20,7 @@ import VirtualTour from './pages/VirtualTour';
 import Events from './pages/Events';
 import Admissions from './pages/Admissions';
 import SearchPage from './pages/SearchPage';
+import Faculty from './pages/Faculty';
 
 // Patient pages
 import AppointmentBooking from './pages/patient/AppointmentBooking';
@@ -56,6 +59,7 @@ function App() {
                 <Route path="/events" element={<Events />} />
                 <Route path="/admissions" element={<Admissions />} />
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/faculty" element={<Faculty />} />
 
                 {/* Patient */}
                 <Route path="/patient/book" element={<AppointmentBooking />} />
@@ -66,10 +70,16 @@ function App() {
                 <Route path="/patient/feedback" element={<Feedback />} />
 
                 {/* Student */}
-                <Route path="/student/dashboard" element={<StudentDashboard />} />
-                <Route path="/student/syllabus" element={<Syllabus />} />
-                <Route path="/student/schedule" element={<Schedule />} />
-                <Route path="/student/hostel" element={<HostelComplaints />} />
+                <Route path="/student/*" element={
+                  <StudentGuard>
+                    <Routes>
+                      <Route path="dashboard" element={<StudentDashboard />} />
+                      <Route path="syllabus" element={<Syllabus />} />
+                      <Route path="schedule" element={<Schedule />} />
+                      <Route path="hostel" element={<HostelComplaints />} />
+                    </Routes>
+                  </StudentGuard>
+                } />
 
                 {/* Faculty */}
                 <Route path="/faculty/pg" element={<PGDoctorDashboard />} />

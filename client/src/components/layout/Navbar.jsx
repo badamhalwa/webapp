@@ -14,6 +14,7 @@ import {
 const MAIN_NAV = [
   { label: 'Home',        path: '/' },
   { label: 'About Us',    path: '/about' },
+  { label: 'Faculty',     path: '/faculty' },
   { label: 'Departments', path: '/departments' },
   { label: 'Research',    path: '/research' },
 ];
@@ -98,6 +99,8 @@ const NavDropdown = ({ label, links, active }) => {
     </div>
   );
 };
+
+import logo from '../../assets/logo.png';
 
 /* ── Main Navbar ── */
 const Navbar = () => {
@@ -222,7 +225,7 @@ const Navbar = () => {
       <nav className="navbar" role="navigation" aria-label="Main navigation">
         {/* Brand */}
         <Link to="/" className="navbar-brand">
-          <div className="navbar-logo-mark">R</div>
+          <img src={logo} alt="RRDCH Logo" style={{ height: '48px', width: 'auto' }} />
           <div>
             <span className="navbar-name-main">RRDCH</span>
             <span className="navbar-name-sub">Dental College &amp; Hospital</span>
