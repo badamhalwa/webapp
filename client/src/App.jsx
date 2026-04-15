@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import Chatbot from './components/ui/Chatbot';
 import StudentGuard from './components/auth/StudentGuard'; // Added import
 import { LoadingSpinner } from './components/ui/UIComponents';
 
@@ -102,6 +103,7 @@ function App() {
           </main>
           <Footer />
         </div>
+        <Chatbot />
         <Toaster position="top-right" toastOptions={{ style: { borderRadius: '12px', fontFamily: 'Inter, sans-serif' } }}/>
       </BrowserRouter>
     </AppProvider>

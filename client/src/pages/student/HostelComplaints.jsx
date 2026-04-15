@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHome, FiSend, FiList, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
+import { FiHome, FiSend, FiList, FiCheckCircle, FiAlertCircle, FiShield, FiFileText } from 'react-icons/fi';
+import toast, { Toaster } from 'react-hot-toast';
 
 const HostelComplaints = () => {
   const { t, i18n } = useTranslation();
@@ -20,142 +21,182 @@ const HostelComplaints = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.category) {
+      toast.error(lang === 'kn' ? 'ದಯವಿಟ್ಟು ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Please select a category');
+      return;
+    }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
+      toast.success(lang === 'kn' ? 'ದೂರನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ' : 'Complaint submitted successfully');
     }, 1500);
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Hero */}
-      <section className="bg-purple-700 text-white py-16 px-4">
+    <div style={{ background: '#ffffff', minHeight: '100vh' }}>
+      <Toaster position="top-right" />
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-4">{t('nav.hostelComplaints')}</h1>
-          <p className="text-purple-100 max-w-2xl">{t('hostel.subtitle')}</p>
+          <nav className="vs-breadcrumb" style={{ marginBottom: 10 }}>
+            <a href="/" style={{ color: 'rgba(255,255,255,0.55)', textDecoration: 'none', fontSize: 12 }}>{t('nav.home')}</a>
+            <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 6px', fontSize: 12 }}>/</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('nav.hostelComplaints')}</span>
+          </nav>
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            {lang === 'kn' ? 'ವಸತಿ ನಿಲಯದ ದೂರು ಕೇಂದ್ರ' : 'Hostel Help Desk'}
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
+            {lang === 'kn' ? 'ವಸತಿ ನಿಲಯದಲ್ಲಿನ ಯಾವುದೇ ನಿರ್ವಹಣೆ ಮತ್ತು ಇತರ ಸಮಸ್ಯೆಗಳನ್ನು ಇಲ್ಲಿ ವರದಿ ಮಾಡಿ.' : 'Report maintenance issues, electrical problems, or facility requests directly to the hostel management.'}
+          </p>
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Instructions Sidebar */}
-          <div className="md:col-span-1 space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><FiAlertCircle className="text-purple-600"/> {lang === 'kn' ? 'ಮಾರ್ಗಸೂಚಿಗಳು' : 'Guidelines'}</h3>
-              <ul className="space-y-3">
-                {[
-                  lang === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸಿದ 24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ರಮ ಕೈಗೊಳ್ಳಲಾಗುವುದು.' : 'Issues are typically resolved within 24 working hours.',
-                  lang === 'kn' ? 'ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ವಾರ್ಡನ್ ಸಂಖ್ಯೆಗೆ ಕರೆ ಮಾಡಿ.' : 'For emergencies, contact the warden directly.',
-                  lang === 'kn' ? 'ದೂರಿನ ಸ್ಥಿತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಐಡಿಯಲ್ಲಿ ನೋಡಿ.' : 'Keep your complaint ID for tracking status.'
-                ].map((text, i) => (
-                  <li key={i} className="text-xs text-gray-500 leading-relaxed flex gap-2">
-                    <span className="text-purple-500 font-black">•</span> {text}
-                  </li>
-                ))}
-              </ul>
+      <div className="vs-section">
+        <div className="max-w-7xl mx-auto px-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: 32, alignItems: 'start' }}>
+            
+            {/* Form Area */}
+            <div>
+              <AnimatePresence mode="wait">
+                {!submitted ? (
+                  <motion.div
+                    key="form"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    className="vs-card"
+                    style={{ padding: '2.5rem' }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24, borderBottom: '1px solid #f2f4f7', paddingBottom: 16 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: '#e6f0fb', color: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <FiFileText size={20} />
+                      </div>
+                      <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#1a1a2e' }}>{lang === 'kn' ? 'ಹೊಸ ದೂರು ಸಲ್ಲಿಸಿ' : 'Submit New Complaint'}</h2>
+                    </div>
+                    
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                        <div className="vs-form-group">
+                          <label className="vs-label">{lang === 'kn' ? 'ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು' : 'Student Name'}</label>
+                          <input className="vs-input" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required placeholder="e.g. Akash Kumar" />
+                        </div>
+                        <div className="vs-form-group">
+                          <label className="vs-label">{lang === 'kn' ? 'ಕೊಠಡಿ ಸಂಖ‍್ಯೆ' : 'Room Number'}</label>
+                          <input className="vs-input" value={form.room} onChange={e=>setForm({...form, room: e.target.value})} required placeholder="e.g. B-302" />
+                        </div>
+                      </div>
+
+                      <div className="vs-form-group">
+                        <label className="vs-label">{lang === 'kn' ? 'ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ' : 'Issue Category'}</label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                          {categories.map(c => (
+                            <button
+                              key={c.id} type="button"
+                              onClick={() => setForm({...form, category: c.id})}
+                              style={{ 
+                                padding: '8px 16px', 
+                                borderRadius: 10, 
+                                fontSize: 12, 
+                                fontWeight: 700, 
+                                border: '1.5px solid',
+                                transition: 'all 0.2s',
+                                cursor: 'pointer',
+                                background: form.category === c.id ? '#003580' : '#fff',
+                                borderColor: form.category === c.id ? '#003580' : '#e2e8f0',
+                                color: form.category === c.id ? '#fff' : '#64748b'
+                              }}
+                            >
+                              {c.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="vs-form-group">
+                        <label className="vs-label">{lang === 'kn' ? 'ದೂರಿನ ವಿವರ' : 'Description of Issue'}</label>
+                        <textarea className="vs-input" style={{ minHeight: 120, resize: 'none' }} value={form.description} onChange={e=>setForm({...form, description: e.target.value})} required placeholder={lang === 'kn' ? 'ನಿಮ್ಮ ದೂರನ್ನು ಸವಿಸ್ತಾರವಾಗಿ ವಿವರಿಸಿ...' : 'Describe the issue in detail...'} />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="vs-btn vs-btn-primary"
+                        style={{ height: 50, fontSize: 14, justifyContent: 'center', width: '100%' }}
+                      >
+                        {loading ? 'Processing...' : <><FiSend /> {lang === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸಿ' : 'Submit Complaint'}</>}
+                      </button>
+                    </form>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="vs-card"
+                    style={{ padding: '4rem 2rem', textAlign: 'center' }}
+                  >
+                    <div style={{ width: 80, height: 80, background: '#eaf5ee', color: '#009688', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                      <FiCheckCircle size={40} />
+                    </div>
+                    <h2 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.5rem', color: '#1a1a2e', marginBottom: 12 }}>{lang === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸಲಾಗಿದೆ!' : 'Complaint Logged!'}</h2>
+                    <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32, maxWidth: 350, margin: '0 auto 32px' }}>
+                      {lang === 'kn' ? 'ನಿಮ್ಮ ದೂರನ್ನು ದಾಖಲಿಸಲಾಗಿದೆ. ವಾರ್ಡನ್ ತಂಡವು ಶೀಘ್ರದಲ್ಲೇ ಕ್ರಮ ಕೈಗೊಳ್ಳಲಿದೆ.' : 'Your request has been registered. The maintenance team will be notified shortly.'}
+                    </p>
+                    <button
+                      onClick={() => setSubmitted(false)}
+                      className="vs-btn vs-btn-outline"
+                      style={{ margin: '0 auto' }}
+                    >
+                      {lang === 'kn' ? 'ಮತ್ತೊಂದು ದೂರು ಸಲ್ಲಿಸಿ' : 'Submit Another Request'}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Sidebar Tools */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              
+              <div className="vs-card" style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                  <FiAlertCircle color="#003580" size={20} />
+                  <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 15, color: '#1a1a2e' }}>{lang === 'kn' ? 'ಮಾರ್ಗಸೂಚಿಗಳು' : 'Important Notes'}</h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {[
+                    lang === 'kn' ? 'ದೂರು ಸಲ್ಲಿಸಿದ 24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ರಮ ಕೈಗೊಳ್ಳಲಾಗುವುದು.' : 'Issues are typically resolved within 24 working hours.',
+                    lang === 'kn' ? 'ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ವಾರ್ಡನ್ ಸಂಖ್ಯೆಗೆ ಕರೆ ಮಾಡಿ.' : 'For medical or safety emergencies, contact the warden.',
+                    lang === 'kn' ? 'ನಿರ್ವಹಣಾ ಶುಲ್ಕವು ಉಚಿತವಾಗಿರುತ್ತದೆ.' : 'Routine maintenance is covered by hostel services.'
+                  ].map((text, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'start' }}>
+                      <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#003580', marginTop: 6, flexShrink: 0 }}></div>
+                      <p style={{ fontSize: 12, color: '#555e6b', lineHeight: 1.5, fontFamily: 'Inter, sans-serif' }}>{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: '#003580', padding: '1.75rem', borderRadius: 16, color: '#fff', boxShadow: '0 10px 15px -3px rgba(0,53,128,0.2)' }}>
+                <FiShield size={32} style={{ marginBottom: 16, opacity: 0.8 }} />
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 16, marginBottom: 8 }}>{lang === 'kn' ? 'ಸ್ಥಿತಿ ಪತ್ತೆಹಚ್ಚಿ' : 'Track Response'}</h3>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: 20 }}>
+                  {lang === 'kn' ? 'ನಿಮ್ಮ ದೂರಿನ ಸ್ಥಿತಿಯನ್ನು ತಿಳಿಯಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.' : 'Monitor the progress of your submitted complaints in real-time.'}
+                </p>
+                <button style={{ width: '100%', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                  {lang === 'kn' ? 'ಟ್ರ್ಯಾಕ್ ಮಾಡಿ' : 'Track Status'}
+                </button>
+              </div>
+
             </div>
             
-            <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg">
-              <FiList size={28} className="mb-4 opacity-80" />
-              <h3 className="font-bold mb-2">{t('hostel.track')}</h3>
-              <p className="text-xs text-purple-100 mb-4 opacity-80">{lang === 'kn' ? 'ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿ ಸ್ಥಿತಿಯನ್ನು ಪತ್ತೆಹಚ್ಚಿ.' : 'Check the progress of your previously submitted complaints.'}</p>
-              <button className="w-full bg-white/20 hover:bg-white/30 py-2.5 rounded-xl font-bold text-sm transition-colors border border-white/10 uppercase tracking-widest">{lang === 'kn' ? 'ಸ್ಥಿತಿ ನೋಡಿ' : 'Check Status'}</button>
-            </div>
-          </div>
-
-          {/* Form Area */}
-          <div className="md:col-span-2">
-            <AnimatePresence mode="wait">
-              {!submitted ? (
-                <motion.div
-                  key="form"
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl"
-                >
-                  <SectionHeader title={t('hostel.head')} />
-                  
-                  <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.name')}</label>
-                        <input className="vs-input" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required placeholder="e.g. Rahul Kumar" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.room')}</label>
-                        <input className="vs-input" value={form.room} onChange={e=>setForm({...form, room: e.target.value})} required placeholder="e.g. B-302" />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.category')}</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {categories.map(c => (
-                          <button
-                            key={c.id} type="button"
-                            onClick={() => setForm({...form, category: c.id})}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                              form.category === c.id ? 'bg-purple-600 border-purple-600 text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-purple-200'
-                            }`}
-                          >
-                            {c.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('hostel.description')}</label>
-                      <textarea className="vs-input min-h-[120px]" value={form.description} onChange={e=>setForm({...form, description: e.target.value})} required placeholder={lang === 'kn' ? 'ನಿಮ್ಮ ದೂರನ್ನು ಸವಿಸ್ತಾರವಾಗಿ ವಿವರಿಸಿ...' : 'Describe the issue in detail...'} />
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading || !form.category}
-                      className="w-full bg-purple-700 hover:bg-purple-800 text-white py-4 rounded-2xl font-bold shadow-lg shadow-purple-200 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale"
-                    >
-                      {loading ? t('common.loading') : <><FiSend /> {t('hostel.submit')}</>}
-                    </button>
-                  </form>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white p-12 rounded-2xl border border-gray-100 shadow-xl text-center"
-                >
-                  <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <FiCheckCircle size={40} />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('hostel.success')}</h2>
-                  <p className="text-gray-500 mb-8">{t('hostel.successSub')}</p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="vs-btn vs-btn-outline mx-auto"
-                  >
-                    {lang === 'kn' ? 'ಹೊಸ ದೂರು ಸಲ್ಲಿಸಿ' : 'Submit New Complaint'}
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-/* Helper for header inside form */
-const SectionHeader = ({ title }) => (
-  <div className="border-b border-gray-100 pb-4 mb-4">
-    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <FiHome className="text-purple-600" /> {title}
-    </h2>
-  </div>
-);
 
 export default HostelComplaints;

@@ -146,6 +146,9 @@ export const researchPublications = [
   { title: 'Orthodontic Treatment Outcomes in Mixed Dentition Phase', authors: 'Dr. Shwetha G S', journal: 'American Journal of Orthodontics', year: 2023, department: 'Orthodontics' },
   { title: 'Effectiveness of Silver Diamine Fluoride in Paediatric Patients', authors: 'Dr. Shakuntala. B. S., Dr. Nagarathna. C', journal: 'Paediatric Dentistry Journal', year: 2024, department: 'Paediatric Dentistry' },
   { title: 'Quality of Life Assessment in Edentulous Patients with Implant-Supported Prosthesis', authors: 'Dr. Krishna Kumar. U', journal: 'Journal of Prosthetic Dentistry', year: 2023, department: 'Prosthodontics' },
+  { title: 'Digital Radiography vs Conventional Methods: A Diagnostic Accuracy Study', authors: 'Dr. Poornima. C, Dr. Balaji.P', journal: 'Dentomaxillofacial Radiology', year: 2024, department: 'Oral Medicine' },
+  { title: 'Surgical Management of Mandibular Fractures: A 5-Year Retrospective Study', authors: 'Dr. Mamatha. N. S., Dr. Madhumathi Singh', journal: 'International Journal of Oral & Maxillofacial Surgery', year: 2023, department: 'Oral Surgery' },
+  { title: 'Evaluation of Patient Satisfaction in Public Health Dentistry Outreach', authors: 'Dr. C. N. Aruna, Dr. Padma. K. Bhat', journal: 'Journal of Community Health', year: 2024, department: 'Public Health' },
 ];
 
 export const achievements = [

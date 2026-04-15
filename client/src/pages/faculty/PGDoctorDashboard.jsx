@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
-import { Card, StatusBadge, SectionHeader } from '../../components/ui/UIComponents';
+import { StatusBadge } from '../../components/ui/UIComponents';
 import { pgSchedule, doctorAvailability } from '../../data/mockData';
-import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff, FiShield, FiUser, FiActivity, FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
 
-// PIN gate — protects PG doctor private schedule from public view
-// Demo PIN: 1234
 const DEMO_PIN = '1234';
 
 const PINGate = ({ onUnlock }) => {
   const [pin, setPin] = useState('');
-  const [showPin, setShowPin] = useState(false);
   const [error, setError] = useState('');
   const [shaking, setShaking] = useState(false);
 
@@ -25,7 +22,7 @@ const PINGate = ({ onUnlock }) => {
           if (next === DEMO_PIN) {
             onUnlock();
           } else {
-            setError('Incorrect PIN. Please try again.');
+            setError('Incorrect access code.');
             setShaking(true);
             setPin('');
             setTimeout(() => setShaking(false), 500);
@@ -38,60 +35,65 @@ const PINGate = ({ onUnlock }) => {
   const handleBackspace = () => setPin(p => p.slice(0, -1));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f2d42] to-[#1a4a6b] flex items-center justify-center px-4">
+    <div style={{ minHeight: '100vh', background: '#f0f4f8', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 20px' }}>
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={shaking ? { x: [-8, 8, -8, 8, 0] } : { scale: 1, opacity: 1 }}
         transition={shaking ? { duration: 0.4 } : { type: 'spring', stiffness: 200 }}
-        className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm text-center"
+        style={{ background: '#ffffff', borderRadius: 32, boxShadow: '0 20px 50px rgba(0, 53, 128, 0.1)', padding: '40px', width: '100%', maxWidth: 400, textAlign: 'center', border: '1px solid #e2e8f0' }}
       >
-        <div className="w-16 h-16 bg-gradient-to-br from-[#1a4a6b] to-[#1e5a85] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-          <FiLock size={28} className="text-white"/>
+        <div style={{ width: 64, height: 64, background: '#003580', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#fff' }}>
+          <FiShield size={30} />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">PG Doctor Portal</h1>
-        <p className="text-gray-500 text-sm mb-6">Enter your 4-digit access PIN to continue</p>
+        <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.5rem', color: '#1a1a2e', marginBottom: 6 }}>PG Portal Access</h1>
+        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#64748b', marginBottom: 30 }}>Please enter your authorized 4-digit PIN</p>
 
-        {/* PIN dots */}
-        <div className="flex justify-center gap-4 mb-6">
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 30 }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className={`w-4 h-4 rounded-full border-2 transition-all ${i < pin.length ? 'bg-[#1a4a6b] border-[#1a4a6b] scale-110' : 'bg-transparent border-gray-300'}`}/>
+            <div key={i} style={{ 
+              width: 14, height: 14, borderRadius: '50%', border: '2px solid #cbd5e1', 
+              transition: 'all 0.2s',
+              background: i < pin.length ? '#003580' : 'transparent',
+              borderColor: i < pin.length ? '#003580' : '#cbd5e1',
+              transform: i < pin.length ? 'scale(1.2)' : 'scale(1)'
+            }}/>
           ))}
         </div>
 
         {error && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-sm mb-4 bg-red-50 py-2 px-4 rounded-lg">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ background: '#fef2f2', color: '#ef4444', fontSize: 12, fontWeight: 600, padding: '10px', borderRadius: 12, marginBottom: 20 }}>
             {error}
-          </motion.p>
+          </motion.div>
         )}
 
-        {/* Numpad */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
           {[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map((d, i) => (
             <button key={i}
               onClick={() => d === '⌫' ? handleBackspace() : d !== '' ? handleDigit(String(d)) : null}
               disabled={d === ''}
-              className={`h-14 rounded-2xl text-xl font-semibold transition-all ${
-                d === '⌫' ? 'text-gray-400 hover:bg-red-50 hover:text-red-500'
-                : d === '' ? 'opacity-0 cursor-default'
-                : 'bg-gray-50 hover:bg-[#1a4a6b] hover:text-white text-gray-900 active:scale-95'
-              }`}
-              aria-label={d === '⌫' ? 'Backspace' : `Digit ${d}`}
+              style={{ 
+                height: 60, borderRadius: 18, border: 'none', background: d === '⌫' ? 'transparent' : '#f8fafc',
+                fontSize: 20, fontWeight: 700, color: d === '⌫' ? '#ef4444' : '#1e293b',
+                cursor: d === '' ? 'default' : 'pointer', transition: 'all 0.2s',
+                opacity: d === '' ? 0 : 1
+              }}
+              onMouseEnter={(e) => { if(d !== '' && d !== '⌫') e.target.style.background = '#e2e8f0'; }}
+              onMouseLeave={(e) => { if(d !== '' && d !== '⌫') e.target.style.background = '#f8fafc'; }}
             >
               {d}
             </button>
           ))}
         </div>
 
-        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-left">
-          <p className="text-xs text-amber-700 font-semibold mb-1">🔑 Demo Access</p>
-          <p className="text-xs text-amber-600">Use PIN: <strong>1234</strong> to access the dashboard</p>
+        <div style={{ padding: '12px', background: '#fffbeb', borderRadius: 12, border: '1px solid #fef3c7', textAlign: 'left' }}>
+          <p style={{ fontSize: 11, fontWeight: 800, color: '#92400e', marginBottom: 2 }}>🔑 DEMO ACCESS</p>
+          <p style={{ fontSize: 11, color: '#b45309' }}>Use access code: <strong style={{ fontWeight: 800 }}>1234</strong></p>
         </div>
       </motion.div>
     </div>
   );
 };
 
-// ─── Main Dashboard (authenticated) ──────────────────────────────────────────
 const PGDoctorDashboard = () => {
   const { queue, notifications, availability } = useApp();
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('pg-auth') === '1');
@@ -109,7 +111,6 @@ const PGDoctorDashboard = () => {
     setUnlocked(false);
   };
 
-  // 60-second refresh indicator
   useEffect(() => {
     const timer = setInterval(() => setLastSync(new Date()), 60000);
     return () => clearInterval(timer);
@@ -123,135 +124,170 @@ const PGDoctorDashboard = () => {
   if (!unlocked) return <PINGate onUnlock={handleUnlock}/>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-[#0f2d42] to-[#1a4a6b] text-white px-4 py-10">
-        <div className="max-w-7xl mx-auto flex justify-between items-start flex-wrap gap-4">
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+        <div className="max-w-7xl mx-auto flex justify-between items-end">
           <div>
-            <p className="text-blue-200 text-sm mb-1">{today}</p>
-            <h1 className="text-3xl md:text-4xl font-bold">PG Doctor Dashboard</h1>
-            <p className="text-blue-100 mt-1">Live patient schedule and duty updates for PG residents.</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-blue-200">Live — polls every 60s</span>
-              <span className="text-xs text-blue-300">{lastSync.toLocaleTimeString()}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <div style={{ padding: '4px 10px', background: '#009688', borderRadius: 6, fontSize: 10, fontWeight: 800, color: '#fff', textTransform: 'uppercase' }}>PG Resident Portal</div>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600 }}>{today}</span>
             </div>
-            <button onClick={refresh} disabled={refreshing} aria-label="Refresh" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
-              <FiRefreshCw className={refreshing ? 'animate-spin' : ''} size={16}/>
+            <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2.5rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 8 }}>
+              Clinical Rounds
+            </h1>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
+              Secure management of patient queues, duty shifts, and real-time clinical notifications for post-graduate dental residents.
+            </p>
+          </div>
+          <div style={{ display: 'flex', itemsCenter: 'center', gap: 16, marginBottom: 10 }}>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', marginBottom: 4 }}>
+                <div style={{ width: 8, height: 8, background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 8px #4ade80' }}></div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#4ade80' }}>ACTIVE SESSION</span>
+              </div>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Last synced: {lastSync.toLocaleTimeString()}</span>
+            </div>
+            <button onClick={refresh} disabled={refreshing} style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FiRefreshCw className={refreshing ? 'animate-spin' : ''} size={18} />
             </button>
-            <button onClick={handleLock} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-200 text-xs font-semibold transition-colors" aria-label="Lock portal">
-              <FiLock size={13}/> Lock
+            <button onClick={handleLock} style={{ padding: '0 16px', height: 40, borderRadius: 10, background: '#f8fafc', color: '#1a1a2e', fontWidth: 700, fontSize: 12, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <FiLock size={14} /> Exit
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          {[
-            ['Patients Today', queue.length, 'bg-[#1a4a6b]'],
-            ['In Progress', queue.filter(q => q.status === 'in-progress').length, 'bg-rrdch-teal'],
-            ['Completed', '12', 'bg-green-600'],
-            ['On Duty PGs', pgSchedule.filter(p => p.status === 'on-duty').length, 'bg-purple-600'],
-          ].map(([label, val, bg], i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-              className={`${bg} text-white rounded-2xl p-5 text-center shadow-md`}
-            >
-              <div className="text-3xl font-black mb-1">{val}</div>
-              <div className="text-white/80 text-sm">{label}</div>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* PG Schedule */}
-          <div className="lg:col-span-2">
-            <SectionHeader title="PG Resident Duty Schedule — Today"/>
-            <div className="space-y-3 mb-10">
-              {pgSchedule.map((pg, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
-                  <Card className="p-5 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0">PG</div>
-                    <div className="flex-1">
-                      <p className="font-bold text-gray-900">{pg.doctor}</p>
-                      <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
-                        <FiClock size={13}/> {pg.time} | {pg.shift} Shift
-                      </div>
-                      <p className="text-xs text-gray-400 mt-0.5">{pg.dept} Department</p>
-                    </div>
-                    <div className="text-right">
-                      <StatusBadge status={pg.status}/>
-                      <p className="text-xs text-gray-500 mt-1">{pg.cases} cases assigned</p>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Live patient queue */}
-            <SectionHeader title="Live Patient Queue"/>
-            <div className="space-y-3">
-              {queue.map((p) => (
-                <Card key={p.token} className={`p-4 flex items-center gap-4 ${p.status === 'in-progress' ? 'border-2 border-rrdch-teal' : ''}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${p.status === 'in-progress' ? 'bg-rrdch-teal text-white' : 'bg-gray-100 text-gray-700'}`}>
-                    #{p.token}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{p.name}</p>
-                    <p className="text-xs text-gray-500">{p.dept}</p>
-                  </div>
-                  <StatusBadge status={p.status}/>
-                  {p.status === 'waiting' && <span className="text-xs text-gray-400">~{p.waitTime}m</span>}
-                </Card>
-              ))}
-            </div>
+      <div className="vs-section">
+        <div className="max-w-7xl mx-auto px-4">
+          
+          {/* Stats Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 40 }}>
+            {[
+              { label: 'Pending Cases', val: queue.length, bg: '#003580', icon: FiUsers },
+              { label: 'In Treatment', val: queue.filter(q => q.status === 'in-progress').length, bg: '#009688', icon: FiActivity },
+              { label: 'Completed', val: '12', bg: '#64748b', icon: FiCheckSquare },
+              { label: 'On-Duty PGs', val: pgSchedule.filter(p => p.status === 'on-duty').length, bg: '#7c3aed', icon: FiShield },
+            ].map((s, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="vs-card" style={{ padding: '24px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1a1a2e' }}>{s.val}</div>
+                </div>
+                {s.icon && <s.icon size={48} style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.05, color: s.bg }} />}
+              </motion.div>
+            ))}
           </div>
 
-          {/* Sidebar */}
-          <div>
-            <SectionHeader title="Live Notifications"/>
-            <div className="space-y-3 mb-8">
-              {notifications.length === 0 ? (
-                <Card className="p-6 text-center text-gray-400 text-sm">
-                  <FiBell className="mx-auto mb-2" size={24}/>
-                  <p>No notifications yet</p>
-                  <p className="text-xs mt-1">Updates appear every 60s</p>
-                </Card>
-              ) : notifications.map(n => (
-                <motion.div key={n.id} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}>
-                  <Card className="p-4 border-l-4 border-[#E8A020]">
-                    <div className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-[#E8A020] rounded-full mt-1.5 flex-shrink-0 animate-pulse"></div>
-                      <div>
-                        <p className="text-sm text-gray-800">{n.msg}</p>
-                        <p className="text-xs text-gray-400 mt-1">{n.time}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 32 }}>
+            
+            {/* Main Content */}
+            <div>
+              <div style={{ marginBottom: 30 }}>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#1a1a2e', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                   <FiClock size={20} color="#003580" /> Today's Resident Rotation
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {pgSchedule.map((pg, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
+                      <div className="vs-card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 12, background: '#f1f5f9', color: '#003580', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 14 }}>
+                          PG
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 800, color: '#1a1a2e', fontSize: 15 }}>{pg.doctor}</div>
+                          <div style={{ fontSize: 12, color: '#64748b' }}>{pg.dept} • {pg.shift} Shift</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <span style={{ 
+                            fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
+                            background: pg.status === 'on-duty' ? '#eaf5ee' : '#f8fafc',
+                            color: pg.status === 'on-duty' ? '#009688' : '#64748b',
+                            textTransform: 'uppercase'
+                          }}>
+                            {pg.status}
+                          </span>
+                          <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>{pg.cases} cases assigned</div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#1a1a2e', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                   <FiActivity size={20} color="#003580" /> Real-time Treatment Queue
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {queue.map((p) => (
+                    <div key={p.token} className="vs-card" style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 16, borderLeft: p.status === 'in-progress' ? '4px solid #009688' : '1px solid #e2e8f0' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: p.status === 'in-progress' ? '#009688' : '#f8fafc', color: p.status === 'in-progress' ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+                        #{p.token}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, color: '#334155' }}>{p.name}</div>
+                        <div style={{ fontSize: 11, color: '#64748b' }}>{p.dept}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <StatusBadge status={p.status} />
+                        {p.status === 'waiting' && <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 2 }}>Est. {p.waitTime}m</div>}
                       </div>
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <SectionHeader title="Faculty Availability"/>
-            <div className="space-y-2">
-              {availability.slice(0, 4).map((doc, i) => (
-                <Card key={i} className="p-3 flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${doc.status === 'available' ? 'bg-green-500 animate-pulse' : doc.status === 'busy' ? 'bg-orange-500' : 'bg-gray-400'}`}></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-gray-900 truncate">{doc.name}</p>
-                    <p className="text-xs text-gray-400">{doc.dept}</p>
-                  </div>
-                  <StatusBadge status={doc.status}/>
-                </Card>
-              ))}
+            {/* Sidebar */}
+            <div>
+              <div style={{ marginBottom: 30 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <FiBell size={14} /> Alerts
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {notifications.length === 0 ? (
+                    <div className="vs-card" style={{ padding: '30px', textAlign: 'center', color: '#94a3b8' }}>
+                      <FiBell size={24} style={{ opacity: 0.2, marginBottom: 8 }} />
+                      <p style={{ fontSize: 12 }}>No pending alerts.</p>
+                    </div>
+                  ) : notifications.map(n => (
+                    <div key={n.id} className="vs-card" style={{ padding: '16px', borderLeft: '4px solid #E8A020', background: '#fff' }}>
+                      <p style={{ fontSize: 13, color: '#334155', lineHeight: 1.5 }}>{n.msg}</p>
+                      <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 6, fontWeight: 600 }}>{n.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <FiUser size={14} /> Consultations
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {availability.slice(0, 5).map((doc, i) => (
+                    <div key={i} className="vs-card" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: doc.status === 'available' ? '#4ade80' : doc.status === 'busy' ? '#f97316' : '#94a3b8' }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.name}</div>
+                        <div style={{ fontSize: 11, color: '#64748b' }}>{doc.dept}</div>
+                      </div>
+                      <StatusBadge status={doc.status} />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
+
           </div>
+
         </div>
       </div>
     </div>
   );
 };
+
+const FiCheckSquare = (props) => <svg {...props} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>;
 
 export default PGDoctorDashboard;

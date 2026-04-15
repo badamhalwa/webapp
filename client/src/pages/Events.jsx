@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { FiCalendar, FiMapPin, FiClock, FiChevronRight } from 'react-icons/fi';
-import { newsItems } from '../data/mockData';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCalendar, FiMapPin, FiClock, FiChevronRight, FiX } from 'react-icons/fi';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { events } from '../data/mockData';
+
+const localizer = momentLocalizer(moment);
 
 const Events = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const eventCategoryColors = {
-    'Conference': '#003580',
-    'CDE': '#009688',
-    'Workshop': '#7c3aed',
-    'Culture': '#e8282b',
-    'Academic': '#b45309'
-  };
+  const eventStyleGetter = (event) => ({
+    style: {
+      backgroundColor: event.color || '#003580',
+      borderRadius: '4px',
+      border: 'none',
+      color: 'white',
+      display: 'block',
+      fontSize: '11px',
+      padding: '2px 5px'
+    }
+  });
 
   return (
-    <div style={{ background: '#ffffff' }}>
+    <div style={{ background: '#f8fafc' }}>
       
       {/* ── Page Hero ── */}
       <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
@@ -28,68 +38,109 @@ const Events = () => {
             <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{t('nav.events')}</span>
           </nav>
           <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
-            {t('nav.events')} &amp; {lang === 'kn' ? 'ನೋಟಿಸ್‌ಗಳು' : 'News'}
+            {t('nav.events')} &amp; {lang === 'kn' ? 'ಶೈಕ್ಷಣಿಕ ಅಪ್‌ಡೇಟ್' : 'Academic Calendar'}
           </h1>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 560, lineHeight: 1.7 }}>
-            {lang === 'kn' ? 'ಕ್ಯಾಂಪಸ್‌ನಲ್ಲಿ ನಡೆಯುತ್ತಿರುವ ಇತ್ತೀಚಿನ ಶೈಕ್ಷಣಿಕ ಕಾರ್ಯಕ್ರಮಗಳು, ಕೌಶಲ್ಯ ಅಭಿವೃದ್ಧಿ ಸಮ್ಮೇಳನಗಳು ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಚಟುವಟಿಕೆಗಳ ಅಪ್‌ಡೇಟ್ ಇಲ್ಲಿದೆ.' : 'Stay updated with the latest clinical workshops, CDE programs, student festivals, and institutional announcements at RRDCH.'}
+            {lang === 'kn' ? 'ಕ್ಯಾಂಪಸ್‌ನಲ್ಲಿ ನಡೆಯುತ್ತಿರುವ ಇತ್ತೀಚಿನ ಶೈಕ್ಷಣಿಕ ಕಾರ್ಯಕ್ರಮಗಳು ಮತ್ತು ಸಮ್ಮೇಳನಗಳ ವಿವರ ಇಲ್ಲಿದೆ.' : 'Explore the comprehensive schedule of workshops, conferences, and student events at RRDCH.'}
           </p>
         </div>
       </section>
 
       <div className="vs-section">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4">
           
-          <div className="vs-section-header">
-            <div>
-              <div className="vs-section-title">{lang === 'kn' ? 'ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳು' : 'Upcoming Events'}</div>
-              <div className="vs-section-sub">{lang === 'kn' ? 'ಮುಂದಿನ ದಿನಗಳಲ್ಲಿ ನಡೆಯಲಿರುವ ಪ್ರಮುಖ ಶೈಕ್ಷಣಿಕ ಸಭೆಗಳು.' : 'Key academic and cultural gatherings scheduled for this year.'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: 30, alignItems: 'start' }}>
+            
+            {/* Calendar Card */}
+            <div className="vs-card" style={{ padding: '20px', background: '#fff' }}>
+              <div style={{ height: 550, fontFamily: 'Inter, sans-serif' }}>
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: '100%' }}
+                  eventPropGetter={eventStyleGetter}
+                  onSelectEvent={(event) => setSelectedEvent(event)}
+                  views={['month', 'week', 'agenda']}
+                />
+              </div>
             </div>
-          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {newsItems.map((event, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-              >
-                <div className="vs-card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
-                  {/* Date Column */}
-                  <div style={{ width: 100, background: eventCategoryColors[event.category] || '#003580', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{new Date(event.date).getDate()}</div>
-                    <div style={{ fontSize: 12, textTransform: 'uppercase', fontWeight: 700, opacity: 0.8 }}>{new Date(event.date).toLocaleDateString(lang === 'kn' ? 'kn-IN' : 'en-IN', { month: 'short' })}</div>
-                  </div>
-                  
-                  {/* Info Column */}
-                  <div style={{ flex: 1, padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                        <span style={{ fontSize: 10, fontWeight: 800, color: eventCategoryColors[event.category] || '#003580', background: '#f8fafc', padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase' }}>{event.category}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#888' }}>
-                          <FiClock size={12} /> 09:30 AM
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#888' }}>
-                          <FiMapPin size={12} /> {lang === 'kn' ? 'ಆಡಿಟೋರಿಯಂ' : 'Main Auditorium'}
-                        </div>
+            {/* Upcoming List */}
+            <div>
+              <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#1a1a2e', marginBottom: 20 }}>
+                {lang === 'kn' ? 'ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು' : 'Upcoming Highlights'}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {events.slice(0, 5).map((event, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <div 
+                      className="vs-card" 
+                      style={{ padding: '15px', borderLeft: `4px solid ${event.color || '#003580'}`, cursor: 'pointer' }}
+                      onClick={() => setSelectedEvent(event)}
+                    >
+                      <div style={{ fontSize: 11, fontWeight: 800, color: event.color || '#003580', textTransform: 'uppercase', marginBottom: 6 }}>
+                        {moment(event.start).format('DD MMM YYYY')}
                       </div>
-                      <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.15rem', color: '#1a1a2e' }}>
-                         {lang === 'kn' ? 'ಕಾರ್ಯಕ್ರಮದ ಶೀರ್ಷಿಕೆ ಮತ್ತು ವಿವರಗಳು ಇಲ್ಲಿರುತ್ತವೆ' : event.title}
-                      </h3>
+                      <h4 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{event.title}</h4>
                     </div>
-                    
-                    <button className="vs-btn vs-btn-outline" style={{ borderRadius: 8, gap: 6 }}>
-                      {lang === 'kn' ? 'ನೋಂದಾಯಿಸಿ' : 'Register Now'} <FiChevronRight size={16} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
           </div>
 
         </div>
       </div>
+
+      {/* Event Details Modal */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+              onClick={() => setSelectedEvent(null)}
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              style={{ position: 'relative', width: '100%', maxWidth: 450, background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
+            >
+              <div style={{ padding: '20px', background: selectedEvent.color || '#003580', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontWeight: 800, fontSize: 14 }}>{lang === 'kn' ? 'ಕಾರ್ಯಕ್ರಮದ ವಿವರ' : 'Event Information'}</div>
+                <button onClick={() => setSelectedEvent(null)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}><FiX size={20} /></button>
+              </div>
+              <div style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a2e', marginBottom: 16, fontFamily: 'Manrope, sans-serif' }}>{selectedEvent.title}</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#4b5563' }}>
+                    <FiCalendar size={16} /> {moment(selectedEvent.start).format('dddd, DD MMMM YYYY')}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#4b5563' }}>
+                    <FiClock size={16} /> 09:30 AM onwards
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#4b5563' }}>
+                    <FiMapPin size={16} /> RRDCH Main Campus, Bangalore
+                  </div>
+                </div>
+                <button className="vs-btn vs-btn-primary" style={{ width: '100%', marginTop: 24, justifyContent: 'center' }}>
+                  {lang === 'kn' ? 'ನೋಂದಾಯಿಸಿ' : 'Register for Event'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

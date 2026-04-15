@@ -1,9 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
-import { Card, StatusBadge, Badge, SectionHeader } from '../../components/ui/UIComponents';
+import { StatusBadge } from '../../components/ui/UIComponents';
 import { Link } from 'react-router-dom';
-import { FiCalendar, FiUsers, FiMessageSquare, FiAlertCircle, FiArrowRight } from 'react-icons/fi';
+import { 
+  FiCalendar, FiUsers, FiMessageSquare, FiAlertCircle, 
+  FiArrowRight, FiActivity, FiStar, FiClock, FiShield,
+  FiFileText, FiUser, FiHome, FiGraduationCap, FiArrowUpRight
+} from 'react-icons/fi';
 
 const AdminDashboard = () => {
   const { appointments, hostelComplaints, feedbacks, queue } = useApp();
@@ -14,126 +18,170 @@ const AdminDashboard = () => {
   const avgRating = feedbacks.length ? (feedbacks.reduce((s, f) => s + f.rating, 0) / feedbacks.length).toFixed(1) : '—';
 
   const statCards = [
-    { label: "Today's Appointments", value: todayAppts, icon: '📅', color: 'from-rrdch-blue to-blue-500', link: '/patient/track' },
-    { label: 'Total Appointments', value: appointments.length, icon: '📋', color: 'from-teal-500 to-rrdch-teal', link: '/patient/track' },
-    { label: 'Pending Complaints', value: pendingComplaints, icon: '🏠', color: 'from-amber-500 to-amber-600', link: '/student/hostel' },
-    { label: 'Feedback Score', value: avgRating, icon: '⭐', color: 'from-purple-500 to-purple-700', link: '/patient/feedback' },
-    { label: 'Queue Size', value: queue.length, icon: '⏱', color: 'from-rose-500 to-rose-600', link: '/patient/queue' },
-    { label: 'Total Feedback', value: feedbacks.length, icon: '💬', color: 'from-green-500 to-green-700', link: '/patient/feedback' },
+    { label: "Today's Visits", value: todayAppts, icon: FiCalendar, color: '#003580', link: '/patient/track' },
+    { label: 'Total Appts', value: appointments.length, icon: FiFileText, color: '#003580', link: '/patient/track' },
+    { label: 'Hostel Issues', value: pendingComplaints, icon: FiHome, color: '#e8282b', link: '/student/hostel' },
+    { label: 'Experience Score', value: avgRating, icon: FiStar, color: '#009688', link: '/patient/feedback' },
+    { label: 'Live Queue', value: queue.length, icon: FiClock, color: '#7c3aed', link: '/patient/queue' },
+    { label: 'Feedback Res', value: feedbacks.length, icon: FiMessageSquare, color: '#0284c7', link: '/patient/feedback' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-rrdch-blue-dark to-rrdch-blue text-white px-4 py-10">
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+      
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-blue-200 text-sm mb-1">🛡️ Admin Panel — {today}</p>
-          <h1 className="text-3xl md:text-4xl font-bold">Admin Dashboard</h1>
-          <p className="text-blue-200 mt-1">Overview of all departments, appointments, and operations at RRDCH.</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <FiShield size={16} color="rgba(255,255,255,0.6)" />
+            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Management Dashboard — {today}
+            </span>
+          </div>
+          <h1 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '2.5rem', color: '#ffffff', letterSpacing: '-0.02em', marginBottom: 10 }}>
+            Institutional Overview
+          </h1>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter, sans-serif', maxWidth: 640, lineHeight: 1.7 }}>
+            Real-time analytics and management interface for appointments, hostel services, and student operations at RRDCH Medical Hub.
+          </p>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        {/* Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-          {statCards.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
-              <Link to={s.link}>
-                <motion.div whileHover={{ scale: 1.04 }} className={`bg-gradient-to-br ${s.color} text-white rounded-2xl p-5 text-center shadow-md hover:shadow-xl transition-all cursor-pointer`}>
-                  <div className="text-3xl mb-1">{s.icon}</div>
-                  <div className="text-3xl font-black">{s.value}</div>
-                  <div className="text-white/80 text-xs mt-1">{s.label}</div>
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Appointments */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Recent Appointments</h2>
-              <Link to="/patient/track" className="text-rrdch-blue text-sm hover:underline flex items-center gap-1">View All <FiArrowRight size={14}/></Link>
-            </div>
-            <Card className="overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    {['ID', 'Patient', 'Department', 'Date', 'Status'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {appointments.slice(0, 6).map((appt, i) => (
-                    <tr key={appt.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 text-xs font-mono text-rrdch-blue">{appt.id}</td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{appt.patientName}</td>
-                      <td className="px-4 py-3 text-xs text-gray-500">{appt.department?.split(' ')[0]}</td>
-                      <td className="px-4 py-3 text-xs text-gray-600">{appt.date}</td>
-                      <td className="px-4 py-3"><StatusBadge status={appt.status}/></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Card>
+      <div className="vs-section">
+        <div className="max-w-7xl mx-auto px-4">
+          
+          {/* Stat Cards Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 20, marginBottom: 40 }}>
+            {statCards.map((s, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}>
+                <Link to={s.link} style={{ textDecoration: 'none' }}>
+                  <motion.div whileHover={{ y: -5 }} className="vs-card" style={{ padding: '24px', textAlign: 'center', background: '#fff' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: '#f8fafc', color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                      <s.icon size={22} />
+                    </div>
+                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1a1a2e', marginBottom: 4 }}>{s.value}</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>{s.label}</div>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Hostel Complaints */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Hostel Complaints</h2>
-              <Link to="/student/hostel" className="text-rrdch-blue text-sm hover:underline flex items-center gap-1">View All <FiArrowRight size={14}/></Link>
-            </div>
-            {hostelComplaints.length === 0 ? (
-              <Card className="p-8 text-center text-gray-400">
-                <FiAlertCircle size={24} className="mx-auto mb-2"/>
-                <p>No hostel complaints on record.</p>
-              </Card>
-            ) : (
-              <Card className="overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      {['ID', 'Room', 'Category', 'Date', 'Status'].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+            
+            {/* Recent Appointments */}
+            <div className="vs-card" style={{ padding: 0 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.1rem', color: '#1a1a2e' }}>Visits Overview</h3>
+                <Link to="/patient/track" style={{ fontSize: 12, fontWeight: 700, color: '#003580', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  Browse All <FiArrowUpRight />
+                </Link>
+              </div>
+              <div style={{ padding: '12px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc' }}>
+                      {['ID', 'Patient Name', 'Dept', 'Status'].map(h => (
+                        <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 10, fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {hostelComplaints.slice(0, 6).map((c) => (
-                      <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 text-xs font-mono text-purple-600">{c.id}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{c.room}</td>
-                        <td className="px-4 py-3 text-xs text-gray-500">{c.category}</td>
-                        <td className="px-4 py-3 text-xs text-gray-600">{c.date}</td>
-                        <td className="px-4 py-3"><StatusBadge status={c.status}/></td>
+                  <tbody style={{ fontSize: 13 }}>
+                    {appointments.slice(0, 6).map((appt) => (
+                      <tr key={appt.id} style={{ borderBottom: '1px solid #f8fafc' }}>
+                        <td style={{ padding: '14px 16px', color: '#64748b', fontFamily: 'monospace' }}>#{appt.id.slice(0,4)}</td>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#334155' }}>{appt.patientName}</td>
+                        <td style={{ padding: '14px 16px', color: '#64748b' }}>{appt.department?.split(' ')[0]}</td>
+                        <td style={{ padding: '14px 16px' }}>
+                          <span style={{ 
+                            fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
+                            background: appt.status === 'completed' ? '#eaf5ee' : '#fff7ed',
+                            color: appt.status === 'completed' ? '#009688' : '#c2410c'
+                          }}>
+                            {appt.status.toUpperCase()}
+                          </span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </Card>
-            )}
-          </div>
-        </div>
+              </div>
+            </div>
 
-        {/* Quick Actions */}
-        <SectionHeader title="Quick Actions" className="mt-10"/>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { label: 'Book Appointment', path: '/patient/book', icon: '📅', color: 'bg-rrdch-blue' },
-            { label: 'View Live Queue', path: '/patient/queue', icon: '⏱', color: 'bg-rrdch-teal' },
-            { label: 'Hostel Complaints', path: '/student/hostel', icon: '🏠', color: 'bg-purple-600' },
-            { label: 'Student Dashboard', path: '/student/dashboard', icon: '🎓', color: 'bg-amber-500' },
-          ].map((a, i) => (
-            <Link key={i} to={a.path}>
-              <motion.div whileHover={{ scale: 1.03 }} className={`${a.color} text-white rounded-2xl p-5 flex items-center gap-3 shadow-md hover:shadow-lg transition-all`}>
-                <span className="text-2xl">{a.icon}</span>
-                <span className="font-semibold text-sm">{a.label}</span>
-              </motion.div>
-            </Link>
-          ))}
+            {/* Hostel Complaints */}
+            <div className="vs-card" style={{ padding: 0 }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: '1.1rem', color: '#1a1a2e' }}>Campus Maintenance</h3>
+                <Link to="/student/hostel" style={{ fontSize: 12, fontWeight: 700, color: '#003580', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  Open Portal <FiArrowUpRight />
+                </Link>
+              </div>
+              <div style={{ padding: '12px' }}>
+                {hostelComplaints.length === 0 ? (
+                  <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
+                    <FiActivity size={32} style={{ opacity: 0.3, marginBottom: 12 }} />
+                    <p style={{ fontSize: 14 }}>No pending maintenance requests reported.</p>
+                  </div>
+                ) : (
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: '#f8fafc' }}>
+                        {['Room', 'Category', 'Submitted On', 'Status'].map(h => (
+                          <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 10, fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody style={{ fontSize: 13 }}>
+                      {hostelComplaints.slice(0, 6).map((c) => (
+                        <tr key={c.id} style={{ borderBottom: '1px solid #f8fafc' }}>
+                          <td style={{ padding: '14px 16px', fontWeight: 700, color: '#334155' }}>{c.room}</td>
+                          <td style={{ padding: '14px 16px', color: '#64748b' }}>{c.category}</td>
+                          <td style={{ padding: '14px 16px', color: '#64748b' }}>{c.date}</td>
+                          <td style={{ padding: '14px 16px' }}>
+                            <span style={{ 
+                              fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 6,
+                              background: '#fef2f2', color: '#ef4444'
+                            }}>
+                              PENDING
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Quick Portal Access */}
+          <div style={{ marginTop: 40 }}>
+            <h4 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 800, fontSize: 15, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 20 }}>
+              Operational Units
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 20 }}>
+              {[
+                { label: 'Visits Management', path: '/patient/track', icon: FiCalendar, color: '#003580' },
+                { label: 'Patient Interaction', path: '/patient/feedback', icon: FiMessageSquare, color: '#009688' },
+                { label: 'Hostel Maintenance', path: '/student/hostel', icon: FiHome, color: '#e8282b' },
+                { label: 'Academic Support', path: '/student/dashboard', icon: FiGraduationCap, color: '#7c3aed' },
+              ].map((a, i) => (
+                <Link key={i} to={a.path} style={{ textDecoration: 'none' }}>
+                  <motion.div whileHover={{ scale: 1.02 }} className="vs-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: '#f8fafc', color: a.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <a.icon size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: '#1a1a2e' }}>{a.label}</div>
+                      <div style={{ fontSize: 11, color: '#64748b' }}>Access Module <FiArrowRight size={10} /></div>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
