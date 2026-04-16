@@ -118,6 +118,7 @@ const Navbar = () => {
     { label: t('nav.achievements'),     path: '/achievements',  Icon: FiAward },
     { label: t('nav.virtualTour'),     path: '/tour',          Icon: FiMap },
     { label: t('nav.events'),           path: '/events',        Icon: FiCalendar },
+    { label: t('nav.pgDoctorDashboard'), path: '/faculty/pg',    Icon: FiActivity },
     { label: t('nav.adminDashboard'),  path: '/faculty/admin', Icon: FiShield },
   ];
 

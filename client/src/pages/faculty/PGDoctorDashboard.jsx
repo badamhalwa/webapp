@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../../components/ui/UIComponents';
 import { pgSchedule, doctorAvailability } from '../../data/mockData';
-import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff, FiShield, FiUser, FiActivity, FiArrowRight, FiArrowUpRight, FiBookOpen, FiClipboard } from 'react-icons/fi';
+import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff, FiShield, FiUser, FiActivity, FiArrowRight, FiArrowUpRight, FiBookOpen, FiClipboard, FiUsers } from 'react-icons/fi';
 
 const DEMO_PIN = '1234';
 
@@ -141,7 +141,7 @@ const PGDoctorDashboard = () => {
               Secure management of patient queues, duty shifts, and real-time clinical notifications for post-graduate dental residents.
             </p>
           </div>
-          <div style={{ display: 'flex', itemsCenter: 'center', gap: 16, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 10 }}>
             <div style={{ textAlign: 'right' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', marginBottom: 4 }}>
                 <div style={{ width: 8, height: 8, background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 8px #4ade80' }}></div>

@@ -6,6 +6,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 
 const HostelComplaints = () => {
+  const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { addComplaint, hostelComplaints } = useApp();
   const [form, setForm] = useState({ name: '', room: '', category: '', description: '' });
