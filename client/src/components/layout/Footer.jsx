@@ -28,10 +28,10 @@ const Footer = () => {
             {t('footer.descShort')}
           </p>
           <div className="flex gap-3 mt-4">
-            <a href="#" aria-label="Facebook" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiFacebook size={16}/></a>
-            <a href="#" aria-label="Twitter" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiTwitter size={16}/></a>
-            <a href="#" aria-label="Instagram" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiInstagram size={16}/></a>
-            <a href="#" aria-label="YouTube" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiYoutube size={16}/></a>
+            <a href="https://www.facebook.com/rrdch.official" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiFacebook size={16}/></a>
+            <a href="https://twitter.com/RRDCH_Official" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiTwitter size={16}/></a>
+            <a href="https://www.instagram.com/rrdchofficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiInstagram size={16}/></a>
+            <a href="https://www.youtube.com/@RRDCHDental" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"><FiYoutube size={16}/></a>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { FiUser, FiActivity, FiAward, FiArrowRight } from 'react-icons/fi';
 import { departments } from '../data/mockData';
 import principalImg from '../assets/principal.png';
@@ -93,9 +94,11 @@ const Faculty = () => {
                             <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase' }}>{t('faculty.facultyMembers')}</div>
                             <div style={{ fontSize: 14, fontWeight: 800, color: '#1a1a2e' }}>{dept.faculty}</div>
                          </div>
-                         <button className="vs-btn vs-btn-outline" style={{ borderRadius: 8, gap: 6, fontSize: 12 }}>
-                            {lang === 'kn' ? 'ಯಾದಿ ನೋಡಿ' : 'View Team'} <FiArrowRight size={14} />
-                         </button>
+                         <Link to="/departments">
+                           <button className="vs-btn vs-btn-outline" style={{ borderRadius: 8, gap: 6, fontSize: 12 }}>
+                              {lang === 'kn' ? 'ಯಾದಿ ನೋಡಿ' : 'View Team'} <FiArrowRight size={14} />
+                           </button>
+                         </Link>
                       </div>
                    </div>
                 </motion.div>

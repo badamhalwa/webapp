@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../../components/ui/UIComponents';
 import { pgSchedule, doctorAvailability } from '../../data/mockData';
-import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff, FiShield, FiUser, FiActivity, FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
+import { FiRefreshCw, FiClock, FiBell, FiLock, FiEye, FiEyeOff, FiShield, FiUser, FiActivity, FiArrowRight, FiArrowUpRight, FiBookOpen, FiClipboard } from 'react-icons/fi';
 
 const DEMO_PIN = '1234';
 
@@ -244,38 +244,56 @@ const PGDoctorDashboard = () => {
             <div>
               <div style={{ marginBottom: 30 }}>
                 <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <FiBell size={14} /> Alerts
+                  <FiBookOpen size={14} /> Thesis & Research
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {notifications.length === 0 ? (
-                    <div className="vs-card" style={{ padding: '30px', textAlign: 'center', color: '#94a3b8' }}>
-                      <FiBell size={24} style={{ opacity: 0.2, marginBottom: 8 }} />
-                      <p style={{ fontSize: 12 }}>No pending alerts.</p>
+                <div className="vs-card" style={{ padding: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>Proposal Phase</span>
+                    <span style={{ fontSize: 10, fontWeight: 800, color: '#009688', background: '#eaf5ee', padding: '2px 8px', borderRadius: 4 }}>APPROVED</span>
+                  </div>
+                  <div style={{ height: 6, background: '#f1f5f9', borderRadius: 3, marginBottom: 12, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: '40%', background: '#003580', borderRadius: 3 }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#64748b', lineHeight: 1.5 }}>
+                    Next submission: <strong>Methodology Draft</strong> due on April 30, 2026.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 30 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <FiClipboard size={14} /> Clinical Logbook
+                </h3>
+                <div className="vs-card" style={{ padding: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                      <span style={{ color: '#64748b' }}>This Month</span>
+                      <span style={{ fontWeight: 700 }}>32 Entries</span>
                     </div>
-                  ) : notifications.map(n => (
-                    <div key={n.id} className="vs-card" style={{ padding: '16px', borderLeft: '4px solid #E8A020', background: '#fff' }}>
-                      <p style={{ fontSize: 13, color: '#334155', lineHeight: 1.5 }}>{n.msg}</p>
-                      <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 6, fontWeight: 600 }}>{n.time}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                      <span style={{ color: '#64748b' }}>Pending Verification</span>
+                      <span style={{ fontWeight: 700, color: '#f59e0b' }}>4 Cases</span>
                     </div>
-                  ))}
+                  </div>
+                  <button style={{ width: '100%', marginTop: 12, padding: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 11, fontWeight: 700, color: '#003580', cursor: 'pointer' }}>
+                    Add Log Entry
+                  </button>
                 </div>
               </div>
 
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <FiUser size={14} /> Consultations
+                  <FiClock size={14} /> Upcoming Seminars
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {availability.slice(0, 5).map((doc, i) => (
-                    <div key={i} className="vs-card" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: doc.status === 'available' ? '#4ade80' : doc.status === 'busy' ? '#f97316' : '#94a3b8' }} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.name}</div>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>{doc.dept}</div>
-                      </div>
-                      <StatusBadge status={doc.status} />
-                    </div>
-                  ))}
+                  <div className="vs-card" style={{ padding: '12px 16px' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1e293b' }}>Journal Club - Implantology</div>
+                    <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>Friday, 2:00 PM • Seminar Hall A</div>
+                  </div>
+                  <div className="vs-card" style={{ padding: '12px 16px' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1e293b' }}>Case Briefing - Orthomax</div>
+                    <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>Monday, 9:00 AM • Dept Library</div>
+                  </div>
                 </div>
               </div>
             </div>

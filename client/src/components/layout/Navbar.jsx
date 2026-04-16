@@ -46,13 +46,13 @@ const Navbar = () => {
     { label: t('nav.schedule'),          path: '/student/schedule',  Icon: FiCalendar },
     { label: t('nav.hostelComplaints'), path: '/student/hostel',    Icon: FiHome },
     { label: t('nav.admissions'),        path: '/admissions',        Icon: FiBookOpen },
+    { label: t('nav.pgDoctorDashboard'), path: '/faculty/pg',    Icon: FiActivity },
   ];
 
   const MORE_NAV = [
     { label: t('nav.achievements'),     path: '/achievements',  Icon: FiAward },
     { label: t('nav.virtualTour'),     path: '/tour',          Icon: FiMap },
     { label: t('nav.events'),           path: '/events',        Icon: FiCalendar },
-    { label: t('nav.pgDoctorDashboard'), path: '/faculty/pg',    Icon: FiActivity },
     { label: t('nav.adminDashboard'),  path: '/faculty/admin', Icon: FiShield },
   ];
 
