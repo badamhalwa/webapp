@@ -12,16 +12,81 @@ import {
 
 import logo from '../../assets/logo.png';
 
+/* ── Dropdown Component ── */
+const NavDropdown = ({ label, links, active, isOpen, onOpen, onClose }) => {
+  const ref = useRef();
+  
+  // Handle click to toggle
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    if (isOpen) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  };
+
+  return (
+    <div 
+      ref={ref} 
+      className="relative hidden md:block" 
+      style={{ height: '64px', display: 'flex', alignItems: 'center' }}
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+    >
+      <button
+        onClick={handleButtonClick}
+        className={`nav-item flex items-center gap-1 ${active ? 'active' : ''}`}
+        aria-haspopup="true" aria-expanded={isOpen}
+        style={{ height: '100%', border: 'none', background: 'none', cursor: 'pointer', outline: 'none' }}
+      >
+        {label}
+        <FiChevronDown size={12} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.13 }}
+            className="absolute top-full left-0 mt-0 z-[150] py-1 min-w-[210px]"
+            style={{
+              background: '#ffffff',
+              border: '1px solid #eaecf0',
+              borderTop: '2px solid #003580',
+              borderRadius: '0 0 8px 8px',
+              boxShadow: '0 8px 32px rgba(0,53,128,0.15)',
+            }}
+          >
+            {links.map(l => (
+              <Link key={l.path} to={l.path} onClick={onClose}
+                className="flex items-center gap-3 px-4 py-2.5 text-xs transition-colors"
+                style={{ color: '#333', fontFamily: 'Inter, sans-serif', textDecoration: 'none' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#f7f9fc'; e.currentTarget.style.color = '#003580'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#333'; }}
+              >
+                {l.Icon && <l.Icon size={13} style={{ flexShrink: 0 }} />}
+                <span>{l.label}</span>
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 /* ── Main Navbar ── */
 const Navbar = () => {
   const { t } = useTranslation();
   const { notifications, searchOpen, setSearchOpen, searchQuery, setSearchQuery } = useApp();
-  const [activeDropdown, setActiveDropdown] = useState(null); // 'patients', 'academics', 'more'
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [notifOpen, setNotifOpen]     = useState(false);
   const [lang, setLang]               = useState(localStorage.getItem('rrdch-lang') || 'en');
   const location  = useLocation();
   const navigate  = useNavigate();
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   /* ── Nav structure ── */
   const MAIN_NAV = [
@@ -78,65 +143,6 @@ const Navbar = () => {
   const isPatientsActive = PATIENTS_NAV.some(l => location.pathname.startsWith(l.path));
   const isAcademicsActive = ACADEMICS_NAV.some(l => location.pathname.startsWith(l.path));
 
-  /* ── Dropdown Component ── */
-  const NavDropdown = ({ label, links, active, id, isOpen, onOpen, onClose }) => {
-    const ref = useRef();
-    useEffect(() => {
-      const h = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose(); };
-      document.addEventListener('mousedown', h);
-      return () => document.removeEventListener('mousedown', h);
-    }, [onClose]);
-
-    return (
-      <div 
-        ref={ref} 
-        className="relative hidden md:block" 
-        style={{ height: '64px', display: 'flex', alignItems: 'center' }}
-        onMouseLeave={onClose}
-      >
-        <button
-          onMouseEnter={onOpen}
-          onClick={() => (isOpen ? onClose() : onOpen())}
-          className={`nav-item flex items-center gap-1 ${active ? 'active' : ''}`}
-          aria-haspopup="true" aria-expanded={isOpen}
-        >
-          {label}
-          <FiChevronDown size={12} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-        </button>
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.13 }}
-              className="absolute top-full left-0 mt-0 z-50 py-1 min-w-[200px]"
-              style={{
-                background: '#ffffff',
-                border: '1px solid #eaecf0',
-                borderTop: '2px solid #003580',
-                borderRadius: '0 0 8px 8px',
-                boxShadow: '0 8px 24px rgba(0,53,128,0.1)',
-              }}
-            >
-              {links.map(l => (
-                <Link key={l.path} to={l.path} onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-2.5 text-xs transition-colors"
-                  style={{ color: '#333', fontFamily: 'Inter, sans-serif' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#f7f9fc'; e.currentTarget.style.color = '#003580'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#333'; }}
-                >
-                  {l.Icon && <l.Icon size={13} style={{ flexShrink: 0 }} />}
-                  <span>{l.label}</span>
-                </Link>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
-
   return (
     <>
       {/* ── Top Bar ── */}
@@ -177,10 +183,7 @@ const Navbar = () => {
           {/* Notification dot */}
           <div className="relative">
             <button
-              onClick={() => {
-                setNotifOpen(!notifOpen);
-                setActiveDropdown(null);
-              }}
+              onClick={() => setNotifOpen(!notifOpen)}
               className="topbar-link flex items-center gap-1 relative"
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
@@ -248,30 +251,27 @@ const Navbar = () => {
             </Link>
           ))}
           <NavDropdown 
-            label={t('nav.patients')} 
-            links={PATIENTS_NAV} 
+            label={t('nav.patients')}  
+            links={PATIENTS_NAV}  
             active={isPatientsActive}
-            id="patients"
             isOpen={activeDropdown === 'patients'}
-            onOpen={() => { setActiveDropdown('patients'); setNotifOpen(false); setSearchOpen(false); }}
+            onOpen={() => setActiveDropdown('patients')}
             onClose={() => setActiveDropdown(null)}
           />
           <NavDropdown 
             label={t('nav.students')} 
             links={ACADEMICS_NAV} 
             active={isAcademicsActive}
-            id="academics"
-            isOpen={activeDropdown === 'academics'}
-            onOpen={() => { setActiveDropdown('academics'); setNotifOpen(false); setSearchOpen(false); }}
+            isOpen={activeDropdown === 'students'}
+            onOpen={() => setActiveDropdown('students')}
             onClose={() => setActiveDropdown(null)}
           />
           <NavDropdown 
-            label={t('nav.more')} 
-            links={MORE_NAV} 
+            label={t('nav.more')}      
+            links={MORE_NAV}      
             active={false}
-            id="more"
             isOpen={activeDropdown === 'more'}
-            onOpen={() => { setActiveDropdown('more'); setNotifOpen(false); setSearchOpen(false); }}
+            onOpen={() => setActiveDropdown('more')}
             onClose={() => setActiveDropdown(null)}
           />
         </div>
