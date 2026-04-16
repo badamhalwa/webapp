@@ -15,7 +15,6 @@ const StudentDashboard = () => {
     { label: t('nav.syllabus'), path: '/student/syllabus', icon: FiBook, color: '#003580' },
     { label: t('nav.schedule'), path: '/student/schedule', icon: FiCalendar, color: '#009688' },
     { label: t('nav.hostelComplaints'), path: '/student/hostel', icon: FiHome, color: '#6366f1' },
-    { label: t('nav.pgDoctorDashboard'), path: '/faculty/pg', icon: FiActivity, color: '#009688' },
     { label: t('nav.research'), path: '/research', icon: FiAward, color: '#f59e0b' },
     { label: t('nav.events'), path: '/events', icon: FiStar, color: '#f43f5e' },
     { label: t('nav.admissions'), path: '/admissions', icon: FiAward, color: '#10b981' },

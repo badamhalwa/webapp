@@ -86,7 +86,7 @@ function App() {
                 } />
 
                 {/* Faculty */}
-                <Route path="/faculty/pg" element={<PGDoctorDashboard />} />
+                {/* <Route path="/faculty/pg" element={<PGDoctorDashboard />} /> */}
                 <Route path="/faculty/admin" element={<AdminDashboard />} />
 
                 {/* 404 */}

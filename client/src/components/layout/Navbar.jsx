@@ -46,7 +46,6 @@ const Navbar = () => {
     { label: t('nav.schedule'),          path: '/student/schedule',  Icon: FiCalendar },
     { label: t('nav.hostelComplaints'), path: '/student/hostel',    Icon: FiHome },
     { label: t('nav.admissions'),        path: '/admissions',        Icon: FiBookOpen },
-    { label: t('nav.pgDoctorDashboard'), path: '/faculty/pg',    Icon: FiActivity },
   ];
 
   const MORE_NAV = [
