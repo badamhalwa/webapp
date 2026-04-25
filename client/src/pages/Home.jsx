@@ -1,14 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   FiArrowRight, FiStar, FiCalendar, FiSearch, FiClock,
   FiClipboard, FiMapPin, FiUser, FiUsers, FiAward,
   FiActivity, FiMessageSquare, FiBookOpen, FiPhone, FiMail,
-  FiCheckCircle,
+  FiCheckCircle, FiHome,
 } from 'react-icons/fi';
 import { departments, testimonials, newsItems, achievements } from '../data/mockData';
+import { usePortal } from '../context/PortalContext';
+import StudentGuard from '../components/auth/StudentGuard';
 
 /* ─── Animated counter ─────────────────────────────────────────────────────── */
 const useCounter = (target, duration = 2000) => {
@@ -33,7 +35,7 @@ const useCounter = (target, duration = 2000) => {
   return [count, ref];
 };
 
-/* ─── Stat cell ──────────────────────────────────────────────────────────── */
+/* ─── Shared Components ──────────────────────────────────────────────────────────── */
 const StatCell = ({ value, suffix = '+', label, Icon }) => {
   const [count, ref] = useCounter(value);
   return (
@@ -44,7 +46,6 @@ const StatCell = ({ value, suffix = '+', label, Icon }) => {
   );
 };
 
-/* ─── Quick Link item ────────────────────────────────────────────────────── */
 const QLItem = ({ Icon, label, path, bg, color }) => (
   <Link to={path} className="vs-ql-item">
     <div className="vs-ql-icon" style={{ background: bg }}>
@@ -54,7 +55,6 @@ const QLItem = ({ Icon, label, path, bg, color }) => (
   </Link>
 );
 
-/* ─── Department spec card ───────────────────────────────────────────────── */
 const ACCENT_CYCLE = ['blue', 'red', 'teal', 'green'];
 const iconColors   = { blue: '#0c447c', red: '#b91c1c', teal: '#0f6e56', green: '#276a27' };
 const iconBgs      = { blue: '#e6f0fb', red: '#fdeaea', teal: '#e6f7f5', green: '#eaf5ee' };
@@ -65,12 +65,7 @@ const SpecCard = ({ dept, idx }) => {
   const lang = i18n.language;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: idx * 0.06 }}
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.06 }}>
       <Link to="/departments" style={{ textDecoration: 'none' }}>
         <div className="vs-spec-card">
           <div className={`vs-spec-top vs-spec-top-${accent}`} />
@@ -96,19 +91,14 @@ const SpecCard = ({ dept, idx }) => {
   );
 };
 
-/* ─── Appointment form inside hero ──────────────────────────────────────── */
 const AppointmentForm = () => {
   const { t, i18n } = useTranslation();
   const [form, setForm] = useState({ name: '', dept: '', date: '' });
   const lang = i18n.language;
 
   const deptOptions = [
-    { id: 'd1', name: t('depts.d1') },
-    { id: 'd2', name: t('depts.d2') },
-    { id: 'd3', name: t('depts.d3') },
-    { id: 'd4', name: t('depts.d4') },
-    { id: 'd5', name: t('depts.d5') },
-    { id: 'd6', name: t('depts.d6') },
+    { id: 'd1', name: t('depts.d1') }, { id: 'd2', name: t('depts.d2') }, { id: 'd3', name: t('depts.d3') },
+    { id: 'd4', name: t('depts.d4') }, { id: 'd5', name: t('depts.d5') }, { id: 'd6', name: t('depts.d6') },
   ];
 
   return (
@@ -138,249 +128,304 @@ const AppointmentForm = () => {
           {t('appointment.confirmBtn')}
         </button>
       </Link>
-      <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: 8, fontFamily: 'Inter, sans-serif' }}>
-        {lang === 'kn' ? 'ಅಥವಾ ಕರೆ ಮಾಡಿ 080-2860-0988 · ಸೋಮ-ಶನಿ ಬೆಳಿಗ್ಗೆ 9-ಸಂಜೆ 5' : 'Or call 080-2860-0988 · Mon–Sat 9AM–5PM'}
-      </p>
     </div>
   );
 };
 
-/* ─── News bar color map ─────────────────────────────────────────────────── */
 const barColors = { Achievement: '#009688', Event: '#003580', Infrastructure: '#e8282b', Research: '#7c3aed', Admissions: '#f59e0b' };
 
-/* ─── Main Home ──────────────────────────────────────────────────────────── */
-const Home = () => {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language;
+/* ─── HOSPITAL PORTAL VIEW ──────────────────────────────────────────────────────────── */
+const HospitalView = ({ t, lang }) => (
+  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
+    {/* HERO */}
+    <section className="vs-hero" style={{ minHeight: 340 }}>
+      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ paddingBottom: '3rem' }}>
+        <div className="vs-hero-eyebrow">{t('home.heroEyebrow')}</div>
+        <h1 className="vs-hero-title">
+          {lang === 'kn' ? <>ರಾಜರಾಜೇಶ್ವರಿ<br /><span>ದಂತ ಕಾಲೇಜು</span><br />ಮತ್ತು ಆಸ್ಪತ್ರೆ</> : <>Rajarajeshwari<br /><span>Dental College</span><br />&amp; Hospital</>}
+        </h1>
+        <p className="vs-hero-sub">{t('home.heroSubtitle')}</p>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <Link to="/departments">
+            <button className="vs-btn vs-btn-outline">{t('home.exploreDepts')} <FiArrowRight size={13} /></button>
+          </Link>
+          <Link to="/tour">
+            <button className="vs-btn vs-btn-outline" style={{ background: 'rgba(255,255,255,0.06)' }}>{t('home.virtualTour')}</button>
+          </Link>
+        </div>
+      </motion.div>
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
+        <AppointmentForm />
+      </motion.div>
+    </section>
 
-  return (
-    <div style={{ background: '#ffffff' }}>
-
-      {/* ══ 1. HERO ══════════════════════════════════════════════════════════ */}
-      <section className="vs-hero" style={{ minHeight: 340 }}>
-        {/* Left — hero copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          style={{ paddingBottom: '3rem' }}
-        >
-          <div className="vs-hero-eyebrow">{t('home.heroEyebrow')}</div>
-          <h1 className="vs-hero-title">
-            {lang === 'kn' ? <>ರಾಜರಾಜೇಶ್ವರಿ<br /><span>ದಂತ ಕಾಲೇಜು</span><br />ಮತ್ತು ಆಸ್ಪತ್ರೆ</> : <>Rajarajeshwari<br /><span>Dental College</span><br />&amp; Hospital</>}
-          </h1>
-          <p className="vs-hero-sub">
-            {t('home.heroSubtitle')}
-          </p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <Link to="/departments">
-              <button className="vs-btn vs-btn-outline">
-                {t('home.exploreDepts')} <FiArrowRight size={13} />
-              </button>
-            </Link>
-            <Link to="/tour">
-              <button className="vs-btn vs-btn-outline" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                {t('home.virtualTour')}
-              </button>
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Right — appointment form */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
-          <AppointmentForm />
-        </motion.div>
-      </section>
-
-      {/* ══ 2. STATS BAR ════════════════════════════════════════════════════ */}
-      <div className="vs-stats-bar">
-        <div className="max-w-7xl mx-auto">
-          <div className="vs-stats-row">
-            <StatCell value={2000} suffix="+" label={t('home.statsPatientsMonth')} />
-            <StatCell value={9}    suffix=""  label={t('home.statsDepts')} />
-            <StatCell value={150}  suffix="+" label={t('home.statsChairs')} />
-            <StatCell value={25}   suffix="+" label={t('home.statsYears')} />
-          </div>
+    {/* STATS */}
+    <div className="vs-stats-bar">
+      <div className="max-w-7xl mx-auto">
+        <div className="vs-stats-row">
+          <StatCell value={2000} suffix="+" label={t('home.statsPatientsMonth')} />
+          <StatCell value={9}    suffix=""  label={t('home.statsDepts')} />
+          <StatCell value={150}  suffix="+" label={t('home.statsChairs')} />
+          <StatCell value={25}   suffix="+" label={t('home.statsYears')} />
         </div>
       </div>
+    </div>
 
-      {/* ══ 3. QUICK LINKS ══════════════════════════════════════════════════ */}
-      <div className="vs-quick-links">
-        <div className="max-w-7xl mx-auto">
-          <div className="vs-ql-grid">
-            <QLItem path="/patient/book"       Icon={FiCalendar}     label={t('nav.bookAppointment')}  bg="#e6f0fb" color="#0c447c" />
-            <QLItem path="/patient/track"      Icon={FiSearch}       label={t('nav.trackAppointment')} bg="#fdeaea" color="#b91c1c" />
-            <QLItem path="/patient/queue"      Icon={FiClock}        label={t('nav.liveQueue')}        bg="#e6f7f5" color="#0f6e56" />
-            <QLItem path="/patient/followup"   Icon={FiClipboard}    label={t('nav.followUp')} bg="#fef8e7" color="#b45309" />
-            <QLItem path="/student/dashboard"  Icon={FiBookOpen}     label={t('nav.studentDashboard')}    bg="#f1effe" color="#3c3489" />
-            <QLItem path="/patient/directions" Icon={FiMapPin}       label={t('nav.directions')}        bg="#eaf5ee" color="#276a27" />
-          </div>
+    {/* QUICK LINKS */}
+    <div className="vs-quick-links">
+      <div className="max-w-7xl mx-auto">
+        <div className="vs-ql-grid">
+          <QLItem path="/patient/book"       Icon={FiCalendar}     label={t('nav.bookAppointment')}  bg="#e6f0fb" color="#0c447c" />
+          <QLItem path="/patient/track"      Icon={FiSearch}       label={t('nav.trackAppointment')} bg="#fdeaea" color="#b91c1c" />
+          <QLItem path="/patient/queue"      Icon={FiClock}        label={t('nav.liveQueue')}        bg="#e6f7f5" color="#0f6e56" />
+          <QLItem path="/patient/followup"   Icon={FiClipboard}    label={t('nav.followUp')}         bg="#fef8e7" color="#b45309" />
+          <QLItem path="/departments"        Icon={FiActivity}     label={t('nav.departments')}      bg="#f1effe" color="#3c3489" />
+          <QLItem path="/patient/directions" Icon={FiMapPin}       label={t('nav.directions')}       bg="#eaf5ee" color="#276a27" />
         </div>
       </div>
+    </div>
 
-      {/* ══ 4. DEPARTMENTS + NEWS ═══════════════════════════════════════════ */}
-      <div className="vs-section-alt">
-        <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, alignItems: 'start' }}>
-
-          {/* Departments grid */}
+    {/* PATIENT SERVICES */}
+    <div className="vs-section">
+      <div className="max-w-7xl mx-auto">
+        <div className="vs-section-header">
           <div>
-            <div className="vs-section-header">
-              <div>
-                <div className="vs-section-title">{t('home.featuredDepts')}</div>
-                <div className="vs-section-sub">{t('home.featuredDeptsSub')}</div>
-              </div>
-              <Link to="/departments" className="vs-section-link">{t('home.viewAll')}</Link>
-            </div>
-            <div className="vs-grid-3">
-              {departments.slice(0, 6).map((dept, i) => (
-                <SpecCard key={dept.id} dept={dept} idx={i} />
-              ))}
-            </div>
+            <div className="vs-section-title">{t('home.patientServices')}</div>
+            <div className="vs-section-sub">{t('home.patientServicesSub')}</div>
           </div>
+        </div>
+        <div className="vs-grid-4">
+          {[
+            { Icon: FiCalendar,     title: t('nav.bookAppointment'),    desc: lang === 'kn' ? '4 ಹಂತಗಳಲ್ಲಿ ಸುಲಭವಾಗಿ ಕಾಯ್ದಿರಿಸಿ' : 'Schedule in 4 simple steps',          path: '/patient/book',     accent: 'navy' },
+            { Icon: FiActivity,     title: t('nav.liveQueue'),         desc: lang === 'kn' ? 'ಲೈವ್ ಕ್ಯೂ ಮತ್ತು ಲಭ್ಯತೆಯನ್ನು ನೋಡಿ' : 'Real-time wait times & availability', path: '/patient/queue',    accent: 'red'  },
+            { Icon: FiClipboard,    title: t('nav.followUp'),          desc: lang === 'kn' ? 'ಹಳೆಯ ಇತಿಹಾಸ ಮತ್ತು ಭೇಟಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ' : 'View history & upcoming reminders',   path: '/patient/followup', accent: ''     },
+            { Icon: FiMessageSquare,title: t('nav.feedback'),          desc: lang === 'kn' ? 'ನಿಮ್ಮ ಅನುಭವದ ಬಗ್ಗೆ ತಿಳಿಸಿ' : 'Rate your visit experience',          path: '/patient/feedback', accent: 'amber'},
+          ].map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+              <Link to={s.path} style={{ textDecoration: 'none' }}>
+                <div className={`vs-accent-card ${s.accent}`} style={{ cursor: 'pointer', height: '100%' }}>
+                  <div style={{ marginBottom: 10 }}>
+                    <s.Icon size={22} color={s.accent === 'navy' ? '#003580' : s.accent === 'red' ? '#e8282b' : s.accent === 'amber' ? '#b45309' : '#009688'} />
+                  </div>
+                  <div className="vs-accent-title">{s.title}</div>
+                  <div className="vs-accent-sub">{s.desc}</div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
 
-          {/* News notice board */}
-          <div>
-            <div className="vs-section-header">
-              <div>
-                <div className="vs-section-title">{t('home.latestNews')}</div>
-                <div className="vs-section-sub">{t('home.latestNewsSub')}</div>
-              </div>
-              <Link to="/events" className="vs-section-link">{t('home.viewAll')}</Link>
+    {/* DEPARTMENTS + TESTIMONIALS */}
+    <div className="vs-section-alt">
+      <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, alignItems: 'start' }}>
+        <div>
+          <div className="vs-section-header">
+            <div>
+              <div className="vs-section-title">{t('home.featuredDepts')}</div>
+              <div className="vs-section-sub">{t('home.featuredDeptsSub')}</div>
             </div>
-            <div className="vs-notice-list">
-              <div className="vs-notice-head">
-                <div className="vs-notice-head-title">{t('home.announcements')}</div>
-              </div>
-              {newsItems.slice(0, 6).map((item, i) => (
-                <div key={i} className="vs-notice-item">
-                  <div className="vs-notice-bar" style={{ background: barColors[item.category] || '#003580' }} />
-                  <div>
-                    <div className="vs-notice-text">{lang === 'kn' ? 'ನೋಟಿಸ್ ಮತ್ತು ಮಾಹಿತಿ ವಿವರಗಳು ಇಲ್ಲಿವೆ.' : item.title}</div>
-                    <div className="vs-notice-time" style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
-                      <span>
-                        {new Date(item.date).toLocaleDateString(lang === 'kn' ? 'kn-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </span>
-                      <span style={{ color: '#ddd' }}>·</span>
-                      <span className={`vs-badge ${
-                        item.category === 'Achievement' ? 'vs-badge-teal' :
-                        item.category === 'Event'       ? 'vs-badge-blue' :
-                        item.category === 'Admissions'  ? 'vs-badge-amber' :
-                        'vs-badge-red'
-                      }`}>
-                        {item.category}
-                      </span>
+            <Link to="/departments" className="vs-section-link">{t('home.viewAll')}</Link>
+          </div>
+          <div className="vs-grid-3">
+            {departments.slice(0, 6).map((dept, i) => <SpecCard key={dept.id} dept={dept} idx={i} />)}
+          </div>
+        </div>
+
+        <div>
+          <div className="vs-section-header">
+            <div className="vs-section-title">{t('home.testimonials')}</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {testimonials.slice(0, 3).map((t, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <div className="vs-doc-card" style={{ cursor: 'default' }}>
+                  <div className="vs-avatar vs-av-blue"><FiUser size={16} color="#0c447c" /></div>
+                  <div style={{ flex: 1 }}>
+                    <div className="vs-doc-name">{t.name}</div>
+                    <div className="vs-doc-spec">{lang === 'kn' ? 'ರೋಗಿಯ ಅಭಿಪ್ರಾಯ' : t.dept}</div>
+                    <div style={{ fontSize: 11, color: '#555', lineHeight: 1.5, marginTop: 4, fontFamily: 'Inter, sans-serif' }}>"{lang === 'kn' ? 'ಆಸ್ಪತ್ರೆಯ ಸೇವೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.' : t.comment}"</div>
+                    <div style={{ display: 'flex', gap: 2, marginTop: 6 }}>
+                      {[...Array(t.rating)].map((_, j) => <FiStar key={j} size={11} style={{ fill: '#f59e0b', color: '#f59e0b' }} />)}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ══ 5. PATIENT SERVICES ═════════════════════════════════════════════ */}
-      <div className="vs-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="vs-section-header">
-            <div>
-              <div className="vs-section-title">{t('home.patientServices')}</div>
-              <div className="vs-section-sub">{t('home.patientServicesSub')}</div>
-            </div>
-          </div>
-          <div className="vs-grid-4">
-            {[
-              { Icon: FiCalendar,     title: t('nav.bookAppointment'),    desc: lang === 'kn' ? '4 ಹಂತಗಳಲ್ಲಿ ಸುಲಭವಾಗಿ ಕಾಯ್ದಿರಿಸಿ' : 'Schedule in 4 simple steps',          path: '/patient/book',     accent: 'navy' },
-              { Icon: FiActivity,     title: t('nav.liveQueue'),         desc: lang === 'kn' ? 'ಲೈವ್ ಕ್ಯೂ ಮತ್ತು ಲಭ್ಯತೆಯನ್ನು ನೋಡಿ' : 'Real-time wait times & availability', path: '/patient/queue',    accent: 'red'  },
-              { Icon: FiClipboard,    title: t('nav.followUp'),  desc: lang === 'kn' ? 'ಹಳೆಯ ಇತಿಹಾಸ ಮತ್ತು ಭೇಟಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ' : 'View history & upcoming reminders',   path: '/patient/followup', accent: ''     },
-              { Icon: FiMessageSquare,title: t('nav.feedback'),   desc: lang === 'kn' ? 'ನಿಮ್ಮ ಅನುಭವದ ಬಗ್ಗೆ ತಿಳಿಸಿ' : 'Rate your visit experience',          path: '/patient/feedback', accent: 'amber'},
-            ].map((s, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                <Link to={s.path} style={{ textDecoration: 'none' }}>
-                  <div className={`vs-accent-card ${s.accent}`} style={{ cursor: 'pointer', height: '100%' }}>
-                    <div style={{ marginBottom: 10 }}>
-                      <s.Icon size={22} color={s.accent === 'navy' ? '#003580' : s.accent === 'red' ? '#e8282b' : s.accent === 'amber' ? '#b45309' : '#009688'} />
-                    </div>
-                    <div className="vs-accent-title">{s.title}</div>
-                    <div className="vs-accent-sub">{s.desc}</div>
-                  </div>
-                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </div>
+    </div>
+  </motion.div>
+);
 
-      {/* ══ 6. ACHIEVEMENTS + TESTIMONIALS ══════════════════════════════════ */}
-      <div className="vs-section-alt">
-        <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+/* ─── ACADEMIC PORTAL VIEW ──────────────────────────────────────────────────────────── */
+const AcademicView = ({ t, lang }) => (
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
+    {/* ACADEMIC HERO */}
+    <section className="vs-hero" style={{ minHeight: 280, background: 'linear-gradient(135deg, #3c3489 0%, #2b2463 100%)', color: '#fff' }}>
+      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ width: '100%', maxWidth: '800px', margin: '0 auto', textAlign: 'center', paddingBottom: '2rem' }}>
+        <div className="vs-hero-eyebrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#d8b4fe', margin: '0 auto 1rem' }}>RRDCH ACADEMY</div>
+        <h1 className="vs-hero-title" style={{ color: '#fff', fontSize: '2.5rem' }}>
+          {lang === 'kn' ? 'ಶೈಕ್ಷಣಿಕ ಮತ್ತು ವಿದ್ಯಾರ್ಥಿ ಪೋರ್ಟಲ್' : 'Academic & Student Portal'}
+        </h1>
+        <p className="vs-hero-sub" style={{ color: 'rgba(255,255,255,0.8)', margin: '0 auto 2rem' }}>
+          {lang === 'kn' ? 'ಉತ್ತಮ ದಂತ ಶಿಕ್ಷಣಕ್ಕಾಗಿ ಕೇಂದ್ರ.' : 'Empowering the next generation of dental professionals with world-class education and resources.'}
+        </p>
+      </motion.div>
+    </section>
 
-          {/* Achievements table */}
+    {/* ACADEMIC SERVICES */}
+    <div className="vs-section">
+      <div className="max-w-7xl mx-auto">
+        <div className="vs-section-header">
           <div>
-            <div className="vs-section-header">
-              <div className="vs-section-title">{t('home.achievements')}</div>
-              <Link to="/achievements" className="vs-section-link">{t('home.viewAll')}</Link>
-            </div>
-            <div className="vs-table-card">
-              <div className="vs-table-head">
-                <span className="vs-table-head-title">{t('home.recentHonours')}</span>
-                <Link to="/achievements" className="vs-table-head-link">{t('home.viewAll')}</Link>
-              </div>
-              <table className="vs-table">
-                <thead>
-                  <tr>
-                    <th>{t('home.achievements')}</th>
-                    <th>{lang === 'kn' ? 'ವರ್ಷ' : 'Year'}</th>
-                    <th>{lang === 'kn' ? 'ಸ್ಥಿತಿ' : 'Status'}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {achievements.slice(0, 5).map((a, i) => (
-                    <tr key={i}>
-                      <td>
-                        <div style={{ fontWeight: 600, fontSize: 12, color: '#1a1a2e', fontFamily: 'Manrope, sans-serif' }}>{lang === 'kn' ? 'ಸಾಧನೆ ಮತ್ತು ಗೌರವದ ವಿವರ' : a.title}</div>
-                      </td>
-                      <td>{a.year || '2024'}</td>
-                      <td>
-                        <span className="vs-badge vs-badge-teal" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <FiCheckCircle size={9} /> {lang === 'kn' ? 'ಸ್ವೀಕರಿಸಲಾಗಿದೆ' : 'Received'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <div className="vs-section-title">{lang === 'kn' ? 'ವಿದ್ಯಾರ್ಥಿ ಸಂಪನ್ಮೂಲಗಳು' : 'Student Resources'}</div>
+            <div className="vs-section-sub">{lang === 'kn' ? 'ನಿಮ್ಮ ಶೈಕ್ಷಣಿಕ ಪ್ರಯಾಣಕ್ಕಾಗಿ' : 'Everything you need for your academic journey'}</div>
           </div>
-
-          {/* Testimonials */}
-          <div>
-            <div className="vs-section-header">
-              <div className="vs-section-title">{t('home.testimonials')}</div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {testimonials.slice(0, 3).map((t, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                  <div className="vs-doc-card" style={{ cursor: 'default' }}>
-                    <div className="vs-avatar vs-av-blue">
-                      <FiUser size={16} color="#0c447c" />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div className="vs-doc-name">{t.name}</div>
-                      <div className="vs-doc-spec">{lang === 'kn' ? 'ರೋಗಿಯ ಅಭಿಪ್ರಾಯ' : t.dept}</div>
-                      <div style={{ fontSize: 11, color: '#555', lineHeight: 1.5, marginTop: 4, fontFamily: 'Inter, sans-serif' }}>"{lang === 'kn' ? 'ಆಸ್ಪತ್ರೆಯ ಸೇವೆ ಮತ್ತು ವೈದ್ಯರ ಆರೈಕೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.' : t.comment}"</div>
-                      <div style={{ display: 'flex', gap: 2, marginTop: 6 }}>
-                        {[...Array(t.rating)].map((_, j) => (
-                          <FiStar key={j} size={11} style={{ fill: '#f59e0b', color: '#f59e0b' }} />
-                        ))}
-                      </div>
-                    </div>
+        </div>
+        <div className="vs-grid-4">
+          {[
+            { Icon: FiUser, label: t('nav.studentDashboard'), path: '/student/dashboard', color: '#6b21a8', bg: '#f3e8ff' },
+            { Icon: FiBookOpen, label: t('nav.syllabus'), path: '/student/syllabus', color: '#1d4ed8', bg: '#dbeafe' },
+            { Icon: FiSearch, label: t('nav.research'), path: '/research', color: '#15803d', bg: '#dcfce7' },
+            { Icon: FiHome, label: t('nav.hostelComplaints'), path: '/student/hostel', color: '#b45309', bg: '#fef3c7' },
+          ].map((item, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+              <Link to={item.path} style={{ textDecoration: 'none' }}>
+                <div className="vs-accent-card" style={{ cursor: 'pointer', height: '100%', borderTop: `4px solid ${item.color}` }}>
+                  <div style={{ marginBottom: 16, background: item.bg, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12 }}>
+                    <item.Icon size={24} color={item.color} />
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                  <div className="vs-accent-title">{item.label}</div>
+                  <div className="vs-accent-sub">Access your personal student information and tools.</div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* NEWS AND ACHIEVEMENTS */}
+    <div className="vs-section-alt">
+      <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+        <div>
+          <div className="vs-section-header">
+            <div className="vs-section-title">{t('home.latestNews')}</div>
+            <Link to="/events" className="vs-section-link">{t('home.viewAll')}</Link>
+          </div>
+          <div className="vs-notice-list">
+            {newsItems.slice(0, 5).map((item, i) => (
+              <div key={i} className="vs-notice-item">
+                <div className="vs-notice-bar" style={{ background: barColors[item.category] || '#003580' }} />
+                <div>
+                  <div className="vs-notice-text">{lang === 'kn' ? 'ನೋಟಿಸ್ ವಿವರಗಳು.' : item.title}</div>
+                  <div className="vs-notice-time" style={{ display: 'flex', gap: 6, marginTop: 3 }}>
+                    <span className="vs-badge vs-badge-blue">{item.category}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="vs-section-header">
+            <div className="vs-section-title">{t('home.achievements')}</div>
+            <Link to="/achievements" className="vs-section-link">{t('home.viewAll')}</Link>
+          </div>
+          <div className="vs-table-card">
+            <table className="vs-table">
+              <thead><tr><th>Honour</th><th>Year</th></tr></thead>
+              <tbody>
+                {achievements.slice(0, 4).map((a, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 600, fontSize: 12 }}>{a.title}</td>
+                    <td>{a.year || '2024'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
+  </motion.div>
+);
 
-      {/* ══ 7. INFO BAND ════════════════════════════════════════════════════ */}
+/* ─── Main Home Component ──────────────────────────────────────────────────────────── */
+const Home = () => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const { activePortal, setActivePortal } = usePortal(); // 'hospital' or 'academic'
+
+  return (
+    <div style={{ background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      
+      {/* ══ PORTAL TABS ══════════════════════════════════════════════════════════ */}
+      <div style={{ background: '#f8fafc', padding: '12px 1rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'inline-flex', background: '#e2e8f0', borderRadius: '12px', padding: '4px' }}>
+          <button 
+            onClick={() => setActivePortal('hospital')}
+            style={{ 
+              padding: '10px 24px', 
+              borderRadius: '8px', 
+              fontWeight: 600, 
+              fontSize: '14px',
+              fontFamily: 'Inter, sans-serif',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              background: activePortal === 'hospital' ? '#fff' : 'transparent',
+              color: activePortal === 'hospital' ? '#003580' : '#64748b',
+              boxShadow: activePortal === 'hospital' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+            }}
+          >
+            <FiActivity size={16} /> {lang === 'kn' ? 'ಆಸ್ಪತ್ರೆ ಪೋರ್ಟಲ್' : 'Hospital Portal'}
+          </button>
+          <button 
+            onClick={() => setActivePortal('academic')}
+            style={{ 
+              padding: '10px 24px', 
+              borderRadius: '8px', 
+              fontWeight: 600, 
+              fontSize: '14px',
+              fontFamily: 'Inter, sans-serif',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              background: activePortal === 'academic' ? '#fff' : 'transparent',
+              color: activePortal === 'academic' ? '#3c3489' : '#64748b',
+              boxShadow: activePortal === 'academic' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+            }}
+          >
+            <FiBookOpen size={16} /> {lang === 'kn' ? 'ವಿದ್ಯಾರ್ಥಿ ಪೋರ್ಟಲ್' : 'Student Portal'}
+          </button>
+        </div>
+      </div>
+
+      {/* ══ ACTIVE PORTAL CONTENT ══════════════════════════════════════════════════════════ */}
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <AnimatePresence mode="wait">
+          {activePortal === 'hospital' ? (
+            <HospitalView key="hospital" t={t} lang={lang} />
+          ) : (
+            <StudentGuard key="academic">
+              <AcademicView t={t} lang={lang} />
+            </StudentGuard>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ══ 7. SHARED INFO BAND ════════════════════════════════════════════════════ */}
       <div className="vs-info-band">
         <div className="vs-info-cell">
           <div className="vs-info-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 6 }}>
@@ -401,7 +446,6 @@ const Home = () => {
           <div className="vs-info-val">{t('common.days')}</div>
         </div>
       </div>
-
     </div>
   );
 };

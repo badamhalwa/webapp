@@ -8,9 +8,8 @@ import { useTranslation } from 'react-i18next';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Chatbot from './components/ui/Chatbot';
-import StudentGuard from './components/auth/StudentGuard'; // Added import
 import { LoadingSpinner } from './components/ui/UIComponents';
-
+import { PortalProvider } from './context/PortalContext';
 
 // Pages
 import Home from './pages/Home';
@@ -47,13 +46,14 @@ function App() {
 
   return (
     <AppProvider>
-      <BrowserRouter>
+      <PortalProvider>
+        <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-1">
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
-                {/* Public */}
+                {/* Public / Unified Home */}
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/departments" element={<Departments />} />
@@ -72,20 +72,27 @@ function App() {
                 <Route path="/patient/queue" element={<LiveQueue />} />
                 <Route path="/patient/directions" element={<Directions />} />
                 <Route path="/patient/feedback" element={<Feedback />} />
-
-                {/* Student */}
                 <Route path="/student/*" element={
-                  <StudentGuard>
-                    <Routes>
-                      <Route path="dashboard" element={<StudentDashboard />} />
-                      <Route path="syllabus" element={<Syllabus />} />
-                      <Route path="schedule" element={<Schedule />} />
-                      <Route path="hostel" element={<HostelComplaints />} />
-                    </Routes>
-                  </StudentGuard>
+                  <Routes>
+                    <Route path="dashboard" element={<StudentDashboard />} />
+                    <Route path="syllabus" element={<Syllabus />} />
+                    <Route path="schedule" element={<Schedule />} />
+                    <Route path="hostel" element={<HostelComplaints />} />
+                  </Routes>
                 } />
 
-                {/* Faculty */}
+                {/* Common / Shared Public Routes */}
+                <Route path="/about" element={<About />} />
+                <Route path="/departments" element={<Departments />} />
+                <Route path="/research" element={<Research />} />
+                <Route path="/achievements" element={<Achievements />} />
+                <Route path="/tour" element={<VirtualTour />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/admissions" element={<Admissions />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/faculty" element={<Faculty />} />
+
+                {/* Faculty Pages */}
                 <Route path="/faculty/pg" element={<PGDoctorDashboard />} />
                 <Route path="/faculty/admin" element={<AdminDashboard />} />
 
@@ -106,6 +113,7 @@ function App() {
         <Chatbot />
         <Toaster position="top-right" toastOptions={{ style: { borderRadius: '12px', fontFamily: 'Inter, sans-serif' } }}/>
       </BrowserRouter>
+      </PortalProvider>
     </AppProvider>
   );
 }

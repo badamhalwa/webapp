@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 const STUDENT_PASSWORD = "RRDCH2026"; // Default password
 
 const StudentGuard = ({ children }) => {
+  const [usn, setUsn] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(() => {
     return localStorage.getItem('rrdch-student-auth') === 'true';
@@ -14,6 +15,10 @@ const StudentGuard = ({ children }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!usn.trim()) {
+      toast.error('Please enter your USN.');
+      return;
+    }
     if (password === STUDENT_PASSWORD) {
       localStorage.setItem('rrdch-student-auth', 'true');
       setIsAuthorized(true);
@@ -46,6 +51,15 @@ const StudentGuard = ({ children }) => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <FormInput
+              id="student-usn"
+              label="University Serial Number (USN)"
+              type="text"
+              placeholder="e.g. 1RR20DS001"
+              value={usn}
+              onChange={(e) => setUsn(e.target.value.toUpperCase())}
+              required
+            />
             <FormInput
               id="student-pwd"
               label="Enter Password"

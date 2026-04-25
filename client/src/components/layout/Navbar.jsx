@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n/i18n';
 import { useApp } from '../../context/AppContext';
+import { usePortal } from '../../context/PortalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiSearch, FiX, FiChevronDown, FiBell, FiPhone, FiMail, FiMapPin,
@@ -86,16 +87,23 @@ const Navbar = () => {
   const [lang, setLang]               = useState(localStorage.getItem('rrdch-lang') || 'en');
   const location  = useLocation();
   const navigate  = useNavigate();
+  const { activePortal } = usePortal();
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   /* ── Nav structure ── */
-  const MAIN_NAV = [
+  const HOSPITAL_MAIN_NAV = [
     { label: t('nav.home'),        path: '/' },
-    { label: t('nav.about'),    path: '/about' },
-    { label: t('nav.faculty'),     path: '/faculty' },
+    { label: t('nav.about'),       path: '/about' },
     { label: t('nav.departments'), path: '/departments' },
+  ];
+
+  const ACADEMIC_MAIN_NAV = [
+    { label: t('nav.home'),        path: '/' },
+    { label: t('nav.faculty'),     path: '/faculty' },
     { label: t('nav.research'),    path: '/research' },
   ];
+
+  const CURRENT_MAIN_NAV = activePortal === 'hospital' ? HOSPITAL_MAIN_NAV : ACADEMIC_MAIN_NAV;
 
   const PATIENTS_NAV = [
     { label: t('nav.bookAppointment'),   path: '/patient/book',        Icon: FiCalendar },
@@ -244,29 +252,33 @@ const Navbar = () => {
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center" style={{ height: '64px' }}>
-          {MAIN_NAV.map(link => (
+          {CURRENT_MAIN_NAV.map(link => (
             <Link key={link.path} to={link.path}
               className={`nav-item ${isActive(link.path) ? 'active' : ''}`}
             >
               {link.label}
             </Link>
           ))}
-          <NavDropdown 
-            label={t('nav.patients')}  
-            links={PATIENTS_NAV}  
-            active={isPatientsActive}
-            isOpen={activeDropdown === 'patients'}
-            onOpen={() => setActiveDropdown('patients')}
-            onClose={() => setActiveDropdown(null)}
-          />
-          <NavDropdown 
-            label={t('nav.students')} 
-            links={ACADEMICS_NAV} 
-            active={isAcademicsActive}
-            isOpen={activeDropdown === 'students'}
-            onOpen={() => setActiveDropdown('students')}
-            onClose={() => setActiveDropdown(null)}
-          />
+          {activePortal === 'hospital' && (
+            <NavDropdown 
+              label={t('nav.patients')}  
+              links={PATIENTS_NAV}  
+              active={isPatientsActive}
+              isOpen={activeDropdown === 'patients'}
+              onOpen={() => setActiveDropdown('patients')}
+              onClose={() => setActiveDropdown(null)}
+            />
+          )}
+          {activePortal === 'academic' && (
+            <NavDropdown 
+              label={t('nav.students')} 
+              links={ACADEMICS_NAV} 
+              active={isAcademicsActive}
+              isOpen={activeDropdown === 'students'}
+              onOpen={() => setActiveDropdown('students')}
+              onClose={() => setActiveDropdown(null)}
+            />
+          )}
           <NavDropdown 
             label={t('nav.more')}      
             links={MORE_NAV}      
@@ -362,7 +374,7 @@ const Navbar = () => {
                   <FiCalendar size={13} /> {t('nav.bookAppointment')}
                 </button>
               </Link>
-              {[...MAIN_NAV, ...PATIENTS_NAV, ...ACADEMICS_NAV, ...MORE_NAV].map(l => (
+              {[...CURRENT_MAIN_NAV, ...(activePortal === 'hospital' ? PATIENTS_NAV : ACADEMICS_NAV), ...MORE_NAV].map(l => (
                 <Link key={l.path} to={l.path} onClick={() => setMobileOpen(false)}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 4px', fontSize: 13, color: isActive(l.path) ? '#003580' : '#333', borderBottom: '1px solid #f2f4f7', fontFamily: 'Inter, sans-serif', textDecoration: 'none', fontWeight: isActive(l.path) ? 600 : 400 }}
                 >
