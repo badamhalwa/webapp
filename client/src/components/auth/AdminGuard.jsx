@@ -4,31 +4,30 @@ import { FiLock, FiShield, FiArrowRight } from 'react-icons/fi';
 import { Button, Card, FormInput } from '../ui/UIComponents';
 import toast from 'react-hot-toast';
 
-const DEMO_USERNAME = "usn";
+const DEMO_USERNAME = "admin";
 const DEMO_PASSWORD = "password";
 
-const StudentGuard = ({ children }) => {
-  const [usn, setUsn] = useState('');
+const AdminGuard = ({ children }) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(() => {
-    return localStorage.getItem('rrdch-student-auth') === 'true';
+    return localStorage.getItem('rrdch-admin-auth') === 'true';
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!usn.trim()) {
+    if (!username.trim()) {
       toast.error('Please enter your username.');
       return;
     }
-    if (usn.toLowerCase() === DEMO_USERNAME && password === DEMO_PASSWORD) {
-      localStorage.setItem('rrdch-student-auth', 'true');
+    if (username.toLowerCase() === DEMO_USERNAME && password === DEMO_PASSWORD) {
+      localStorage.setItem('rrdch-admin-auth', 'true');
       setIsAuthorized(true);
-      toast.success('Access Granted');
+      toast.success('Admin Access Granted');
     } else {
-      toast.error('Invalid username or password.');
+      toast.error('Invalid admin credentials.');
     }
   };
-
 
   if (isAuthorized) {
     return children;
@@ -41,35 +40,35 @@ const StudentGuard = ({ children }) => {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md"
       >
-        <Card className="p-8 text-center shadow-2xl border-t-4 border-rrdch-blue">
-          <div className="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg mb-6 text-left border border-blue-100">
-            <p className="font-semibold mb-1">Demo Credentials:</p>
-            <p>Username: <strong>usn</strong></p>
+        <Card className="p-8 text-center shadow-2xl border-t-4 border-rrdch-red">
+          <div className="bg-red-50 text-red-800 text-xs p-3 rounded-lg mb-6 text-left border border-red-100">
+            <p className="font-semibold mb-1">Admin Credentials:</p>
+            <p>Username: <strong>admin</strong></p>
             <p>Password: <strong>password</strong></p>
           </div>
 
-          <div className="w-16 h-16 bg-blue-50 text-rrdch-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <FiLock size={32} />
+          <div className="w-16 h-16 bg-red-50 text-rrdch-red rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <FiShield size={32} />
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Student Access Only</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Admin Portal</h2>
           <p className="text-gray-500 text-sm mb-6">
-            This section contains academic records, schedules, and student-only resources. Please enter your credentials.
+            Restricted access. Please enter your administrative credentials to proceed.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormInput
-              id="student-username"
-              label="Username (USN)"
+              id="admin-username"
+              label="Admin ID"
               type="text"
-              placeholder="e.g. usn"
-              value={usn}
-              onChange={(e) => setUsn(e.target.value)}
+              placeholder="e.g. admin"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
             <FormInput
-              id="student-pwd"
-              label="Enter Password"
+              id="admin-pwd"
+              label="Password"
               type="password"
               placeholder="••••••••"
               value={password}
@@ -79,7 +78,7 @@ const StudentGuard = ({ children }) => {
             
             <Button 
               type="submit" 
-              className="w-full justify-center h-12 text-base shadow-lg shadow-blue-100"
+              className="w-full justify-center h-12 text-base shadow-lg shadow-red-100 bg-rrdch-red hover:bg-red-700 text-white"
             >
               Access Portal <FiArrowRight className="ml-2" />
             </Button>
@@ -87,7 +86,7 @@ const StudentGuard = ({ children }) => {
 
           <div className="mt-8 pt-6 border-t border-gray-100">
             <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-              <FiShield /> Protected by Vitalis Security Systems
+              <FiLock /> Secure Institutional Access
             </div>
           </div>
         </Card>
@@ -96,4 +95,4 @@ const StudentGuard = ({ children }) => {
   );
 };
 
-export default StudentGuard;
+export default AdminGuard;

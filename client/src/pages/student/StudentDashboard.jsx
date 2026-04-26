@@ -46,10 +46,23 @@ const StudentDashboard = () => {
             </p>
           </div>
           <div className="hidden md:flex flex-col items-end gap-2" style={{ marginBottom: 10 }}>
-             <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                <FiUser size={20} />
+             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <FiUser size={20} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#fff', marginBottom: 4 }}>USN: 1RR20DS001</span>
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('rrdch-student-auth');
+                      window.location.reload();
+                    }}
+                    style={{ fontSize: 10, fontWeight: 800, color: '#003580', background: '#fff', padding: '4px 10px', borderRadius: 4, cursor: 'pointer', border: 'none', textTransform: 'uppercase' }}
+                  >
+                    Logout
+                  </button>
+                </div>
              </div>
-             <span style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>Student ID: RRDCH-24-089</span>
           </div>
         </div>
       </section>

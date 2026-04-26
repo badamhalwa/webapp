@@ -8,7 +8,8 @@ import {
   orderBy, 
   serverTimestamp,
   updateDoc,
-  doc
+  doc,
+  setDoc
 } from 'firebase/firestore';
 import { mockAppointments, queueData, doctorAvailability } from '../data/mockData';
 
@@ -52,7 +53,7 @@ export const AppProvider = ({ children }) => {
     }, (err) => console.error("Firestore Error (Feedback):", err));
 
     // 4. Queue
-    const queueQuery = query(collection(db, 'queue'), orderBy('token', 'asc'));
+    const queueQuery = query(collection(db, 'queue'));
     const unsubQueue = onSnapshot(queueQuery, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setQueue(data); // Removed queueData fallback
@@ -148,6 +149,19 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const updateQueueDepartment = async (deptId, data) => {
+    try {
+      const qRef = doc(db, 'queue', String(deptId));
+      await setDoc(qRef, {
+        ...data,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    } catch (err) {
+      console.error("Error updating queue:", err);
+      throw err;
+    }
+  };
+
   const getAppointment = (query) => {
     if (!query) return null;
     const q = query.toLowerCase().trim();
@@ -165,7 +179,7 @@ export const AppProvider = ({ children }) => {
       appointments, addAppointment, updateAppointmentStatus, getAppointment,
       hostelComplaints, addComplaint, getComplaint, updateComplaintStatus,
       feedbacks, addFeedback,
-      queue, availability,
+      queue, availability, updateQueueDepartment,
       notifications,
       searchQuery, setSearchQuery,
       searchOpen, setSearchOpen,

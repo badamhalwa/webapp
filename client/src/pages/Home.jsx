@@ -6,7 +6,7 @@ import {
   FiArrowRight, FiStar, FiCalendar, FiSearch, FiClock,
   FiClipboard, FiMapPin, FiUser, FiUsers, FiAward,
   FiActivity, FiMessageSquare, FiBookOpen, FiPhone, FiMail,
-  FiCheckCircle, FiHome,
+  FiCheckCircle, FiHome, FiShield,
 } from 'react-icons/fi';
 import { departments, testimonials, newsItems, achievements } from '../data/mockData';
 import { usePortal } from '../context/PortalContext';
@@ -260,106 +260,12 @@ const HospitalView = ({ t, lang }) => (
   </motion.div>
 );
 
-/* ─── ACADEMIC PORTAL VIEW ──────────────────────────────────────────────────────────── */
-const AcademicView = ({ t, lang }) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
-    {/* ACADEMIC HERO */}
-    <section className="vs-hero" style={{ minHeight: 280, background: 'linear-gradient(135deg, #3c3489 0%, #2b2463 100%)', color: '#fff' }}>
-      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ width: '100%', maxWidth: '800px', margin: '0 auto', textAlign: 'center', paddingBottom: '2rem' }}>
-        <div className="vs-hero-eyebrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#d8b4fe', margin: '0 auto 1rem' }}>RRDCH ACADEMY</div>
-        <h1 className="vs-hero-title" style={{ color: '#fff', fontSize: '2.5rem' }}>
-          {lang === 'kn' ? 'ಶೈಕ್ಷಣಿಕ ಮತ್ತು ವಿದ್ಯಾರ್ಥಿ ಪೋರ್ಟಲ್' : 'Academic & Student Portal'}
-        </h1>
-        <p className="vs-hero-sub" style={{ color: 'rgba(255,255,255,0.8)', margin: '0 auto 2rem' }}>
-          {lang === 'kn' ? 'ಉತ್ತಮ ದಂತ ಶಿಕ್ಷಣಕ್ಕಾಗಿ ಕೇಂದ್ರ.' : 'Empowering the next generation of dental professionals with world-class education and resources.'}
-        </p>
-      </motion.div>
-    </section>
 
-    {/* ACADEMIC SERVICES */}
-    <div className="vs-section">
-      <div className="max-w-7xl mx-auto">
-        <div className="vs-section-header">
-          <div>
-            <div className="vs-section-title">{lang === 'kn' ? 'ವಿದ್ಯಾರ್ಥಿ ಸಂಪನ್ಮೂಲಗಳು' : 'Student Resources'}</div>
-            <div className="vs-section-sub">{lang === 'kn' ? 'ನಿಮ್ಮ ಶೈಕ್ಷಣಿಕ ಪ್ರಯಾಣಕ್ಕಾಗಿ' : 'Everything you need for your academic journey'}</div>
-          </div>
-        </div>
-        <div className="vs-grid-4">
-          {[
-            { Icon: FiUser, label: t('nav.studentDashboard'), path: '/student/dashboard', color: '#6b21a8', bg: '#f3e8ff' },
-            { Icon: FiBookOpen, label: t('nav.syllabus'), path: '/student/syllabus', color: '#1d4ed8', bg: '#dbeafe' },
-            { Icon: FiSearch, label: t('nav.research'), path: '/research', color: '#15803d', bg: '#dcfce7' },
-            { Icon: FiHome, label: t('nav.hostelComplaints'), path: '/student/hostel', color: '#b45309', bg: '#fef3c7' },
-          ].map((item, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-              <Link to={item.path} style={{ textDecoration: 'none' }}>
-                <div className="vs-accent-card" style={{ cursor: 'pointer', height: '100%', borderTop: `4px solid ${item.color}` }}>
-                  <div style={{ marginBottom: 16, background: item.bg, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12 }}>
-                    <item.Icon size={24} color={item.color} />
-                  </div>
-                  <div className="vs-accent-title">{item.label}</div>
-                  <div className="vs-accent-sub">Access your personal student information and tools.</div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* NEWS AND ACHIEVEMENTS */}
-    <div className="vs-section-alt">
-      <div className="max-w-7xl mx-auto" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div>
-          <div className="vs-section-header">
-            <div className="vs-section-title">{t('home.latestNews')}</div>
-            <Link to="/events" className="vs-section-link">{t('home.viewAll')}</Link>
-          </div>
-          <div className="vs-notice-list">
-            {newsItems.slice(0, 5).map((item, i) => (
-              <div key={i} className="vs-notice-item">
-                <div className="vs-notice-bar" style={{ background: barColors[item.category] || '#003580' }} />
-                <div>
-                  <div className="vs-notice-text">{lang === 'kn' ? 'ನೋಟಿಸ್ ವಿವರಗಳು.' : item.title}</div>
-                  <div className="vs-notice-time" style={{ display: 'flex', gap: 6, marginTop: 3 }}>
-                    <span className="vs-badge vs-badge-blue">{item.category}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="vs-section-header">
-            <div className="vs-section-title">{t('home.achievements')}</div>
-            <Link to="/achievements" className="vs-section-link">{t('home.viewAll')}</Link>
-          </div>
-          <div className="vs-table-card">
-            <table className="vs-table">
-              <thead><tr><th>Honour</th><th>Year</th></tr></thead>
-              <tbody>
-                {achievements.slice(0, 4).map((a, i) => (
-                  <tr key={i}>
-                    <td style={{ fontWeight: 600, fontSize: 12 }}>{a.title}</td>
-                    <td>{a.year || '2024'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </motion.div>
-);
 
 /* ─── Main Home Component ──────────────────────────────────────────────────────────── */
 const Home = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-  const { activePortal, setActivePortal } = usePortal(); // 'hospital' or 'academic'
 
   return (
     <div style={{ background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -368,7 +274,6 @@ const Home = () => {
       <div style={{ background: '#f8fafc', padding: '12px 1rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center' }}>
         <div style={{ display: 'inline-flex', background: '#e2e8f0', borderRadius: '12px', padding: '4px' }}>
           <button 
-            onClick={() => setActivePortal('hospital')}
             style={{ 
               padding: '10px 24px', 
               borderRadius: '8px', 
@@ -380,16 +285,18 @@ const Home = () => {
               alignItems: 'center',
               gap: '8px',
               border: 'none',
-              cursor: 'pointer',
-              background: activePortal === 'hospital' ? '#fff' : 'transparent',
-              color: activePortal === 'hospital' ? '#003580' : '#64748b',
-              boxShadow: activePortal === 'hospital' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+              cursor: 'default',
+              background: '#fff',
+              color: '#003580',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
             }}
           >
             <FiActivity size={16} /> {lang === 'kn' ? 'ಆಸ್ಪತ್ರೆ ಪೋರ್ಟಲ್' : 'Hospital Portal'}
           </button>
-          <button 
-            onClick={() => setActivePortal('academic')}
+          <Link 
+            to="/student"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{ 
               padding: '10px 24px', 
               borderRadius: '8px', 
@@ -400,32 +307,47 @@ const Home = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              background: activePortal === 'academic' ? '#fff' : 'transparent',
-              color: activePortal === 'academic' ? '#3c3489' : '#64748b',
-              boxShadow: activePortal === 'academic' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+              textDecoration: 'none',
+              background: 'transparent',
+              color: '#64748b',
             }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#3c3489'; e.currentTarget.style.background = 'rgba(255,255,255,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent'; }}
           >
             <FiBookOpen size={16} /> {lang === 'kn' ? 'ವಿದ್ಯಾರ್ಥಿ ಪೋರ್ಟಲ್' : 'Student Portal'}
-          </button>
+          </Link>
+          <Link 
+            to="/admin"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ 
+              padding: '10px 24px', 
+              borderRadius: '8px', 
+              fontWeight: 600, 
+              fontSize: '14px',
+              fontFamily: 'Inter, sans-serif',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              textDecoration: 'none',
+              background: 'transparent',
+              color: '#64748b',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#b91c1c'; e.currentTarget.style.background = 'rgba(255,255,255,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent'; }}
+          >
+            <FiShield size={16} /> {lang === 'kn' ? 'ಆಡಳಿತ ಪೋರ್ಟಲ್' : 'Admin Portal'}
+          </Link>
         </div>
       </div>
 
       {/* ══ ACTIVE PORTAL CONTENT ══════════════════════════════════════════════════════════ */}
       <div style={{ flex: 1, overflow: 'hidden' }}>
-        <AnimatePresence mode="wait">
-          {activePortal === 'hospital' ? (
-            <HospitalView key="hospital" t={t} lang={lang} />
-          ) : (
-            <StudentGuard key="academic">
-              <AcademicView t={t} lang={lang} />
-            </StudentGuard>
-          )}
-        </AnimatePresence>
+        <HospitalView t={t} lang={lang} />
       </div>
 
-      {/* ══ 7. SHARED INFO BAND ════════════════════════════════════════════════════ */}
+      {/* ══ SHARED INFO BAND ════════════════════════════════════════════════════ */}
       <div className="vs-info-band">
         <div className="vs-info-cell">
           <div className="vs-info-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 6 }}>

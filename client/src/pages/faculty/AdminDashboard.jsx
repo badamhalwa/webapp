@@ -40,7 +40,18 @@ const AdminDashboard = () => {
     <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
       
       {/* ── Page Hero ── */}
-      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem' }}>
+      <section style={{ background: '#003580', padding: '3rem 2rem 2.5rem', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+          <button 
+            onClick={() => {
+              localStorage.removeItem('rrdch-admin-auth');
+              window.location.reload();
+            }}
+            style={{ fontSize: 11, fontWeight: 700, color: '#003580', background: '#fff', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', border: 'none', textTransform: 'uppercase' }}
+          >
+            Logout
+          </button>
+        </div>
         <div className="max-w-7xl mx-auto">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <FiShield size={16} color="rgba(255,255,255,0.6)" />
@@ -195,6 +206,8 @@ const AdminDashboard = () => {
             </h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 20 }}>
               {[
+                { label: 'Live Queue Control', path: '/admin/queue', icon: FiClock, color: '#f59e0b' },
+                { label: 'Patient Directory', path: '/admin/patients', icon: FiUser, color: '#b91c1c' },
                 { label: 'Visits Management', path: '/patient/track', icon: FiCalendar, color: '#003580' },
                 { label: 'Patient Interaction', path: '/patient/feedback', icon: FiMessageSquare, color: '#009688' },
                 { label: 'Hostel Maintenance', path: '/student/hostel', icon: FiHome, color: '#e8282b' },

@@ -20,7 +20,7 @@ const AppointmentBooking = () => {
   
   const [formData, setFormData] = useState({
     name: '', phone: '', email: '', dob: '', gender: '',
-    departmentId: '', doctorId: '', date: '', timeSlot: '', reason: ''
+    departmentId: '', doctorId: '', date: '', timeSlot: '', reason: '', patientId: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -56,11 +56,17 @@ const AppointmentBooking = () => {
     setLoading(true);
     try {
       const id = 'RRDCH-' + Math.floor(Math.random() * 90000 + 10000);
+      const generatedPatientId = formData.patientId && formData.patientId.trim() !== '' 
+        ? formData.patientId.trim() 
+        : Math.floor(10000 + Math.random() * 90000).toString();
+
       await addAppointment({
         ...formData,
+        patientId: generatedPatientId,
         bookingId: id,
         status: 'Pending'
       });
+      setFormData(prev => ({ ...prev, patientId: generatedPatientId }));
       setBookingId(id);
       setSuccess(true);
       toast.success(lang === 'kn' ? 'ಅಪಾಯಿಂಟ್ಮೆಂಟ್ ಯಶಸ್ವಿಯಾಗಿ ಬುಕ್ ಆಗಿದೆ' : 'Appointment booked successfully');
@@ -121,6 +127,12 @@ const AppointmentBooking = () => {
                </div>
             </div>
 
+            <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl mb-8 flex flex-col items-center">
+               <div className="text-xs font-bold text-blue-800 uppercase mb-2">Your Unique Patient ID</div>
+               <div className="text-3xl font-black text-blue-900 tracking-widest">{formData.patientId}</div>
+               <div className="text-xs text-blue-600 mt-2">Please keep this 5-digit number safe for future visits.</div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <button 
                 onClick={() => { setSuccess(false); setStep(1); setFormData({name:'', phone:'', email:'', dob:'', gender:'', departmentId:'', doctorId:'', date:'', timeSlot:'', reason:''}); setBookingId(''); }}
@@ -173,6 +185,10 @@ const AppointmentBooking = () => {
                 <p className="text-sm text-gray-500">{t('appointment.step1Sub')}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="vs-label-light">5-Digit Patient ID (Optional)</label>
+                  <input className="vs-input" value={formData.patientId} onChange={e=>setFormData({...formData, patientId: e.target.value})} placeholder="If returning patient" maxLength={5} />
+                </div>
                 <div>
                   <label className="vs-label-light">{t('appointment.name')}</label>
                   <input className={`vs-input ${errors.name ? 'border-red-300' : ''}`} value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} placeholder={t('appointment.namePlaceholder')} />

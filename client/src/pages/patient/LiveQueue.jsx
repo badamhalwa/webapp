@@ -3,20 +3,27 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiClock, FiActivity, FiUsers, FiUser, FiZap, FiRefreshCcw, FiInfo } from 'react-icons/fi';
 import { departments } from '../../data/mockData';
+import { useApp } from '../../context/AppContext';
 
 const LiveQueue = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const { queue } = useApp();
   const [lastUpdated, setLastUpdated] = useState(new Date());
   
-  // Mock live data expansion
-  const queueData = departments.slice(0, 6).map(d => ({
-    ...d,
-    current: Math.floor(Math.random() * 5) + 1,
-    waiting: Math.floor(Math.random() * 10) + 2,
-    avgWait: Math.floor(Math.random() * 20) + 10,
-    status: Math.random() > 0.2 ? 'Active' : 'Busy'
-  }));
+  // Map Live Data from Context
+  const queueData = departments.slice(0, 6).map(d => {
+    const qState = queue.find(q => q.id === String(d.id));
+    const current = qState?.current !== undefined ? Number(qState.current) : 0;
+    const waiting = qState?.waiting !== undefined ? Number(qState.waiting) : 0;
+    return {
+      ...d,
+      current: current,
+      waiting: waiting,
+      avgWait: waiting * 15,
+      status: qState?.status || 'Active'
+    };
+  });
 
   useEffect(() => {
     const timer = setInterval(() => setLastUpdated(new Date()), 30000);
